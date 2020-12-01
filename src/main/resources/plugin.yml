@@ -1,0 +1,7 @@
+name: Rpgcore
+version: ${project.version}
+main: me.prismskey.rpgcore.rpgcore.Rpgcore
+api-version: 1.16
+authors: [prismskey]
+description: RPG Core for custom RPG server
+depend: [WorldGuard, mcMMO, Vault, NBTAPI]
