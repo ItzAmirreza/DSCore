@@ -91,7 +91,8 @@ public final class Rpgcore extends JavaPlugin {
             return;
         }
         startRegistration();
-        startCooldownCheckRunnable();
+        startTasks();
+
 
 
     }
@@ -100,6 +101,25 @@ public final class Rpgcore extends JavaPlugin {
         registerCommands();
         registerEvents();
         registerRecipes();
+    }
+
+    public void startTasks() {
+        startCooldownCheckRunnable();
+
+
+    }
+
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 
 
@@ -126,17 +146,7 @@ public final class Rpgcore extends JavaPlugin {
         unRegisterRecipes();
     }
 
-    private boolean setupEconomy() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            return false;
-        }
-        econ = rsp.getProvider();
-        return econ != null;
-    }
+
 
     private void parseArenaConfig() {
         for(String arenaName: getArenaConfig().getKeys(false)) {
