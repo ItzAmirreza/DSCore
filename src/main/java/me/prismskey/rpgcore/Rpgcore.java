@@ -83,17 +83,23 @@ public final class Rpgcore extends JavaPlugin {
         parseArenaConfig();
         loadPvpStatesConfig();
 
-        registerCommands();
-        registerEvents();
+
+
         if(!setupEconomy()) {
             getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-        registerRecipes();
+        startRegistration();
         startCooldownCheckRunnable();
 
 
+    }
+
+    public void startRegistration() {
+        registerCommands();
+        registerEvents();
+        registerRecipes();
     }
 
 

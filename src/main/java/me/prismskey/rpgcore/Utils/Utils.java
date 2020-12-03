@@ -7,9 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
+
     //Dead_Light edit
-
-
 
     public static String Prefix = "&8[&eDSCore&8] ";
 
