@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class configLoader {
 
@@ -63,6 +64,38 @@ public class configLoader {
         String world = spawnSection.getString("world");
         shortTermStorages.spawn = new Location(Rpgcore.getInstance().getServer().getWorld(world), x, y, z);
     }
+
+
+    //I guess it doesn't need to be executed in OnEnable right? so i don't initialize it in constructor
+    public void savePvpStatesConfig() {
+        try {
+            shortTermStorages.pvpStatesConfiguration.save(shortTermStorages.pvpStatesFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void updatePlayerData(RPGPlayerData data) {
+        for(int i = 0; i < shortTermStorages.playerData.size(); i++) {
+            RPGPlayerData d = shortTermStorages.playerData.get(i);
+            if(d.getPlayerUUID().equals(data.getPlayerUUID())) {
+                shortTermStorages.playerData.set(i, data);
+            }
+        }
+    }
+
+    public RPGPlayerData getDataByUUID(UUID uuid) {
+        for(RPGPlayerData data: shortTermStorages.playerData) {
+            if(data.getPlayerUUID().equals(uuid)) {
+                return data;
+            }
+        }
+        return null;
+    }
+
+
 
 
 

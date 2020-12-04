@@ -2,6 +2,7 @@ package me.prismskey.rpgcore.ArenaManager;
 
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.datatypes.party.Party;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 //import me.prismskey.rpgcore.party.Party;
 import me.prismskey.rpgcore.PartySystem.DungeonParty;
@@ -12,6 +13,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public class DungeonJoinCommand extends BukkitCommand {
+
+    private arenaLoader arenaloader = new arenaLoader();
 
     public DungeonJoinCommand(String name) {
         super(name);
@@ -31,7 +34,7 @@ public class DungeonJoinCommand extends BukkitCommand {
         String subcommand = args[0];
 
         if(subcommand.equalsIgnoreCase("list")) {
-            for(Arena arena: Rpgcore.instance.getArenas()) {
+            for(Arena arena: shortTermStorages.arenas) {
                 sender.sendMessage(arena.getName() + ": " + arena.getStatus());
             }
         }
@@ -48,7 +51,7 @@ public class DungeonJoinCommand extends BukkitCommand {
                 player.sendMessage("please specify which dungeon you want to join.");
             }
             String dungeonName = args[1];
-            Arena arena = Rpgcore.instance.getArenaByName(dungeonName);
+            Arena arena = arenaloader.getArenaByName(dungeonName);
             if(arena == null) {
                 player.sendMessage("Could not find an arena with that name.");
                 return true;
@@ -63,7 +66,7 @@ public class DungeonJoinCommand extends BukkitCommand {
                 return true;
             }
 
-            for(Arena a: Rpgcore.instance.getArenas()) {
+            for(Arena a: shortTermStorages.arenas) {
                 if(a.getParty() == null) {
                     continue;
                 }
@@ -95,7 +98,7 @@ public class DungeonJoinCommand extends BukkitCommand {
             }
 
             Arena targetArena = null;
-            for(Arena arena: Rpgcore.instance.getArenas()) {
+            for(Arena arena: shortTermStorages.arenas) {
                 DungeonParty dungeonParty = arena.getParty();
                 if(dungeonParty != null) {
                     if(dungeonParty.mcmmoParty.hasMember(player.getName())) {
@@ -109,7 +112,7 @@ public class DungeonJoinCommand extends BukkitCommand {
                 return true;
             }
 
-            if(!Rpgcore.instance.isWithinDungeon(player.getLocation())) {
+            if(!arenaloader.isWithinDungeon(player.getLocation())) {
                 targetArena.teleportPlayerToSpawn(player);
             }
         } else if(subcommand.equalsIgnoreCase("leave")) {
@@ -120,7 +123,7 @@ public class DungeonJoinCommand extends BukkitCommand {
             }
 
             Arena targetArena = null;
-            for(Arena arena: Rpgcore.instance.getArenas()) {
+            for(Arena arena: shortTermStorages.arenas) {
                 DungeonParty dungeonParty = arena.getParty();
                 if(dungeonParty != null) {
                     if(dungeonParty.mcmmoParty.hasMember(player.getName())) {
@@ -140,8 +143,8 @@ public class DungeonJoinCommand extends BukkitCommand {
             }
 
             for(Player p: mcmmoParty.getOnlineMembers()) {
-                if(Rpgcore.instance.isWithinDungeon(p.getLocation())) {
-                    p.teleport(Rpgcore.instance.getSpawn());
+                if(arenaloader.isWithinDungeon(p.getLocation())) {
+                    p.teleport(shortTermStorages.spawn);
                     p.sendMessage("Since the host ended the raid you have been kicked from the dungeon.");
                 }
             }

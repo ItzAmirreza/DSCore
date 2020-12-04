@@ -1,8 +1,10 @@
 package me.prismskey.rpgcore.ArenaManager;
 
 import com.gmail.nossr50.api.PartyAPI;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.PartySystem.DungeonParty;
+import me.prismskey.rpgcore.Utils.APIUsages;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
@@ -26,6 +28,8 @@ public class Arena {
     Random random;
 
     private boolean running;
+
+    public arenaLoader arenaloader = new arenaLoader();
 
     public Arena(Location spawn, String name, String regionName) {
         party = null;
@@ -65,9 +69,9 @@ public class Arena {
         dungeonTimeoutRunnable = null;
 
         for (Player player : party.mcmmoParty.getOnlineMembers()) {
-            if(Rpgcore.instance.isWithinDungeon(player.getLocation())) {
+            if(arenaloader.isWithinDungeon(player.getLocation())) {
                 player.sendMessage("Dungeon Resetting.");
-                player.teleport(Rpgcore.instance.getSpawn());
+                player.teleport(shortTermStorages.spawn);
             }
         }
         party.setArena(null);
@@ -113,7 +117,7 @@ public class Arena {
         }
         for (Player player : PartyAPI.getOnlineMembers(party.mcmmoParty.getName())) {
             for (Entity e : player.getNearbyEntities(100, 100, 100)) {
-                if (Rpgcore.instance.isWithinDungeon(e.getLocation())) {
+                if (arenaloader.isWithinDungeon(e.getLocation())) {
                     if (e instanceof LivingEntity && !(e instanceof Player)) {
                         if (e instanceof Tameable) {
                             Tameable tameable = (Tameable) e;
@@ -167,9 +171,9 @@ public class Arena {
             @Override
             public void run() {
                 for (Player player : PartyAPI.getOnlineMembers(party.mcmmoParty.getName())) {
-                    if(Rpgcore.instance.isWithinDungeon(player.getLocation())) {
+                    if(arenaloader.isWithinDungeon(player.getLocation())) {
                         player.sendMessage("Dungeon cleared! Congrats!");
-                        player.teleport(Rpgcore.instance.getSpawn());
+                        player.teleport(shortTermStorages.spawn);
                     }
                     party.setArena(null);
                     reset();
@@ -296,7 +300,7 @@ public class Arena {
     }
 
     public static void handleCustomMobDrops(Entity e) {
-        if (Rpgcore.hasMobNBT(e, "fire")) {
+        if (APIUsages.hasMobNBT(e, "fire")) {
             ItemStack item = new ItemStack(Material.FIRE_CHARGE);
             e.getWorld().dropItem(e.getLocation(), item);
             return;

@@ -22,7 +22,7 @@ public class RPGPlayerData {
         lifeDrainCooldown = 0;
         deathsCallCooldown = 0;
 
-        pvpOn = Rpgcore.instance.getPvpStatesConfiguration().getBoolean(playerUUID.toString());
+        pvpOn = Rpgcore.getInstance().getPvpStatesConfiguration().getBoolean(playerUUID.toString());
 
     }
 

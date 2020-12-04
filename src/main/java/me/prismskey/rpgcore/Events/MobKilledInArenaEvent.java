@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.Events;
 
+import me.prismskey.rpgcore.ArenaManager.arenaLoader;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import org.bukkit.entity.Entity;
@@ -12,11 +13,13 @@ import org.bukkit.event.entity.EntityDeathEvent;
 
 public class MobKilledInArenaEvent implements Listener {
 
+    private arenaLoader arenaloader = new arenaLoader();
+
     @EventHandler
     public void onMobKilledInArena(EntityDeathEvent event) {
         Entity entity = event.getEntity();
         if(entity instanceof LivingEntity) {
-            Arena arena = Rpgcore.instance.getArenaByLocation(entity.getLocation());
+            Arena arena = arenaloader.getArenaByLocation(entity.getLocation());
             if(arena == null) {
                 return;
             }

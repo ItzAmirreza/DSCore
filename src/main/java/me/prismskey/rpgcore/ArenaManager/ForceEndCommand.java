@@ -15,6 +15,8 @@ public class ForceEndCommand extends BukkitCommand {
         this.setAliases(new ArrayList<String>());
     }
 
+    private arenaLoader arenaloader = new arenaLoader();
+
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if(!sender.hasPermission("force_end")) {
@@ -25,7 +27,7 @@ public class ForceEndCommand extends BukkitCommand {
             sender.sendMessage("Incorrect usage");
             return true;
         }
-        Arena arena = Rpgcore.instance.getArenaByName(args[0]);
+        Arena arena = arenaloader.getArenaByName(args[0]);
         if(arena == null) {
             sender.sendMessage("Could not find an arena with that name.");
             return true;

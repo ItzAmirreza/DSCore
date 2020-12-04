@@ -11,6 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class OnCommandPreProcess implements Listener {
+
+
+
     @EventHandler
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         if(event.getMessage().equalsIgnoreCase("/party disband")) {

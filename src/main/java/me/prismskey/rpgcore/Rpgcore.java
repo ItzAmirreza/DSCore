@@ -104,10 +104,7 @@ public final class Rpgcore extends JavaPlugin {
         cooldownCheckTask cooldownCheckTask = new cooldownCheckTask(this);
         cooldownCheckTask.runTaskTimer(this, 0, 1);
 
-
-
     }
-
 
     private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -168,9 +165,7 @@ public final class Rpgcore extends JavaPlugin {
     }
 
 
-
     //end of registrations <--
-
 
 
     @Override
@@ -178,121 +173,11 @@ public final class Rpgcore extends JavaPlugin {
         unRegisterRecipes();
     }
 
-    // I don't really know what this function is doing and how it is related just know its using worldedit api
 
-    public boolean isWithinDungeon(Location loc)
-    {
-        com.sk89q.worldedit.util.Location location = BukkitAdapter.adapt(loc);
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
-        ApplicableRegionSet set = query.getApplicableRegions(location);
-        for(ProtectedRegion rg: set.getRegions()) {
-
-            for(Arena arena: shortTermStorages.arenas) {
-                if(rg.getId().toLowerCase().contains(arena.getName().toLowerCase())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    //same ^^
-
-    public Arena getArenaByLocation(Location loc) {
-        com.sk89q.worldedit.util.Location location = BukkitAdapter.adapt(loc);
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
-        ApplicableRegionSet set = query.getApplicableRegions(location);
-        for(ProtectedRegion rg: set.getRegions()) {
-
-            for(Arena arena: shortTermStorages.arenas) {
-                if(rg.getId().toLowerCase().contains(arena.getName().toLowerCase())) {
-                    return arena;
-                }
-            }
-        }
-        return null;
-    }
-
-
-
-    public String getDungeonRegionName(Location loc) {
-        com.sk89q.worldedit.util.Location location = BukkitAdapter.adapt(loc);
-        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionQuery query = container.createQuery();
-        ApplicableRegionSet set = query.getApplicableRegions(location);
-        for(ProtectedRegion rg: set.getRegions()) {
-            if(rg.getId().toLowerCase().contains("dungeon")) {
-                return rg.getId();
-            }
-        }
-        return "";
-    }
-
-
-
-    public Arena getArenaByName(String name) {
-        for(Arena arena: arenas) {
-            if(arena.getName().equalsIgnoreCase(name)) {
-                return arena;
-            }
-        }
-        return null;
-    }
-
-    public Location getSpawn() {
-        return spawn;
-    }
-
-    public static boolean hasMobNBT(Entity e, String tag) {
-        net.minecraft.server.v1_16_R3.Entity entity = ((CraftEntity)e).getHandle();
-
-        net.minecraft.server.v1_16_R3.NBTTagCompound compound = new net.minecraft.server.v1_16_R3.NBTTagCompound();
-        entity.d(compound);
-        NBTTagList list = compound.getList("Tags",8);
-        return list.toString().contains(tag);
-    }
-
-    public RPGPlayerData getDataByUUID(UUID uuid) {
-        for(RPGPlayerData data: playerData) {
-            if(data.getPlayerUUID().equals(uuid)) {
-                return data;
-            }
-        }
-        return null;
-    }
-
-    public ArrayList<Arena> getArenas() {
-        return arenas;
-    }
 
     public static Economy getEconomy() {
         return econ;
     }
 
-    public ArrayList<RPGPlayerData> getPlayerData() {
-        return playerData;
-    }
 
-    public FileConfiguration getPvpStatesConfiguration() {
-        return pvpStatesConfiguration;
-    }
-
-    public void savePvpStatesConfig() {
-        try {
-            pvpStatesConfiguration.save(pvpStatesFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void updatePlayerData(RPGPlayerData data) {
-        for(int i = 0; i < playerData.size(); i++) {
-            RPGPlayerData d = playerData.get(i);
-            if(d.getPlayerUUID().equals(data.getPlayerUUID())) {
-                playerData.set(i, data);
-            }
-        }
-    }
 }

@@ -1,5 +1,11 @@
 package me.prismskey.rpgcore.ArenaManager;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.Location;
@@ -7,11 +13,20 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class arenaLoader {
+    boolean alreadyParsed = false;
+
+    public arenaLoader() {
+        if (!alreadyParsed) {
+            this.parseArenaConfig();
+        }
+
+    }
 
     private Rpgcore rpgcore = Rpgcore.getInstance();
 
 
     public void parseArenaConfig() {
+        alreadyParsed = true;
         for(String arenaName: shortTermStorages.getArenaConfig().getKeys(false)) {
             ConfigurationSection specificArenaSection = shortTermStorages.getArenaConfig().getConfigurationSection(arenaName);
             int arenaSpawnX = specificArenaSection.getInt("x");
@@ -67,6 +82,67 @@ public class arenaLoader {
             }
             shortTermStorages.arenas.add(arena);
         }
+    }
+
+
+    public Arena getArenaByName(String name) {
+        for(Arena arena: shortTermStorages.arenas) {
+            if(arena.getName().equalsIgnoreCase(name)) {
+                return arena;
+            }
+        }
+        return null;
+    }
+
+
+    public boolean isWithinDungeon(Location loc)
+    {
+        com.sk89q.worldedit.util.Location location = BukkitAdapter.adapt(loc);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(location);
+        for(ProtectedRegion rg: set.getRegions()) {
+
+            for(Arena arena: shortTermStorages.arenas) {
+                if(rg.getId().toLowerCase().contains(arena.getName().toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //same ^^
+
+    public Arena getArenaByLocation(Location loc) {
+        com.sk89q.worldedit.util.Location location = BukkitAdapter.adapt(loc);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(location);
+        for(ProtectedRegion rg: set.getRegions()) {
+
+            for(Arena arena: shortTermStorages.arenas) {
+                if(rg.getId().toLowerCase().contains(arena.getName().toLowerCase())) {
+                    return arena;
+                }
+            }
+        }
+        return null;
+    }
+
+
+
+    public String getDungeonRegionName(Location loc) {
+        com.sk89q.worldedit.util.Location location = BukkitAdapter.adapt(loc);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(location);
+        for(ProtectedRegion rg: set.getRegions()) {
+            if(rg.getId().toLowerCase().contains("dungeon")) {
+                return rg.getId();
+            }
+        }
+        return "";
     }
 
 
