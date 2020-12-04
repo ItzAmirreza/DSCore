@@ -1,8 +1,10 @@
 package me.prismskey.rpgcore.Tasks;
-
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
 
 public class cooldownCheckTask extends BukkitRunnable {
 
@@ -13,12 +15,13 @@ public class cooldownCheckTask extends BukkitRunnable {
     }
 
 
+
     //main task
     //will edit later
 
     @Override
     public void run() {
-
+        ArrayList<RPGPlayerData> playerData = shortTermStorages.playerData;
         for(int i = 0; i < playerData.size(); i++) {
             RPGPlayerData data = playerData.get(i);
             data.decrementCooldowns();
@@ -30,4 +33,6 @@ public class cooldownCheckTask extends BukkitRunnable {
         }
 
     }
+
+
 }
