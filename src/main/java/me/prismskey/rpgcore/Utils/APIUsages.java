@@ -1,5 +1,7 @@
 package me.prismskey.rpgcore.Utils;
 
+import net.minecraft.server.v1_16_R3.NBTTagList;
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.entity.Entity;
 
 public class APIUsages {
