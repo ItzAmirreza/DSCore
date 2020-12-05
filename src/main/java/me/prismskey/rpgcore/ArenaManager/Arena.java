@@ -211,8 +211,8 @@ public class Arena {
                 if(timeInSecondsRemaining == 0) {
                     for(Player player: PartyAPI.getOnlineMembers(party.mcmmoParty.getName())) {
                         player.sendMessage("You did not clear the dungeon in time.");
-                        if(Rpgcore.instance.isWithinDungeon(player.getLocation())) {
-                            player.teleport(Rpgcore.instance.getSpawn());
+                        if(arenaloader.isWithinDungeon(player.getLocation())) {
+                            player.teleport(shortTermStorages.spawn);
                         }
 
                     }
