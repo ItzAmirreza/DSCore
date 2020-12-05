@@ -2,6 +2,7 @@ package me.prismskey.rpgcore.Mobs;
 
 import me.prismskey.rpgcore.Enums.MobAbilityCoolDownTimes;
 import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.Utils.APIUsages;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
@@ -55,7 +56,7 @@ public class EnemySpecialsManager implements Listener {
 
     private void checkCooldownsForEntity(LivingEntity e) {
         //Rpgcore.instance.getLogger().info("CheckCooldown");
-        if(Rpgcore.hasMobNBT(e, "lich")) {
+        if(APIUsages.hasMobNBT(e, "lich")) {
             //Rpgcore.instance.getLogger().info("lich");
             processEnemyCooldown(e, "lifeDrainBeam");
         }

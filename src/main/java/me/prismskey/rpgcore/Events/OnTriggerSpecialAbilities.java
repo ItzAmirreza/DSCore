@@ -1,6 +1,8 @@
 package me.prismskey.rpgcore.Events;
 
 import de.tr7zw.nbtapi.NBTItem;
+import me.prismskey.rpgcore.ArenaManager.arenaLoader;
+import me.prismskey.rpgcore.DataManager.configLoader;
 import me.prismskey.rpgcore.Enums.CooldownTimes;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.Rpgcore;
@@ -19,11 +21,11 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class OnTriggerSpecialAbilities implements Listener {
-
+    private configLoader configloader = new configLoader();
     @EventHandler
     public void onTriggerSpecialAttackInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        RPGPlayerData data = Rpgcore.instance.getDataByUUID(player.getUniqueId());
+        RPGPlayerData data = configloader.getDataByUUID(player.getUniqueId());
         //Rpgcore.instance.getLogger().info("onTriggerSpecial");
 
         ItemStack item = player.getInventory().getItemInMainHand();

@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.Events;
 
+import me.prismskey.rpgcore.ArenaManager.arenaLoader;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.Material;
 import org.bukkit.entity.MagmaCube;
@@ -18,10 +19,12 @@ public class OnSlimeSplit implements Listener {
         rand = new Random();
     }
 
+    private arenaLoader arenaloader = new arenaLoader();
+
     @EventHandler
     public void onSlimeSplit(SlimeSplitEvent event) {
         Slime slime = event.getEntity();
-        if(!Rpgcore.instance.isWithinDungeon(slime.getLocation())) {
+        if(!arenaloader.isWithinDungeon(slime.getLocation())) {
 
             ItemStack slimeballs;
             if(slime instanceof MagmaCube) {

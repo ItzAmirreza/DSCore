@@ -3,6 +3,8 @@ package me.prismskey.rpgcore.Events;
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.datatypes.party.Party;
 import me.prismskey.rpgcore.ArenaManager.Arena;
+import me.prismskey.rpgcore.ArenaManager.arenaLoader;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.PartySystem.DungeonParty;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.entity.Player;
@@ -13,19 +15,22 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 public class OnCommandPreProcess implements Listener {
 
 
+    private arenaLoader arenaloader = new arenaLoader();
+
+
 
     @EventHandler
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         if(event.getMessage().equalsIgnoreCase("/party disband")) {
             Player player = event.getPlayer();
-            for(Arena arena: Rpgcore.instance.getArenas()) {
+            for(Arena arena: shortTermStorages.arenas) {
                 DungeonParty party = arena.getParty();
                 if(party != null) {
                     if(party.mcmmoParty.getLeader().getUniqueId().equals(player.getUniqueId())) {
 
                         for(Player pl: PartyAPI.getOnlineMembers(party.mcmmoParty.getName())) {
-                            if(Rpgcore.instance.isWithinDungeon(pl.getLocation())) {
-                                pl.teleport(Rpgcore.instance.getSpawn());
+                            if(arenaloader.isWithinDungeon(pl.getLocation())) {
+                                pl.teleport(shortTermStorages.spawn);
                                 pl.sendMessage("Since the host ended the party you have been kicked from the dungeon.");
                             }
                         }
@@ -43,7 +48,7 @@ public class OnCommandPreProcess implements Listener {
                 return;
             }
             if(PartyAPI.getMembersMap(player).size() == 1) {
-                for(Arena arena: Rpgcore.instance.getArenas()) {
+                for(Arena arena: shortTermStorages.arenas) {
                     DungeonParty party = arena.getParty();
                     if(party != null) {
                         if(mcmmoParty.getName().equals(party.mcmmoParty.getName())) {

@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.GeneralCommands;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
+import me.prismskey.rpgcore.DataManager.configLoader;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,6 +10,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 public class PvpCommand extends BukkitCommand {
+
+    private configLoader configloader = new configLoader();
 
     public PvpCommand(String name) {
         super(name);
@@ -25,7 +28,7 @@ public class PvpCommand extends BukkitCommand {
             return true;
         }
         Player player = (Player) sender;
-        RPGPlayerData data = Rpgcore.instance.getDataByUUID(player.getUniqueId());
+        RPGPlayerData data = configloader.getDataByUUID(player.getUniqueId());
         if(args.length < 1) {
             if(data.getPvpState()) {
                 player.sendMessage("PVP IS ENABLED. USE /pvp off TO DISABLE");
@@ -41,11 +44,11 @@ public class PvpCommand extends BukkitCommand {
         }
         if(option.equalsIgnoreCase("on")) {
             data.setPvpState(true);
-            Rpgcore.instance.updatePlayerData(data);
+            configloader.updatePlayerData(data);
             sender.sendMessage(ChatColor.GREEN + "PVP TOGGLED ON.");
         } else if(option.equalsIgnoreCase("off")) {
             data.setPvpState(false);
-            Rpgcore.instance.updatePlayerData(data);
+            configloader.updatePlayerData(data);
             sender.sendMessage(ChatColor.GREEN + "PVP TOGGLED OFF.");
         } else {
             sender.sendMessage("please specify a valid option. Valid options are \"on\" or \"off.\"");

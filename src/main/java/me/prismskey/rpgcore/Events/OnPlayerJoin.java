@@ -1,6 +1,8 @@
 package me.prismskey.rpgcore.Events;
 
+import me.prismskey.rpgcore.ArenaManager.arenaLoader;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -9,6 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class OnPlayerJoin implements Listener {
+
+    private arenaLoader arenaloader = new arenaLoader();
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
@@ -18,11 +23,11 @@ public class OnPlayerJoin implements Listener {
 
     private void tryCreatePlayerProfile(Player player) {
         RPGPlayerData data = new RPGPlayerData(player.getUniqueId());
-        if(Rpgcore.instance.getPlayerData().contains(data)) {
+        if(shortTermStorages.playerData.contains(data)) {
             return;
         }
 
-        Rpgcore.instance.getPlayerData().add(data);
+        shortTermStorages.playerData.add(data);
         if(data.getPvpState()) {
             player.sendMessage(ChatColor.GREEN + "PVP IS ENABLED FOR YOU.");
         } else {
@@ -31,8 +36,8 @@ public class OnPlayerJoin implements Listener {
     }
 
     private void checkPlayerInDungeon(Player player) {
-        if(Rpgcore.instance.isWithinDungeon(player.getLocation())) {
-            player.teleport(Rpgcore.instance.getSpawn());
+        if(arenaloader.isWithinDungeon(player.getLocation())) {
+            player.teleport(shortTermStorages.spawn);
             player.sendMessage("Because you logged in inside a dungeon you have been teleported to spawn.");
         }
     }
