@@ -13,20 +13,11 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class arenaLoader {
-    boolean alreadyParsed = false;
-
-    public arenaLoader() {
-        if (!alreadyParsed) {
-            this.parseArenaConfig();
-        }
-
-    }
 
     private Rpgcore rpgcore = Rpgcore.getInstance();
 
 
     public void parseArenaConfig() {
-        alreadyParsed = true;
         for(String arenaName: shortTermStorages.getArenaConfig().getKeys(false)) {
             ConfigurationSection specificArenaSection = shortTermStorages.getArenaConfig().getConfigurationSection(arenaName);
             int arenaSpawnX = specificArenaSection.getInt("x");

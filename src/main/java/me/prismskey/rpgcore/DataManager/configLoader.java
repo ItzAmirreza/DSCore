@@ -14,9 +14,9 @@ import java.util.UUID;
 public class configLoader {
 
     public configLoader() {
-        this.loadArenaConfig();
-        this.loadPvpStatesConfig();
-        this.parseDefaultConfig();
+        //this.loadArenaConfig();
+        ///this.loadPvpStatesConfig();
+        //this.parseDefaultConfig();
     }
 
 
