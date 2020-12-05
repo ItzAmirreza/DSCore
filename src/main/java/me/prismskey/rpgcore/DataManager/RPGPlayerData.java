@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.DataManager;
 
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.Bukkit;
 
@@ -22,7 +23,7 @@ public class RPGPlayerData {
         lifeDrainCooldown = 0;
         deathsCallCooldown = 0;
 
-        pvpOn = Rpgcore.getInstance().getPvpStatesConfiguration().getBoolean(playerUUID.toString());
+        pvpOn = shortTermStorages.pvpStatesConfiguration.getBoolean(playerUUID.toString());
 
     }
 
