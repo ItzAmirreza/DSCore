@@ -21,7 +21,6 @@ public class arenaLoader {
 
     private Rpgcore rpgcore = Rpgcore.getInstance();
 
-
     public void parseArenaConfig() {
         for(String arenaName: shortTermStorages.getArenaConfig().getKeys(false)) {
             ConfigurationSection specificArenaSection = shortTermStorages.getArenaConfig().getConfigurationSection(arenaName);

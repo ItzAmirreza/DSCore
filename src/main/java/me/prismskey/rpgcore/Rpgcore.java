@@ -74,13 +74,11 @@ public final class Rpgcore extends JavaPlugin {
         enemySpecialsManager = new EnemySpecialsManager();
         saveDefaultConfig();
         configLoader configloader = new configLoader();
-        arenaLoader arenaloader = new arenaLoader();
-        arenaloader.parseArenaConfig();
         configloader.parseDefaultConfig();
         configloader.loadPvpStatesConfig();
         configloader.loadArenaConfig();
-
-
+        arenaLoader arenaloader = new arenaLoader();
+        arenaloader.parseArenaConfig();
 
 
         if(!setupEconomy()) {
