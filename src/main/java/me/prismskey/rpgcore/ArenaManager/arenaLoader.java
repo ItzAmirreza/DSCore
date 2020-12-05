@@ -14,6 +14,11 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class arenaLoader {
 
+
+    public arenaLoader() {
+
+    }
+
     private Rpgcore rpgcore = Rpgcore.getInstance();
 
 
