@@ -136,7 +136,7 @@
             <artifactId>mcMMO</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>${basedir}\src\lib\mcMMO-2.1.149-shaded.jar</systemPath>
+            <systemPath>E:/Desktop/mcMMO.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

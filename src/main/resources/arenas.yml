@@ -1,51 +1,26 @@
-sewers:
-  x: -22
-  y: 115
-  z: 171
-  world: world
-  region_name: test
-  phases:
-    phase1:
-      goal: killall
-      commands:
-        mob1:
-          type: spawn_prebuilt
-          prebuilt_type: iron_zombie
-          x: -7
-          y: 115
-          z: 172
-          world: world
-        mob2:
-          type: spawn_prebuilt
-          prebuilt_type: iron_zombie
-          x: -9
-          y: 115
-          z: 172
-          world: world
-        mob3:
-          type: command
-          command: heal keys9
-desert:
-  x: 4
-  y: 5
-  z: 6
-  world: world
-  region_name: test2
-  phases:
-    phase1:
-      goal: killall
-      commands:
-        mob1:
-          type: spawn_prebuilt
-          prebuilt_type: iron_zombie
-          x: 1
-          y: 1
-          z: 1
-          world: world
-        mob2:
-          type: spawn_prebuilt
-          prebuilt_type: iron_zombie
-          x: 1
-          y: 1
-          z: 1
-          world: world
+
+Arenas:
+  myarena:
+    min: 1
+    max: 1
+    spawnlocation: 213:1231:15414:world:1241:1424
+    phases:
+      starter:
+        region: myarena-1
+        mobs:
+          - ZOMBIE
+          - CREEPER
+          - SKELETON
+          - WITHER_SKELETON
+      mainphase:
+        region: myarena-main
+        mobs:
+          - BLAZE
+          - ENDERMAN
+
+
+
+
+
+
+

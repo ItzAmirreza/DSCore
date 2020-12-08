@@ -18,6 +18,7 @@ import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.DataManager.configLoader;
 import me.prismskey.rpgcore.Events.MobKilledInArenaEvent;
 import me.prismskey.rpgcore.Events.MobSpawnInArenaEvent;
+import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
 import me.prismskey.rpgcore.GeneralCommands.PvpCommand;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
@@ -70,7 +71,6 @@ public final class Rpgcore extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         enemySpecialsManager = new EnemySpecialsManager();
         saveDefaultConfig();
         configLoader configloader = new configLoader();
@@ -126,6 +126,7 @@ public final class Rpgcore extends JavaPlugin {
             bukkitCommandMap.setAccessible(true);
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
+            getServer().getPluginCommand("dscore").setExecutor(new DSCoreCommands());
             //commandMap.register("party", new PartyCommand("party"));
             commandMap.register("dungeon", new DungeonJoinCommand("dungeon"));
             commandMap.register("forceend", new ForceEndCommand("forceend"));
