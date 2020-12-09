@@ -2,6 +2,7 @@ package me.prismskey.rpgcore.GeneralCommands;
 
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.ArenaManager.ArenaLoader;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,17 +33,14 @@ public class DSCoreCommands implements CommandExecutor {
                 String mainarg = args[0].toLowerCase();
                 //dscore createarena name limit max
                 if (possibleArgs.contains(mainarg)) {
-                    //create arena
+
                     if (mainarg.equalsIgnoreCase("createarena") && argscount == 5) {
                         //createArena
-                        int min = Integer.parseInt(args[1]);
-                        int max = Integer.parseInt(args[2]);
-                        int maxtime = Integer.parseInt(args[3]);
-
-
+                        createArena(args, player);
 
                     } else if (mainarg.equalsIgnoreCase("removearena") && argscount == 2) {
-
+                        //removeArena
+                        removeArena(args, player);
 
                     } else if (mainarg.equalsIgnoreCase("addphase") && argscount == 5) {
 
@@ -101,8 +99,51 @@ public class DSCoreCommands implements CommandExecutor {
     }
 
 
+    private void createArena(String[] args, Player player) {
+        String arenaName = args[1].toLowerCase();
+        if (!(shortTermStorages.arenaHashMap.containsKey(arenaName))) {
+
+            int min = Integer.parseInt(args[2]);
+            int max = Integer.parseInt(args[3]);
+            int maxtime = Integer.parseInt(args[4]);
+
+            Arena newArena = new Arena(arenaName, min, max, maxtime);
+
+            shortTermStorages.arenas.add(newArena);
+            shortTermStorages.arenaHashMap.put(newArena.name, newArena);
+
+
+            //have to complete this section / reminded
+
+
+            player.sendMessage(Utils.color("&aArena" + " &e" + arenaName + " &aSuccessfully created! Now you can set it up."));
+
+
+        } else {
+
+            alreadyExists(player);
+
+        }
+
+    }
+
+
+    private void removeArena(String[] args, Player player) {
+
+
+
+    }
+
+
+
     private void notEnoughArgs(Player player) {
         player.sendMessage(Utils.color("&cNot enough argument provided."));
+    }
+
+    private void alreadyExists(Player player) {
+
+        player.sendMessage(Utils.color("&cThis object already exists"));
+
     }
 
 }
