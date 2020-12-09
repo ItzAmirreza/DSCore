@@ -1,6 +1,5 @@
 package me.prismskey.rpgcore.ArenaManager;
 
-import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
@@ -15,7 +14,7 @@ public class ForceEndCommand extends BukkitCommand {
         this.setAliases(new ArrayList<String>());
     }
 
-    private arenaLoader arenaloader = new arenaLoader();
+    private ArenaLoader arenaloader = new ArenaLoader();
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {

@@ -3,7 +3,6 @@ package me.prismskey.rpgcore.ArenaManager;
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.datatypes.party.Party;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
-import me.prismskey.rpgcore.Rpgcore;
 //import me.prismskey.rpgcore.party.Party;
 import me.prismskey.rpgcore.PartySystem.DungeonParty;
 import org.bukkit.command.CommandSender;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 
 public class DungeonJoinCommand extends BukkitCommand {
 
-    private arenaLoader arenaloader = new arenaLoader();
+    private ArenaLoader arenaloader = new ArenaLoader();
 
     public DungeonJoinCommand(String name) {
         super(name);

@@ -1,7 +1,6 @@
 package me.prismskey.rpgcore.Events;
 
-import me.prismskey.rpgcore.ArenaManager.arenaLoader;
-import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.ArenaManager.ArenaLoader;
 import org.bukkit.Material;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Slime;
@@ -19,7 +18,7 @@ public class OnSlimeSplit implements Listener {
         rand = new Random();
     }
 
-    private arenaLoader arenaloader = new arenaLoader();
+    private ArenaLoader arenaloader = new ArenaLoader();
 
     @EventHandler
     public void onSlimeSplit(SlimeSplitEvent event) {

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class shortTermStorages {
@@ -16,6 +17,8 @@ public class shortTermStorages {
     public static ArrayList<RPGPlayerData> playerData = new ArrayList<>();
 
     public static ArrayList<Arena> arenas = new ArrayList<>(); //loaded arenas + arena can be loaded but not ready
+
+    public static HashMap<String, Arena> arenaHashMap = new HashMap<>();
 
     public static File arenasFile;
 

@@ -2,19 +2,9 @@ package me.prismskey.rpgcore;
 
 
 import com.gmail.nossr50.mcMMO;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldguard.WorldGuard;
-
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
-import com.sk89q.worldguard.protection.regions.RegionQuery;
 
 
-import de.tr7zw.nbtapi.NBTItem;
 import me.prismskey.rpgcore.ArenaManager.*;
-import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.DataManager.configLoader;
 import me.prismskey.rpgcore.Events.MobKilledInArenaEvent;
 import me.prismskey.rpgcore.Events.MobSpawnInArenaEvent;
@@ -30,30 +20,12 @@ import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.v1_16_R3.NBTTagList;
 import org.bukkit.*;
 
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.command.CommandMap;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
-import org.bukkit.entity.Entity;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.UUID;
 
 public final class Rpgcore extends JavaPlugin {
 
@@ -77,8 +49,8 @@ public final class Rpgcore extends JavaPlugin {
         configloader.parseDefaultConfig();
         configloader.loadPvpStatesConfig();
         configloader.loadArenaConfig();
-        arenaLoader arenaloader = new arenaLoader();
-        arenaloader.parseArenaConfig();
+        ArenaLoader arenaloader = new ArenaLoader();
+        arenaloader.loadArenas();
 
 
         if(!setupEconomy()) {

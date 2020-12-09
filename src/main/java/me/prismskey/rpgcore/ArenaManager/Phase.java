@@ -12,13 +12,15 @@ public class Phase {
     public final String region;
     public List<Entity> mobs = new ArrayList<>();
     public List<Player> playersInPhase = new ArrayList<>();
+    public int mobSpawnRange;
 
 
 
-    public Phase(String name, String region) {
+    public Phase(String name, String region, int mobSpawnRange) {
 
         this.name = name;
         this.region = region;
+        this.mobSpawnRange = mobSpawnRange;
 
     }
 

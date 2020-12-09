@@ -1,11 +1,9 @@
 package me.prismskey.rpgcore.Events;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.prismskey.rpgcore.ArenaManager.arenaLoader;
 import me.prismskey.rpgcore.DataManager.configLoader;
 import me.prismskey.rpgcore.Enums.CooldownTimes;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
-import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.VFireworks.InstantFirework;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;

@@ -74,10 +74,16 @@ public class Arena {
     public boolean checkIfArenaIsReady() {
 
         if (spawnLocation != null && phases.size() != 0) {
+            this.arenaState = ArenaState.AVAILABLE;
             return true;
         } else {
+            this.arenaState = ArenaState.NOTREADY;
             return false;
         }
+    }
+
+    public void setPhasesList(List<Phase> phases) {
+        this.phases = phases;
     }
 
 

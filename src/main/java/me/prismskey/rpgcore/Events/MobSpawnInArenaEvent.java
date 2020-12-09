@@ -1,7 +1,6 @@
 package me.prismskey.rpgcore.Events;
 
-import me.prismskey.rpgcore.ArenaManager.arenaLoader;
-import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.ArenaManager.ArenaLoader;
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,7 +11,7 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 
 public class MobSpawnInArenaEvent implements Listener {
 
-    private arenaLoader arenaloader = new arenaLoader();
+    private ArenaLoader arenaloader = new ArenaLoader();
     @EventHandler
     public void onMobSpawn(EntitySpawnEvent event) {
         Entity entity = event.getEntity();

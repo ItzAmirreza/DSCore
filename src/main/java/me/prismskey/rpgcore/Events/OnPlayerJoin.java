@@ -1,9 +1,8 @@
 package me.prismskey.rpgcore.Events;
 
-import me.prismskey.rpgcore.ArenaManager.arenaLoader;
+import me.prismskey.rpgcore.ArenaManager.ArenaLoader;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
-import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 public class OnPlayerJoin implements Listener {
 
-    private arenaLoader arenaloader = new arenaLoader();
+    private ArenaLoader arenaloader = new ArenaLoader();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
