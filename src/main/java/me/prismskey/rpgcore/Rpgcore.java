@@ -5,7 +5,7 @@ import com.gmail.nossr50.mcMMO;
 
 
 import me.prismskey.rpgcore.ArenaManager.*;
-import me.prismskey.rpgcore.DataManager.configLoader;
+import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.Events.MobKilledInArenaEvent;
 import me.prismskey.rpgcore.Events.MobSpawnInArenaEvent;
 import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
@@ -45,7 +45,7 @@ public final class Rpgcore extends JavaPlugin {
         instance = this;
         enemySpecialsManager = new EnemySpecialsManager();
         saveDefaultConfig();
-        configLoader configloader = new configLoader();
+        ConfigLoader configloader = new ConfigLoader();
         configloader.parseDefaultConfig();
         configloader.loadPvpStatesConfig();
         configloader.loadArenaConfig();

@@ -1,7 +1,6 @@
 package me.prismskey.rpgcore.GeneralCommands;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
-import me.prismskey.rpgcore.DataManager.configLoader;
-import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 
 public class PvpCommand extends BukkitCommand {
 
-    private configLoader configloader = new configLoader();
+    private ConfigLoader configloader = new ConfigLoader();
 
     public PvpCommand(String name) {
         super(name);

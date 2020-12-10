@@ -1,7 +1,7 @@
 package me.prismskey.rpgcore.Events;
 
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
-import me.prismskey.rpgcore.DataManager.configLoader;
+import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class OnPlayerQuit implements Listener {
 
 
-    public configLoader configloader = new configLoader();
+    public ConfigLoader configloader = new ConfigLoader();
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {

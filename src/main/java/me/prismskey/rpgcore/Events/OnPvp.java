@@ -1,8 +1,7 @@
 package me.prismskey.rpgcore.Events;
 
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
-import me.prismskey.rpgcore.DataManager.configLoader;
-import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class OnPvp implements Listener {
 
-    private configLoader configloader = new configLoader();
+    private ConfigLoader configloader = new ConfigLoader();
 
     @EventHandler
     public void onPvp(EntityDamageByEntityEvent event) {

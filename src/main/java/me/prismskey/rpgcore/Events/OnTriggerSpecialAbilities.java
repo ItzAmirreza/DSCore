@@ -1,7 +1,7 @@
 package me.prismskey.rpgcore.Events;
 
 import de.tr7zw.nbtapi.NBTItem;
-import me.prismskey.rpgcore.DataManager.configLoader;
+import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.Enums.CooldownTimes;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.VFireworks.InstantFirework;
@@ -19,7 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class OnTriggerSpecialAbilities implements Listener {
-    private configLoader configloader = new configLoader();
+    private ConfigLoader configloader = new ConfigLoader();
     @EventHandler
     public void onTriggerSpecialAttackInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
