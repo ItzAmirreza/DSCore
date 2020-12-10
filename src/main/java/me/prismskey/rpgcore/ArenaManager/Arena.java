@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Arena {
@@ -15,7 +16,7 @@ public class Arena {
     public int max;
     public int maxTime;
     public ArenaState arenaState;
-    public List<Phase> phases = new ArrayList<>();
+    public HashMap<String, Phase> phases = new HashMap<>();
     public List<Player> players = new ArrayList<>();
     public Location spawnLocation;
     public int passedTime = 0;
@@ -38,7 +39,7 @@ public class Arena {
     }
 
     public void addPhase(Phase phase) {
-        this.phases.add(phase);
+        this.phases.put(phase.name, phase);
     }
     public void removePhase(Phase phase) {
         this.phases.remove(phase);
@@ -82,10 +83,11 @@ public class Arena {
         }
     }
 
-    public void setPhasesList(List<Phase> phases) {
-        this.phases = phases;
-    }
+    public void setPhasesMap(HashMap<String, Phase> phasesMap) {
 
+        this.phases = phasesMap;
+
+    }
 
 
 

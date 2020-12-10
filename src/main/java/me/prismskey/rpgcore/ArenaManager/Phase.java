@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.ArenaManager;
 
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import javax.swing.text.html.parser.Entity;
@@ -10,7 +11,7 @@ public class Phase {
 
     public final String name;
     public final String region;
-    public List<Entity> mobs = new ArrayList<>();
+    public List<EntityType> mobs = new ArrayList<>();
     public List<Player> playersInPhase = new ArrayList<>();
     public int mobSpawnRange;
 
@@ -26,11 +27,11 @@ public class Phase {
 
 
 
-    public void addMob(Entity entity) {
+    public void addMob(EntityType entity) {
         mobs.add(entity);
     }
 
-    public void removeMob(Entity entity) {
+    public void removeMob(EntityType entity) {
         mobs.remove(entity);
     }
 
@@ -45,6 +46,8 @@ public class Phase {
     public void resetPlayers() {
         playersInPhase.clear();
     }
+
+
 
 
 

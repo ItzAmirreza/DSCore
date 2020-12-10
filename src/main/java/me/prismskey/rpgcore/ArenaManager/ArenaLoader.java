@@ -14,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ArenaLoader {
@@ -34,7 +35,7 @@ public class ArenaLoader {
             int maxTime = config.getInt(key + ".maxtime"); //minutes
             Arena newArena = new Arena(arenaname.toLowerCase(), min, max, maxTime);
             String spawnLocation = config.getString(key + ".spawnlocation", "null");
-            List<Phase> phases = new ArrayList<>();
+            HashMap<String, Phase> phases = new HashMap<>();
             boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
             if (ifConfigurationS) {
                 ConfigurationSection phaseSection = config.getConfigurationSection(key + ".phases");
@@ -45,13 +46,13 @@ public class ArenaLoader {
                     int mobSpawnRange = config.getInt(key + ".phases." + phase + ".spawnrange");
 
                     Phase newPhase = new Phase(phaseName, regionName, mobSpawnRange);
-                    phases.add(newPhase);
+                    phases.put(newPhase.name, newPhase);
 
                 });
 
             }
 
-            newArena.setPhasesList(phases);
+            newArena.setPhasesMap(phases);
             newArena.checkIfArenaIsReady();
             shortTermStorages.arenas.add(newArena);
 

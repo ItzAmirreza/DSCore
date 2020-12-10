@@ -1,6 +1,7 @@
 package me.prismskey.rpgcore.Maps;
 
 import me.prismskey.rpgcore.ArenaManager.Arena;
+import me.prismskey.rpgcore.ArenaManager.Phase;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -18,7 +19,9 @@ public class shortTermStorages {
 
     public static ArrayList<Arena> arenas = new ArrayList<>(); //loaded arenas + arena can be loaded but not ready
 
-    public static HashMap<String, Arena> arenaHashMap = new HashMap<>();
+    public static HashMap<String, Arena> arenaHashMap = new HashMap<>(); //same ^
+
+    public static HashMap<Arena, List<Phase>> arenaPhasesHashMap = new HashMap<>();
 
     public static File arenasFile;
 
