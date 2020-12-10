@@ -1,7 +1,9 @@
 package me.prismskey.rpgcore.ArenaManager;
 
 import me.prismskey.rpgcore.Enums.ArenaState;
+import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -87,6 +89,63 @@ public class Arena {
 
         this.phases = phasesMap;
 
+    }
+
+    private int taskid;
+
+    public void startMatch() {
+        this.arenaState = ArenaState.INGAME;
+
+        this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
+            int countdown = 10;
+            HashMap<String, Float> levels = new HashMap<>();
+            @Override
+            public void run() {
+
+                if (countdown == 0) {
+
+                    for (Player player : players) {
+
+                        player.teleport(spawnLocation);
+                        player.setExp(levels.get(player.getName()));
+                        player.sendTitle(Utils.color("&6&l" + name), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3, 5, 1);
+                    }
+
+
+                    startTimer();
+
+                } else {
+                    if (countdown == 10) {
+                        for (Player player : players) {
+                            levels.put(player.getName(), player.getExp());
+                        }
+                    }
+                    for (Player player : players) {
+
+                        player.sendMessage(Utils.color("&7You will be teleported to dungeon in &6" + countdown + " &7second(s)."));
+                        player.setLevel(countdown);
+                        countdown = countdown - 1;
+
+                    }
+                }
+
+
+            }
+        }, 0, 20);
+    }
+
+
+    public void startTimer() {
+        Bukkit.getScheduler().cancelTask(this.taskid);
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                if (arenaState == ArenaState.INGAME){
+                    setPassedTime(passedTime + 1);
+                }
+
+            }
+        }, 0, 20);
     }
 
 

@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +36,9 @@ public class ArenaLoader {
             int maxTime = config.getInt(key + ".maxtime"); //minutes
             Arena newArena = new Arena(arenaname.toLowerCase(), min, max, maxTime);
             String spawnLocation = config.getString(key + ".spawnlocation", "null");
+            if (!spawnLocation.equalsIgnoreCase("null")) {
+                newArena.setSpawnLocation(spawnLocation);
+            }
             HashMap<String, Phase> phases = new HashMap<>();
             boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
             if (ifConfigurationS) {
@@ -44,8 +48,17 @@ public class ArenaLoader {
                     String phaseName = phase;
                     String regionName = config.getString(key + ".phases." + phase + ".region");
                     int mobSpawnRange = config.getInt(key + ".phases." + phase + ".spawnrange");
-
                     Phase newPhase = new Phase(phaseName, regionName, mobSpawnRange);
+                    boolean mobsList = config.isList(key + ".phases." + phase + ".mobs");
+                    if (mobsList) {
+                        List<String> mobs = config.getStringList(key + ".phases." + phase + ".mobs");
+                        for (String thatmob : mobs) {
+                            String[] devide = thatmob.split(":");
+                            newPhase.mobs.add(EntityType.valueOf(devide[0].toUpperCase()));
+                        }
+
+                    }
+
                     phases.put(newPhase.name, newPhase);
 
                 });
