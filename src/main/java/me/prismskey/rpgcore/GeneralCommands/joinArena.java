@@ -25,7 +25,9 @@ public class joinArena implements CommandExecutor {
 
                     if (thatArena.arenaState == ArenaState.AVAILABLE) {
 
-                        addPlayerToArena(thatArena, player);
+                        thatArena.addPlayer(player);
+                        shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
+                        thatArena.startMatch();
 
                     } else{
                         player.sendMessage(Utils.color("&cThis arena is not available right now."));
@@ -46,13 +48,6 @@ public class joinArena implements CommandExecutor {
         return false;
     }
 
-    public void addPlayerToArena(Arena arena, Player player) {
-
-        arena.addPlayer(player);
-
-
-
-    }
 
 
 

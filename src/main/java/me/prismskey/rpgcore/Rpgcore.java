@@ -9,9 +9,9 @@ import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.Events.MobKilledInArenaEvent;
 import me.prismskey.rpgcore.Events.MobSpawnInArenaEvent;
 import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
-import me.prismskey.rpgcore.GeneralCommands.PvpCommand;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
+import me.prismskey.rpgcore.GeneralCommands.joinArena;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
 import me.prismskey.rpgcore.Recipes.*;
@@ -99,10 +99,8 @@ public final class Rpgcore extends JavaPlugin {
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
             getServer().getPluginCommand("dscore").setExecutor(new DSCoreCommands());
-            //commandMap.register("party", new PartyCommand("party"));
-            commandMap.register("dungeon", new DungeonJoinCommand("dungeon"));
-            commandMap.register("forceend", new ForceEndCommand("forceend"));
-            commandMap.register("pvp", new PvpCommand("pvp"));
+            getServer().getPluginCommand("join").setExecutor(new joinArena());
+
         } catch(Exception e) {
             e.printStackTrace();
         }

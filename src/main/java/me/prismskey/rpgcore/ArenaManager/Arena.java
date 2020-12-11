@@ -6,6 +6,7 @@ import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,15 +138,25 @@ public class Arena {
 
     public void startTimer() {
         Bukkit.getScheduler().cancelTask(this.taskid);
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
+        this.taskid = Bukkit.getScheduler().scheduleAsyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
                 if (arenaState == ArenaState.INGAME){
                     setPassedTime(passedTime + 1);
+                    if (passedTime/60 >= maxTime) {
+                        finishArena();
+                    }
                 }
 
             }
         }, 0, 20);
+    }
+
+
+    public void finishArena() {
+        Bukkit.getScheduler().cancelTask(taskid);
+        //will finish next
+
     }
 
 
