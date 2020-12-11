@@ -5,7 +5,6 @@ import com.gmail.nossr50.datatypes.party.Party;
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.ArenaManager.ArenaLoader;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
-import me.prismskey.rpgcore.PartySystem.DungeonParty;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

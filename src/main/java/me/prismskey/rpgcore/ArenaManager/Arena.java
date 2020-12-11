@@ -5,6 +5,8 @@ import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -23,6 +25,8 @@ public class Arena {
     public List<Player> players = new ArrayList<>();
     public Location spawnLocation;
     public int passedTime = 0;
+    private HashMap<String, Location> previousLocations = new HashMap<>();
+    public List<Entity> allMobsInArena = new ArrayList<>();
 
 
     public Arena(String name, int min, int max, int maxTime) {
@@ -68,7 +72,19 @@ public class Arena {
     public void resetArenaStats() {
         this.arenaState = ArenaState.RESETTING;
         this.players.clear();
+        this.previousLocations.clear();
         this.passedTime = 0;
+        for (Entity mob : allMobsInArena) { //removing remaining mobs
+            if (!mob.isDead()) {
+                mob.remove();
+            }
+
+        }
+        for (Phase phase : phases.values()) { //removing players from phases
+            phase.resetPlayers();
+        }
+
+        this.arenaState = ArenaState.AVAILABLE;
     }
 
     public void setPassedTime(int passedTime) {
@@ -96,6 +112,10 @@ public class Arena {
 
     public void startMatch() {
         this.arenaState = ArenaState.INGAME;
+
+        for (Player player : players) { // getting previous locations to teleport them after they finished/left the dungeon
+            previousLocations.put(player.getName(), player.getLocation());
+        }
 
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             int countdown = 10;
@@ -155,7 +175,12 @@ public class Arena {
 
     public void finishArena() {
         Bukkit.getScheduler().cancelTask(taskid);
+        for (Player player : players) {
+            player.teleport(previousLocations.get(player.getName()));
+        }
         //will finish next
+        resetArenaStats();
+
 
     }
 

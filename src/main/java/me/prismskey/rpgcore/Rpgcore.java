@@ -1,6 +1,7 @@
 package me.prismskey.rpgcore;
 
 
+import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.mcMMO;
 
 
