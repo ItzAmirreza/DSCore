@@ -138,5 +138,11 @@
             <version>1.0</version>
             <systemPath>${basedir}\src\main\resources\mcMMO.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>net.raidstone</groupId>
+            <artifactId>WorldGuardEvents</artifactId>
+            <version>1.15.2</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

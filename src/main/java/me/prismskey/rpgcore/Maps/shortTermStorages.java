@@ -39,7 +39,7 @@ public class shortTermStorages {
         return arenasConfiguration;
     }
 
-    public static List<String> playersInMatch = new ArrayList<>();
+    public static HashMap<String, String> playersInMatch = new HashMap<>(); //player name , arena name
 
 
 

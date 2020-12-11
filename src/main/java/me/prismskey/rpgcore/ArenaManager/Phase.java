@@ -1,25 +1,30 @@
 package me.prismskey.rpgcore.ArenaManager;
 
+import me.prismskey.rpgcore.Enums.PhaseState;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Phase {
 
-    public final String name;
-    public final String region;
+    public String name;
+    public String region;
+    public String arena; //not really reliable
     public List<EntityType> mobs = new ArrayList<>();
     public List<Player> playersInPhase = new ArrayList<>();
     public int mobSpawnRange;
+    public PhaseState state = PhaseState.LOCKED;
+    public List<Entity> spawnedEntities = new ArrayList<>();
 
 
 
-    public Phase(String name, String region, int mobSpawnRange) {
+    public Phase(String name, String arena, String region, int mobSpawnRange) {
 
         this.name = name;
+        this.arena = arena.toLowerCase();
         this.region = region;
         this.mobSpawnRange = mobSpawnRange;
 
@@ -43,8 +48,10 @@ public class Phase {
         playersInPhase.remove(player);
     }
 
-    public void resetPlayers() {
+    public void resetPhase() {
         playersInPhase.clear();
+        this.spawnedEntities.clear();
+
     }
 
 

@@ -1,15 +1,15 @@
 package me.prismskey.rpgcore.ArenaManager;
 
 import me.prismskey.rpgcore.Enums.ArenaState;
+import me.prismskey.rpgcore.Enums.PhaseState;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +27,10 @@ public class Arena {
     public int passedTime = 0;
     private HashMap<String, Location> previousLocations = new HashMap<>();
     public List<Entity> allMobsInArena = new ArrayList<>();
-
-
+    public HashMap<String, String> playerPhaseLocation = new HashMap<>();
+    public List<String> listOfFinishedPhases = new ArrayList<>();
+    public String latestPhase;
+    public Phase firstPhase;
     public Arena(String name, int min, int max, int maxTime) {
         this.name = name;
         this.min = min;
@@ -73,15 +75,20 @@ public class Arena {
         this.arenaState = ArenaState.RESETTING;
         this.players.clear();
         this.previousLocations.clear();
+        this.playerPhaseLocation.clear();
+        this.listOfFinishedPhases.clear();
         this.passedTime = 0;
         for (Entity mob : allMobsInArena) { //removing remaining mobs
             if (!mob.isDead()) {
                 mob.remove();
+
             }
 
         }
+        allMobsInArena.clear();
+
         for (Phase phase : phases.values()) { //removing players from phases
-            phase.resetPlayers();
+            phase.resetPhase();
         }
 
         this.arenaState = ArenaState.AVAILABLE;
@@ -115,7 +122,16 @@ public class Arena {
 
         for (Player player : players) { // getting previous locations to teleport them after they finished/left the dungeon
             previousLocations.put(player.getName(), player.getLocation());
+            shortTermStorages.playersInMatch.put(player.getName(), name);
         }
+
+        for (Phase phase: phases.values()) {
+            this.firstPhase = phase;
+            break;
+        }
+
+        this.firstPhase.state = PhaseState.INGAME;
+
 
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             int countdown = 10;
@@ -158,7 +174,7 @@ public class Arena {
 
     public void startTimer() {
         Bukkit.getScheduler().cancelTask(this.taskid);
-        this.taskid = Bukkit.getScheduler().scheduleAsyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
+        this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
                 if (arenaState == ArenaState.INGAME){
@@ -166,6 +182,12 @@ public class Arena {
                     if (passedTime/60 >= maxTime) {
                         finishArena();
                     }
+                }
+
+                if (maxTime%(passedTime/60) == 0) {
+
+                    announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
+
                 }
 
             }
@@ -177,12 +199,21 @@ public class Arena {
         Bukkit.getScheduler().cancelTask(taskid);
         for (Player player : players) {
             player.teleport(previousLocations.get(player.getName()));
+            shortTermStorages.playersInMatch.remove(player.getName());
         }
         //will finish next
         resetArenaStats();
 
 
     }
+
+
+    private void announceToAllPlayers(String str) {
+        for (Player player : players) {
+            player.sendMessage(Utils.color(str));
+        }
+    }
+
 
 
 

@@ -7,8 +7,6 @@ import com.gmail.nossr50.mcMMO;
 
 import me.prismskey.rpgcore.ArenaManager.*;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
-import me.prismskey.rpgcore.Events.MobKilledInArenaEvent;
-import me.prismskey.rpgcore.Events.MobSpawnInArenaEvent;
 import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
@@ -18,11 +16,9 @@ import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
 import me.prismskey.rpgcore.Recipes.*;
 import me.prismskey.rpgcore.Tasks.cooldownCheckTask;
 import net.milkbowl.vault.economy.Economy;
-import net.minecraft.server.v1_16_R3.NBTTagList;
 import org.bukkit.*;
 
 import org.bukkit.command.CommandMap;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftEntity;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -108,17 +104,11 @@ public final class Rpgcore extends JavaPlugin {
     }
 
     public void registerEvents() {
-        getServer().getPluginManager().registerEvents(new MobSpawnInArenaEvent(), this);
-        getServer().getPluginManager().registerEvents(new MobKilledInArenaEvent(), this);
-        getServer().getPluginManager().registerEvents(new OnSlimeSplit(), this);
-        getServer().getPluginManager().registerEvents(new OnCommandPreProcess(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
         getServer().getPluginManager().registerEvents(new OnChunkPopulate(), this);
         getServer().getPluginManager().registerEvents(new onCustomItemDegradeOrMend(), this);
         getServer().getPluginManager().registerEvents(new ExtraAnvilRecipes(), this);
         getServer().getPluginManager().registerEvents(new DisableCraftGridRepair(), this);
         getServer().getPluginManager().registerEvents(new OnTriggerSpecialAbilities(), this);
-        getServer().getPluginManager().registerEvents(new OnPlayerQuit(), this);
         getServer().getPluginManager().registerEvents(new OnPvp(), this);
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
     }

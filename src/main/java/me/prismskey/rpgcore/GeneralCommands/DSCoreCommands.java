@@ -238,14 +238,14 @@ public class DSCoreCommands implements CommandExecutor {
         ///dscore addphase (phase name) (arena name) (region name) (mob spawning range)
         String phaseName = args[1].toLowerCase();
         String arenaName = args[2].toLowerCase();
-        String regionName = args[3];
+        String regionName = args[3].toLowerCase();
         int mobRange = Integer.parseInt(args[4]);
 
         if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
             Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
             if (!checkIfPhaseExists(thatArena.phases, phaseName)) {
 
-                Phase newPhase = new Phase(phaseName, regionName, mobRange);
+                Phase newPhase = new Phase(phaseName, arenaName, regionName, mobRange);
                 thatArena.phases.put(phaseName, newPhase);
                 shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
                 File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
@@ -363,7 +363,7 @@ public class DSCoreCommands implements CommandExecutor {
                 Phase thatPhase = thatArena.phases.get(phaseName);
                 if (thatPhase.mobs.contains(EntityType.valueOf(mob.toUpperCase()))) {
 
-                    thatPhase.mobs.remove(EntityType.valueOf(mob.toUpperCase()));
+                    thatPhase.removeMob(EntityType.valueOf(mob.toUpperCase()));
                     thatArena.phases.replace(thatPhase.name, thatPhase);
                     shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
                     File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");

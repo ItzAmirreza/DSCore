@@ -48,7 +48,7 @@ public class ArenaLoader {
                     String phaseName = phase;
                     String regionName = config.getString(key + ".phases." + phase + ".region");
                     int mobSpawnRange = config.getInt(key + ".phases." + phase + ".spawnrange");
-                    Phase newPhase = new Phase(phaseName, regionName, mobSpawnRange);
+                    Phase newPhase = new Phase(phaseName, arenaname, regionName, mobSpawnRange);
                     boolean mobsList = config.isList(key + ".phases." + phase + ".mobs");
                     if (mobsList) {
                         List<String> mobs = config.getStringList(key + ".phases." + phase + ".mobs");
@@ -72,9 +72,6 @@ public class ArenaLoader {
         });
     }
 
-    public void loadNewArena() {
-
-    }
 
 
 }
