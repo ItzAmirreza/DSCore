@@ -89,18 +89,9 @@ public final class Rpgcore extends JavaPlugin {
     }
 
     public void registerCommands() {
-        try {
-            final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+        getServer().getPluginCommand("dscore").setExecutor(new DSCoreCommands());
+        getServer().getPluginCommand("join").setExecutor(new joinArena());
 
-            bukkitCommandMap.setAccessible(true);
-            CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-
-            getServer().getPluginCommand("dscore").setExecutor(new DSCoreCommands());
-            getServer().getPluginCommand("join").setExecutor(new joinArena());
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void registerEvents() {
