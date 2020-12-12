@@ -5,3 +5,9 @@ api-version: 1.16
 authors: [prismskey]
 description: RPG Core for custom RPG server
 depend: [WorldGuard, mcMMO, Vault, NBTAPI]
+commands:
+  dscore:
+    description: admin-commands
+    permission: dscore.admin
+  join:
+    description: joining an arena
