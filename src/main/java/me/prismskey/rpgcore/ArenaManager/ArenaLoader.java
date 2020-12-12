@@ -28,7 +28,7 @@ public class ArenaLoader {
     private Rpgcore rpgcore = Rpgcore.getInstance();
 
     public void loadArenas() {
-        ConfigurationSection config = shortTermStorages.arenasConfiguration.getConfigurationSection("Arenas");
+        ConfigurationSection config = shortTermStorages.arenasConfiguration.getConfigurationSection("arenas");
         config.getKeys(false).forEach(key -> {
             String arenaname = key;
             int min = config.getInt(key + ".min");
