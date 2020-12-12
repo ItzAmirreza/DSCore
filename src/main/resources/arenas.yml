@@ -11,32 +11,12 @@ arenas:
         mobs:
           - ZOMBIE:vanilla
           - CREEPER:vanilla
-          - SKELETON:vanilla
-          - WITHER_SKELETON:vanilla
       mainphase:
         region: myarena-main
         spawnrange: 20
         mobs:
           - BLAZE:vanilla
           - ENDERMAN:vanilla
-          - DRAGONIC_PHANTOM:special
-  secondarena:
-    min: 2
-    max: 5
-    maxtime: 20
-    phases:
-      warmup:
-        region: secondarena-1
-        spawnrange: 5
-        mobs:
-          - ZOMBIE:vanilla
-          - WITHER_SKELETON:vanilla
-      warmup2:
-        region: secondarena-2
-        spawnrange: 8
-        mobs:
-          - SILVERFISH:vanilla
-          - ZOMBIE:vanilla
 
 
 
