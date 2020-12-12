@@ -51,7 +51,7 @@ public class joinArena implements CommandExecutor {
                                 }
 
                                 shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
-                                thatArena.startMatch();
+                                shortTermStorages.arenaHashMap.get(thatArena.name).startMatch();
 
                             } else {
 

@@ -6,6 +6,7 @@ import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -123,6 +124,7 @@ public class Arena {
         for (Player player : players) { // getting previous locations to teleport them after they finished/left the dungeon
             previousLocations.put(player.getName(), player.getLocation());
             shortTermStorages.playersInMatch.put(player.getName(), name);
+            player.setGameMode(GameMode.SURVIVAL);
         }
 
         for (Phase phase: phases.values()) {
@@ -142,7 +144,6 @@ public class Arena {
                 if (countdown == 0) {
 
                     for (Player player : players) {
-
                         player.teleport(spawnLocation);
                         player.setExp(levels.get(player.getName()));
                         player.sendTitle(Utils.color("&6&l" + name), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3, 5, 1);

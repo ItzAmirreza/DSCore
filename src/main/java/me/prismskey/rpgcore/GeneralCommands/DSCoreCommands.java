@@ -219,6 +219,9 @@ public class DSCoreCommands implements CommandExecutor {
         String arenaName = args[1].toLowerCase();
         if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
 
+            shortTermStorages.arenaHashMap.get(arenaName).setSpawnLocation(player.getLocation());
+
+
             File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
             FileConfiguration arenasconfig = new YamlConfiguration();
             arenasconfig.load(arenasfile);
