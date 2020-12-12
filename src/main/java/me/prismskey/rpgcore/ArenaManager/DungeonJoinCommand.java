@@ -9,9 +9,10 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-
+/*
 public class DungeonJoinCommand extends BukkitCommand {
 
+    /*
     private ArenaLoader arenaloader = new ArenaLoader();
 
     public DungeonJoinCommand(String name) {
@@ -152,4 +153,7 @@ public class DungeonJoinCommand extends BukkitCommand {
 
         return true;
     }
-}
+    }
+ */
+
+

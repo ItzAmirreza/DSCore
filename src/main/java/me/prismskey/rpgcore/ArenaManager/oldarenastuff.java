@@ -19,6 +19,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 
 public class oldarenastuff {
+    /*
+
 
     private ArrayList<ItemStack> getIronZombieDrops() {
         ArrayList<ItemStack> items = new ArrayList<>();
@@ -64,6 +66,7 @@ public class oldarenastuff {
             return;
         }*/
         //Even though the mob was killed inside the arena the funtion is stored in this class.
+    /**
         handleCustomMobDrops(e);
         PersistentDataContainer container = e.getPersistentDataContainer();
         String type = container.get(new NamespacedKey(Rpgcore.instance, "mobType"), PersistentDataType.STRING);
@@ -467,7 +470,7 @@ public class oldarenastuff {
         /*if(Rpgcore.hasMobNBT(entity, "fire")) {
             Rpgcore.instance.getLogger().info("firrrrreeee");
         }*/
-
+    /**
         ArenaPhase currentPhase = phases.get(currentPhaseIndex);
 
         if (currentPhase instanceof KillAllPhase) {
@@ -477,4 +480,7 @@ public class oldarenastuff {
         }
     }
 
+
+}
+*/
 }

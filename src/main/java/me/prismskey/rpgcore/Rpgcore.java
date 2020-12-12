@@ -105,6 +105,8 @@ public final class Rpgcore extends JavaPlugin {
 
     public void registerEvents() {
         getServer().getPluginManager().registerEvents(new OnChunkPopulate(), this);
+        getServer().getPluginManager().registerEvents(new RegionEnterEvent(), this);
+        getServer().getPluginManager().registerEvents(new RegionQuitEvent(), this);
         getServer().getPluginManager().registerEvents(new onCustomItemDegradeOrMend(), this);
         getServer().getPluginManager().registerEvents(new ExtraAnvilRecipes(), this);
         getServer().getPluginManager().registerEvents(new DisableCraftGridRepair(), this);

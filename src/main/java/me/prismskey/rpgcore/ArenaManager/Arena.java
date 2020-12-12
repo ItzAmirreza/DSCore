@@ -201,6 +201,8 @@ public class Arena {
             player.teleport(previousLocations.get(player.getName()));
             shortTermStorages.playersInMatch.remove(player.getName());
         }
+
+        announceToAllPlayers("&eDungeon ended.");
         //will finish next
         resetArenaStats();
 
