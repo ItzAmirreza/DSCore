@@ -25,12 +25,12 @@ public class Arena {
     public HashMap<String, Phase> phases = new HashMap<>();
     public List<Player> players = new ArrayList<>();
     public Location spawnLocation;
-    public int passedTime = 0;
+    public int passedTime = 1;
     private HashMap<String, Location> previousLocations = new HashMap<>();
     public List<Entity> allMobsInArena = new ArrayList<>();
-    public HashMap<String, String> playerPhaseLocation = new HashMap<>();
+    public HashMap<String, Location> playerPhaseLocation = new HashMap<>();
     public List<String> listOfFinishedPhases = new ArrayList<>();
-    public String latestPhase;
+    public Phase currentPhase;
     public Phase firstPhase;
     public Arena(String name, int min, int max, int maxTime) {
         this.name = name;
@@ -100,14 +100,20 @@ public class Arena {
     }
 
     public boolean checkIfArenaIsReady() {
+        boolean ready = true;
 
-        if (spawnLocation != null && phases.size() != 0) {
+        if (spawnLocation == null || phases.size() == 0) {
+            ready = false;
+        }
+
+
+        if (ready) {
             this.arenaState = ArenaState.AVAILABLE;
-            return true;
         } else {
             this.arenaState = ArenaState.NOTREADY;
-            return false;
         }
+
+        return ready;
     }
 
     public void setPhasesMap(HashMap<String, Phase> phasesMap) {
@@ -129,6 +135,7 @@ public class Arena {
 
         for (Phase phase: phases.values()) {
             this.firstPhase = phase;
+            this.currentPhase = phase;
             break;
         }
 
@@ -146,7 +153,7 @@ public class Arena {
                     for (Player player : players) {
                         player.teleport(spawnLocation);
                         player.setExp(levels.get(player.getName()));
-                        player.sendTitle(Utils.color("&6&l" + name), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3, 5, 1);
+                        player.sendTitle(Utils.color("&6&l" + name), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3 * 20, 5 * 20, 20);
                     }
 
 
@@ -156,15 +163,22 @@ public class Arena {
                     if (countdown == 10) {
                         for (Player player : players) {
                             levels.put(player.getName(), player.getExp());
+                            player.setLevel(countdown);
+                            playerPhaseLocation.put(player.getName(), player.getLocation());
+
                         }
-                    }
-                    for (Player player : players) {
-
-                        player.sendMessage(Utils.color("&7You will be teleported to dungeon in &6" + countdown + " &7second(s)."));
-                        player.setLevel(countdown);
                         countdown = countdown - 1;
+                    } else {
+                        for (Player player : players) {
 
+                            player.sendMessage(Utils.color("&7You will be teleported to dungeon in &6" + countdown + " &7second(s)."));
+                            player.setLevel(countdown);
+
+
+                        }
+                        countdown = countdown - 1;
                     }
+
                 }
 
 
@@ -182,13 +196,18 @@ public class Arena {
                     setPassedTime(passedTime + 1);
                     if (passedTime/60 >= maxTime) {
                         finishArena();
+
+                    } else {
+                        //if (passedTime/60 == 30) {
+
+                         //   announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
+
+                        //} else if (passedTime/60 == 15) {
+                        //    announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
+                       // } else if (passedTime/60 == 1) {
+                        //    announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
+                        //}
                     }
-                }
-
-                if (maxTime%(passedTime/60) == 0) {
-
-                    announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
-
                 }
 
             }
@@ -211,9 +230,15 @@ public class Arena {
     }
 
 
-    private void announceToAllPlayers(String str) {
+    public void announceToAllPlayers(String str) {
         for (Player player : players) {
             player.sendMessage(Utils.color(str));
+        }
+    }
+
+    public void checkIfStillArenaHasPlayer() {
+        if (players.size() == 0) {
+            finishArena();
         }
     }
 

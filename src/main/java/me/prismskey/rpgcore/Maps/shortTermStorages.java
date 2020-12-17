@@ -21,8 +21,6 @@ public class shortTermStorages {
 
     public static HashMap<String, Arena> arenaHashMap = new HashMap<>(); //same ^
 
-    public static HashMap<Arena, List<Phase>> arenaPhasesHashMap = new HashMap<>();
-
     public static File arenasFile;
 
     public static FileConfiguration arenasConfiguration;

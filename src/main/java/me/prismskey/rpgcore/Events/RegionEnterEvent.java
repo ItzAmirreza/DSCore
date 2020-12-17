@@ -3,6 +3,7 @@ package me.prismskey.rpgcore.Events;
 
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.ArenaManager.Phase;
+import me.prismskey.rpgcore.ArenaManager.SpawningSystem;
 import me.prismskey.rpgcore.Enums.PhaseState;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Utils.Utils;
@@ -13,6 +14,8 @@ import org.bukkit.event.Listener;
 
 
 public class RegionEnterEvent implements Listener {
+
+    SpawningSystem spawningSystem = new SpawningSystem();
 
     @EventHandler
     public void onEnter(RegionEnteredEvent event) {
@@ -42,6 +45,13 @@ public class RegionEnterEvent implements Listener {
 
             }
 
+            if (thatArena.currentPhase.region.equalsIgnoreCase(regionName)) {
+                if (thatArena.currentPhase.firstTime) {
+                    spawningSystem.spawn(thatArena.name);
+                    shortTermStorages.arenaHashMap.get(thatArena.name).currentPhase.firstTime = false;
+                    shortTermStorages.arenaHashMap.get(thatArena.name).announceToAllPlayers("&bYou have entered a new phase!");
+                }
+            }
 
         }
 

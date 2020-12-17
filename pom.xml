@@ -142,6 +142,8 @@
             <groupId>net.raidstone</groupId>
             <artifactId>WorldGuardEvents</artifactId>
             <version>1.15.2</version>
+            <scope>system</scope>
+            <systemPath>${basedir}\src\lib\WGEvents.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

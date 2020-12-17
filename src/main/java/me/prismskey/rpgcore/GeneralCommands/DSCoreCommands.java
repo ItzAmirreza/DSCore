@@ -3,11 +3,14 @@ package me.prismskey.rpgcore.GeneralCommands;
 import com.zachsthings.libcomponents.config.ConfigurationFile;
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.ArenaManager.ArenaLoader;
+import me.prismskey.rpgcore.ArenaManager.DMob;
 import me.prismskey.rpgcore.ArenaManager.Phase;
+import me.prismskey.rpgcore.Enums.SpecialMobs;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -63,8 +66,8 @@ public class DSCoreCommands implements CommandExecutor {
                             e.printStackTrace();
                         }
 
-                    } else if (mainarg.equalsIgnoreCase("addphase") && argscount == 5) {
-                        ///dscore addphase (phase name) (arena name) (region name) (mob spawning range)
+                    } else if (mainarg.equalsIgnoreCase("addphase") && argscount == 6) {
+                        ///dscore addphase (phase name) (arena name) (region name) (mob spawning range) (wavescount)
 
                         try {
                             createPhase(args, player);
@@ -81,8 +84,8 @@ public class DSCoreCommands implements CommandExecutor {
                             e.printStackTrace();
                         }
 
-                    } else if (mainarg.equalsIgnoreCase("addmob") && argscount == 4) {
-
+                    } else if (mainarg.equalsIgnoreCase("addmob") && argscount == 5) {
+                        //dscore addmob (phase name) (arena name) (mob) (percentage) [optional level]
                         try {
                             addMob(args, player);
                         } catch (IOException | InvalidConfigurationException e) {
@@ -141,16 +144,16 @@ public class DSCoreCommands implements CommandExecutor {
 
         //default help message
 
-        player.sendMessage(Utils.color("&7&m------------------------- " +
-                "&7- &c/dscore createarena (arena name) (min players) (max players) (maxTime)" +
-                "&7- &c/dscore removearena (arena name)" +
-                "&7- &c/dscore addphase (phase name) (arena name) (region name) (mob spawning range)" +
-                "&7- &c/dscore removephase (phase name) (arena name)" +
-                "&7- &c/dscore addmob (phase name) (arena name) (mob)" +
-                "&7- &c/dscore removemob (phase name) (arena name) (mob)" +
-                "&7- &c/dscore setspawn (arena name)" +
-                "&7- &c/dscore arenalist" +
-                "&7- &c/dscore phaselist (arena name)" +
+        player.sendMessage(Utils.color("&7&m------------------------- \n" +
+                "&7- &c/dscore createarena (arena name) (min players) (max players) (maxTime)\n" +
+                "&7- &c/dscore removearena (arena name)\n" +
+                "&7- &c/dscore addphase (phase name) (arena name) (region name) (mob spawning range) (waves count) | Note: Where you are staying when you are creating this sets the center of phase \n" +
+                "&7- &c/dscore removephase (phase name) (arena name) \n" +
+                "&7- &c/dscore addmob (phase name) (arena name) (mob) (percentage) (level) | level for vanilla mobs is 1\n" +
+                "&7- &c/dscore removemob (phase name) (arena name) (mob) \n" +
+                "&7- &c/dscore setspawn (arena name) \n" +
+                "&7- &c/dscore arenalist \n" +
+                "&7- &c/dscore phaselist (arena name) \n" +
                 "&7&m-------------------------"));
 
     }
@@ -220,13 +223,14 @@ public class DSCoreCommands implements CommandExecutor {
         if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
 
             shortTermStorages.arenaHashMap.get(arenaName).setSpawnLocation(player.getLocation());
-
+            shortTermStorages.arenaHashMap.get(arenaName).checkIfArenaIsReady();
 
             File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
             FileConfiguration arenasconfig = new YamlConfiguration();
             arenasconfig.load(arenasfile);
             arenasconfig.set("arenas." + arenaName + ".spawnlocation", Utils.convertLocToString(player.getLocation()));
             setTheConfigs(arenasfile, arenasconfig);
+
 
             player.sendMessage(Utils.color("&aYou have set the spawn point."));
 
@@ -238,27 +242,45 @@ public class DSCoreCommands implements CommandExecutor {
 
 
     private void createPhase(String[] args, Player player) throws IOException, InvalidConfigurationException {
-        ///dscore addphase (phase name) (arena name) (region name) (mob spawning range)
+        ///dscore addphase (phase name) (arena name) (region name) (mob spawning range) (wavescount)
         String phaseName = args[1].toLowerCase();
         String arenaName = args[2].toLowerCase();
         String regionName = args[3].toLowerCase();
         int mobRange = Integer.parseInt(args[4]);
+        int wavescount = Integer.parseInt(args[5]);
+        Location center = player.getLocation();
 
         if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
             Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
             if (!checkIfPhaseExists(thatArena.phases, phaseName)) {
 
-                Phase newPhase = new Phase(phaseName, arenaName, regionName, mobRange);
+                Phase newPhase = new Phase(phaseName, arenaName, regionName, mobRange, wavescount, center);
+                newPhase.wavescount = wavescount;
+                newPhase.center = center;
                 thatArena.phases.put(phaseName, newPhase);
+                thatArena.checkIfArenaIsReady();
                 shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
                 File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
                 FileConfiguration arenasconfig = new YamlConfiguration();
                 arenasconfig.load(arenasfile);
-                arenasconfig.createSection("arenas." + arenaName + ".phases");
-                arenasconfig.createSection("arenas." + arenaName + ".phases." + phaseName);
-                arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".region", regionName);
-                arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".spawnrange", mobRange);
-                setTheConfigs(arenasfile, arenasconfig);
+                if (arenasconfig.isConfigurationSection("arenas." + arenaName + ".phases")) {
+
+                    arenasconfig.createSection("arenas." + arenaName + ".phases." + phaseName);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".region", regionName);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".spawnrange", mobRange);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".wavescount", wavescount);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".center", Utils.convertLocToString(center));
+                    setTheConfigs(arenasfile, arenasconfig);
+
+                } else {
+                    arenasconfig.createSection("arenas." + arenaName + ".phases");
+                    arenasconfig.createSection("arenas." + arenaName + ".phases." + phaseName);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".region", regionName);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".spawnrange", mobRange);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".wavescount", wavescount);
+                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".center", Utils.convertLocToString(center));
+                    setTheConfigs(arenasfile, arenasconfig);
+                }
 
                 player.sendMessage(Utils.color("&aPhase &e" + phaseName + " &asuccessfully created."));
 
@@ -287,6 +309,7 @@ public class DSCoreCommands implements CommandExecutor {
             if (thatArena.phases.containsKey(phaseName)) {
 
                 thatArena.phases.remove(phaseName);
+                thatArena.checkIfArenaIsReady();
                 shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
                 File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
                 FileConfiguration arenasconfig = new YamlConfiguration();
@@ -310,34 +333,69 @@ public class DSCoreCommands implements CommandExecutor {
 
     }
 
+
+
     public void addMob(String[] args, Player player) throws IOException, InvalidConfigurationException {
-        //dscore addmob (phase name) (arena name) (mob)
+        //dscore addmob (phase name) (arena name) (mob) (percentage) [optional level]
         String phaseName = args[1].toLowerCase();
         String arenaName = args[2].toLowerCase();
         String mob = args[3];
+        int percentage = Integer.parseInt(args[4]);
+        int level = 1;
+        boolean special;
+        try {
+            EntityType type = EntityType.valueOf(mob);
+            special = false;
+        } catch (IllegalArgumentException ex) {
+            level = Integer.parseInt(args[5]);
+            special = true;
+        }
 
         if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
             Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
+
             if (thatArena.phases.containsKey(phaseName)) {
 
+
                 Phase thatPhase = thatArena.phases.get(phaseName);
-                thatPhase.addMob(EntityType.valueOf(mob));
-                thatArena.phases.replace(thatPhase.name, thatPhase);
-                shortTermStorages.arenaHashMap.replace(arenaName, thatArena);
                 File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
                 FileConfiguration arenasconfig = new YamlConfiguration();
-                arenasconfig.load(arenasfile);
-                List<String> outGoingMobList = Arrays.asList(mob.toUpperCase() + ":vanilla");
 
-                if (arenasconfig.isList("arenas." + arenaName + ".phases." + phaseName + ".mobs")) {
-                    //when there is already a list of mobs
-                    List<String> mobslist = arenasconfig.getStringList("arenas." + arenaName + ".phases." + phaseName + ".mobs");
-                    mobslist.add(mob.toUpperCase() + ":vanilla");
-                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", mobslist);
+                if (special) {
+
+                    //add the special mob
+                    try {
+                        SpecialMobs specialMob = SpecialMobs.valueOf(mob.toUpperCase());
+
+
+
+
+
+                    } catch (IllegalArgumentException ex) {
+                        player.sendMessage(Utils.color("&cThis special mob doesn't exist."));
+                    }
+
                 } else {
-                    //when there is no mobs
-                    arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", outGoingMobList);
+                    //not special
+                    thatPhase.addMob(new DMob(mob, percentage, false));
+                    thatArena.phases.replace(thatPhase.name, thatPhase);
+                    shortTermStorages.arenaHashMap.replace(arenaName, thatArena);
+
+                    arenasconfig.load(arenasfile);
+                    List<String> outGoingMobList = Arrays.asList(mob.toUpperCase() + ":vanilla:" + percentage + ":" + level);
+
+                    if (arenasconfig.isList("arenas." + arenaName + ".phases." + phaseName + ".mobs")) {
+                        //when there is already a list of mobs
+                        List<String> mobslist = arenasconfig.getStringList("arenas." + arenaName + ".phases." + phaseName + ".mobs");
+                        mobslist.add(mob.toUpperCase() + ":vanilla:" + percentage + ":" + level); //mob | type | percentage | level
+                        arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", mobslist);
+                    } else {
+                        //when there is no mobs
+                        arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", outGoingMobList);
+                    }
                 }
+
+
 
                 setTheConfigs(arenasfile, arenasconfig);
 
@@ -358,22 +416,31 @@ public class DSCoreCommands implements CommandExecutor {
         String phaseName = args[1].toLowerCase();
         String arenaName = args[2].toLowerCase();
         String mob = args[3];
+
         if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
 
             Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
             if (thatArena.phases.containsKey(phaseName)) {
 
                 Phase thatPhase = thatArena.phases.get(phaseName);
-                if (thatPhase.mobs.contains(EntityType.valueOf(mob.toUpperCase()))) {
+                boolean found = false;
+                DMob thatmob = null;
+                for (DMob dmob : thatPhase.mobs) {
+                    if (dmob.mob.equalsIgnoreCase(mob)) {
+                        found = true;
+                        thatmob = dmob;
+                        break;
+                    }
+                }
+                if (found) {
 
-                    thatPhase.removeMob(EntityType.valueOf(mob.toUpperCase()));
+                    thatPhase.removeMob(thatmob);
                     thatArena.phases.replace(thatPhase.name, thatPhase);
-                    shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
                     File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
                     FileConfiguration arenasconfig = new YamlConfiguration();
                     arenasconfig.load(arenasfile);
                     List<String> mobs = arenasconfig.getStringList("arenas." + arenaName + ".phases." + phaseName + ".mobs");
-                    mobs.remove(mob.toUpperCase() + ":vanilla");
+                    mobs.remove(mob.toUpperCase() + ":" + thatmob.getSpecialitiyString() + ":" + thatmob.percentage + ":" + thatmob.level);
                     arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", mobs);
                     setTheConfigs(arenasfile, arenasconfig);
 
@@ -429,9 +496,7 @@ public class DSCoreCommands implements CommandExecutor {
 
     }
 
-    private boolean checkIfVanillaMob(String mob) {
-        return true;
-    }
+
 
 
 }

@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,47 +30,72 @@ public class ArenaLoader {
 
     public void loadArenas() {
         ConfigurationSection config = shortTermStorages.arenasConfiguration.getConfigurationSection("arenas");
-        config.getKeys(false).forEach(key -> {
-            String arenaname = key;
-            int min = config.getInt(key + ".min");
-            int max = config.getInt(key + ".max");
-            int maxTime = config.getInt(key + ".maxtime"); //minutes
-            Arena newArena = new Arena(arenaname.toLowerCase(), min, max, maxTime);
-            String spawnLocation = config.getString(key + ".spawnlocation", "null");
-            if (!spawnLocation.equalsIgnoreCase("null")) {
-                newArena.setSpawnLocation(spawnLocation);
-            }
-            HashMap<String, Phase> phases = new HashMap<>();
-            boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
-            if (ifConfigurationS) {
-                ConfigurationSection phaseSection = config.getConfigurationSection(key + ".phases");
-                phaseSection.getKeys(false).forEach(phase -> {
+        if (!(config == null)) {
+            config.getKeys(false).forEach(key -> {
+                String arenaname = key;
+                int min = config.getInt(key + ".min");
+                int max = config.getInt(key + ".max");
+                int maxTime = config.getInt(key + ".maxtime"); //minutes
+                Arena newArena = new Arena(arenaname.toLowerCase(), min, max, maxTime);
+                String spawnLocation = config.getString(key + ".spawnlocation", "null");
+                if (!spawnLocation.equalsIgnoreCase("null")) {
+                    newArena.setSpawnLocation(spawnLocation);
+                }
+                HashMap<String, Phase> phases = new HashMap<>();
+                boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
+                if (ifConfigurationS) {
+                    ConfigurationSection phaseSection = config.getConfigurationSection(key + ".phases");
+                    phaseSection.getKeys(false).forEach(phase -> {
+                        String phaseName = phase;
+                        String regionName = config.getString(key + ".phases." + phase + ".region");
+                        int mobSpawnRange = config.getInt(key + ".phases." + phase + ".spawnrange");
+                        int wavescount = config.getInt(key + ".phases." + phase + ".wavescount");
+                        Location center = Utils.convertStringToLoc(config.getString(key + ".phases." + phase + ".center"));
+                        Phase newPhase = new Phase(phaseName, arenaname, regionName, mobSpawnRange, wavescount, center);
+                        boolean mobsList = config.isList(key + ".phases." + phase + ".mobs");
+                        if (mobsList) {
+                            List<String> mobs = config.getStringList(key + ".phases." + phase + ".mobs");
+                            for (String thatmob : mobs) {
+                                String[] devide = thatmob.split(":"); //mob | type | percentage | level
+                                String mob = devide[0];
+                                String type = devide[1];
+                                int percentage = Integer.parseInt(devide[2]);
+                                int level = Integer.parseInt(devide[3]);
+                                boolean isSpecial = false;
+                                if (type.equalsIgnoreCase("special")) {
+                                    isSpecial = true;
+                                }
 
-                    String phaseName = phase;
-                    String regionName = config.getString(key + ".phases." + phase + ".region");
-                    int mobSpawnRange = config.getInt(key + ".phases." + phase + ".spawnrange");
-                    Phase newPhase = new Phase(phaseName, arenaname, regionName, mobSpawnRange);
-                    boolean mobsList = config.isList(key + ".phases." + phase + ".mobs");
-                    if (mobsList) {
-                        List<String> mobs = config.getStringList(key + ".phases." + phase + ".mobs");
-                        for (String thatmob : mobs) {
-                            String[] devide = thatmob.split(":");
-                            newPhase.mobs.add(EntityType.valueOf(devide[0].toUpperCase()));
+                                if (!isSpecial) {
+                                    //adding vanilla mobs to arena
+                                    newPhase.mobs.add(new DMob(mob, percentage, false));
+
+
+                                } else {
+
+                                    //adding special mobs to arena
+
+
+                                }
+
+                            }
+
                         }
 
-                    }
+                        phases.put(newPhase.name, newPhase);
 
-                    phases.put(newPhase.name, newPhase);
+                    });
 
-                });
+                }
 
-            }
+                newArena.setPhasesMap(phases);
+                newArena.checkIfArenaIsReady();
+                shortTermStorages.arenas.add(newArena);
+                shortTermStorages.arenaHashMap.put(newArena.name, newArena);
 
-            newArena.setPhasesMap(phases);
-            newArena.checkIfArenaIsReady();
-            shortTermStorages.arenas.add(newArena);
+            });
+        }
 
-        });
     }
 
 

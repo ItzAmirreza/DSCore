@@ -49,12 +49,11 @@ public final class Rpgcore extends JavaPlugin {
         ArenaLoader arenaloader = new ArenaLoader();
         arenaloader.loadArenas();
 
-
-        if(!setupEconomy()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
+        //if(!setupEconomy()) {
+        //    getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+        //    getServer().getPluginManager().disablePlugin(this);
+        //    return;
+        //}
         startRegistration();
         startTasks();
 
@@ -104,6 +103,8 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnTriggerSpecialAbilities(), this);
         getServer().getPluginManager().registerEvents(new OnPvp(), this);
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
+        getServer().getPluginManager().registerEvents(new FinishedWaveEvent(), this);
+        getServer().getPluginManager().registerEvents(new MobDeathEvent(), this);
     }
 
     public void registerRecipes() {
