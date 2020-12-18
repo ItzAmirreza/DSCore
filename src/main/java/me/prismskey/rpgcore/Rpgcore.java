@@ -37,7 +37,7 @@ public final class Rpgcore extends JavaPlugin {
 
 
     private static mcMMO mcMMOPlugin;
-
+    
     @Override
     public void onEnable() {
         instance = this;

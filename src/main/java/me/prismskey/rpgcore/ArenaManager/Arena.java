@@ -21,7 +21,7 @@ public class Arena {
     public int max;
     public int maxTime;
     public ArenaState arenaState;
-    public HashMap<String, Phase> phases = new HashMap<>();
+    public LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
     public List<Player> players = new ArrayList<>();
     public Location spawnLocation;
     public int passedTime = 1;
@@ -115,7 +115,7 @@ public class Arena {
         return ready;
     }
 
-    public void setPhasesMap(HashMap<String, Phase> phasesMap) {
+    public void setPhasesMap(LinkedHashMap<String, Phase> phasesMap) {
 
         this.phases = phasesMap;
 

@@ -40,17 +40,38 @@ public class SpawningSystem {
         //int random_int = (int)(Math.random() * (mobRange - (mobRange - mobRange * 2) + 1) + (mobRange - mobRange * 2));
         int XORY = ThreadLocalRandom.current().nextInt(1, 2 + 1);
         int random_int = ThreadLocalRandom.current().nextInt((mobRange - mobRange * 2), mobRange + 1);
+        int random_Y = ThreadLocalRandom.current().nextInt(center.getBlockY() - 2, center.getBlockY() + 3 + center.getBlockY() - 2);
         String value = "X";
         if (XORY == 1) {
-            value = "Y";
+            value = "Z";
         }
 
         if (value.equals("X")) {
 
-            Location newLocation = center.add(0, (double) random_int, 0);
+            Location newLocation = center.add((double) random_int, (double) random_Y, 0);
             if (newLocation.getBlock().isEmpty()) {
-                return newLocation;
 
+                if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
+                    boolean isEmpty = true;
+                    int num = newLocation.subtract(0, (double) 1, 0).getBlockY();
+                    Location lastloc = newLocation;
+                    while (isEmpty) {
+                        if (lastloc.subtract(0, (double) num, 0).getBlock().isEmpty()) {
+                            num = num - 1;
+                        } else {
+                            lastloc.add(0, 1, 0);
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+
+                    return lastloc;
+
+                } else {
+
+                    return newLocation;
+
+                }
             } else {
 
                 return findTheRightLocation(center, mobRange);
@@ -58,10 +79,31 @@ public class SpawningSystem {
             }
         } else {
 
-            Location newLocation = center.add((double) random_int, 0, 0);
+            Location newLocation = center.add(0, (double) random_Y, (double) random_int);
             if (newLocation.getBlock().isEmpty()) {
 
-                return newLocation;
+
+                if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
+                    boolean isEmpty = true;
+                    int num = newLocation.subtract(0, (double) 1, 0).getBlockY();
+                    Location lastloc = newLocation;
+                    while (isEmpty) {
+                        if (lastloc.subtract(0, (double) num, 0).getBlock().isEmpty()) {
+                            num = num - 1;
+                        } else {
+                            lastloc.add(0, 1, 0);
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+
+                    return lastloc;
+
+                } else {
+
+                    return newLocation;
+
+                }
 
             } else {
 
@@ -73,4 +115,6 @@ public class SpawningSystem {
 
 
     }
+
+
 }

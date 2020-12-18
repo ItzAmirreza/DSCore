@@ -39,7 +39,7 @@ public class ArenaLoader {
                 if (!spawnLocation.equalsIgnoreCase("null")) {
                     newArena.setSpawnLocation(spawnLocation);
                 }
-                HashMap<String, Phase> phases = new HashMap<>();
+                LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
                 boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
                 if (ifConfigurationS) {
                     ConfigurationSection phaseSection = config.getConfigurationSection(key + ".phases");
