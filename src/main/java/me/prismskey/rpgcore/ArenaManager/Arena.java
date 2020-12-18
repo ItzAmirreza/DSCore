@@ -11,9 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 public class Arena {
 
@@ -131,6 +130,7 @@ public class Arena {
             previousLocations.put(player.getName(), player.getLocation());
             shortTermStorages.playersInMatch.put(player.getName(), name);
             player.setGameMode(GameMode.SURVIVAL);
+
         }
 
         for (Phase phase: phases.values()) {

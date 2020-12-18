@@ -49,6 +49,7 @@ public class RegionEnterEvent implements Listener {
                 if (thatArena.currentPhase.firstTime) {
                     spawningSystem.spawn(thatArena.name);
                     shortTermStorages.arenaHashMap.get(thatArena.name).currentPhase.firstTime = false;
+                    shortTermStorages.arenaHashMap.get(thatArena.name).phases.get(thatArena.currentPhase.name).firstTime = false;
                     shortTermStorages.arenaHashMap.get(thatArena.name).announceToAllPlayers("&bYou have entered a new phase!");
                 }
             }

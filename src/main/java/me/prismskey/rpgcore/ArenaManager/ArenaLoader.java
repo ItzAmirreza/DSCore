@@ -15,9 +15,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ArenaLoader {
 
@@ -47,6 +45,7 @@ public class ArenaLoader {
                     ConfigurationSection phaseSection = config.getConfigurationSection(key + ".phases");
                     phaseSection.getKeys(false).forEach(phase -> {
                         String phaseName = phase;
+
                         String regionName = config.getString(key + ".phases." + phase + ".region");
                         int mobSpawnRange = config.getInt(key + ".phases." + phase + ".spawnrange");
                         int wavescount = config.getInt(key + ".phases." + phase + ".wavescount");
@@ -86,6 +85,10 @@ public class ArenaLoader {
 
                     });
 
+                }
+                //HashMap<String, Phase> finalMap = new HashMap<>();
+                for (String str : phases.keySet()) {
+                    Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&b" + str));
                 }
 
                 newArena.setPhasesMap(phases);

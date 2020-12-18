@@ -33,8 +33,10 @@ public class MobDeathEvent implements Listener {
                         if (!(entity.isDead())) {
                             result = true;
                         } else {
+
                             entity.isDead();
                             shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.get(shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.indexOf(entity)).remove();
+                            shortTermStorages.arenaHashMap.get(arenaName).phases.get(thatArena.currentPhase.name).spawnedEntities.get(shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.indexOf(entity)).remove();
                         }
 
                     }

@@ -11,3 +11,8 @@ commands:
     permission: dscore.admin
   join:
     description: joining an arena
+  leave:
+    description: leaving an arena
+    aliases:
+      - exit
+      - quit

@@ -11,6 +11,7 @@ import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
 import me.prismskey.rpgcore.GeneralCommands.joinArena;
+import me.prismskey.rpgcore.GeneralCommands.leaveArena;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
 import me.prismskey.rpgcore.Recipes.*;
@@ -90,6 +91,7 @@ public final class Rpgcore extends JavaPlugin {
     public void registerCommands() {
         getServer().getPluginCommand("dscore").setExecutor(new DSCoreCommands());
         getServer().getPluginCommand("join").setExecutor(new joinArena());
+        getServer().getPluginCommand("leave").setExecutor(new leaveArena());
 
     }
 
