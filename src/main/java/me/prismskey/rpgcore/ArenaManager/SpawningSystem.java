@@ -28,7 +28,7 @@ public class SpawningSystem {
 
             int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
             if (chance <= dMob.percentage) {
-                Location spawnLocation = findTheRightLocation(center, mobRange);
+                Location spawnLocation = findTheRightLocation(center, mobRange, arena);
                 Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
                 shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                 shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
@@ -43,7 +43,7 @@ public class SpawningSystem {
 
 
 
-    private Location findTheRightLocation(Location center, int mobRange) {
+    private Location findTheRightLocation(Location center, int mobRange, Arena thatArena) {
 
         //int random_int = (int)(Math.random() * (mobRange - (mobRange - mobRange * 2) + 1) + (mobRange - mobRange * 2));
         int XORY = ThreadLocalRandom.current().nextInt(1, 2 + 1);
@@ -77,12 +77,17 @@ public class SpawningSystem {
 
                 //} else {
 
+                if (checkIFInTheRightRegion(newLocation, thatArena)) {
                     return newLocation;
+                } else {
 
+                    return findTheRightLocation(center, mobRange, thatArena);
+
+                }
                 //}
             } else {
 
-                return findTheRightLocation(center, mobRange);
+                return findTheRightLocation(center, mobRange, thatArena);
 
             }
         } else {
@@ -90,7 +95,12 @@ public class SpawningSystem {
             Location newLocation = center.add(0, 0, (double) random_int); //(double) random_Y
 
             if (newLocation.getBlock().isEmpty()) {
-                return newLocation;
+                if (checkIFInTheRightRegion(newLocation, thatArena)) {
+                    return newLocation;
+                } else {
+                    return findTheRightLocation(center, mobRange, thatArena);
+                }
+
 /**
                 if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
                     int num = newLocation.getBlockY();
@@ -116,7 +126,7 @@ public class SpawningSystem {
 
             } else {
 
-                return findTheRightLocation(center, mobRange);
+                return findTheRightLocation(center, mobRange, thatArena);
 
             }
 
@@ -126,13 +136,17 @@ public class SpawningSystem {
     }
 
 
-    //private boolean checkIFInTheRightRegion(Location thatLocation, Arena thatArena) {
-    //    BukkitAdapter.adapt(thatLocation);
-    //    RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
-    //    regions.getRegion()
-    //    ProtectedRegion region = regions.getRegion("spawn");
+    private boolean checkIFInTheRightRegion(Location thatLocation, Arena thatArena) {
+        BukkitAdapter.adapt(thatLocation);
+        RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
+        boolean result = regions.getRegion(thatArena.currentPhase.region).contains(thatLocation.getBlockX(), thatLocation.getBlockY(), thatLocation.getBlockZ());
+        if (result) {
+            return true;
+        } else {
+            return false;
+        }
 
-    //}
+    }
 
 
 }
