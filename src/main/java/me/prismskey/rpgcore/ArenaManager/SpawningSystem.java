@@ -40,7 +40,7 @@ public class SpawningSystem {
         //int random_int = (int)(Math.random() * (mobRange - (mobRange - mobRange * 2) + 1) + (mobRange - mobRange * 2));
         int XORY = ThreadLocalRandom.current().nextInt(1, 2 + 1);
         int random_int = ThreadLocalRandom.current().nextInt((mobRange - mobRange * 2), mobRange + 1);
-        int random_Y = ThreadLocalRandom.current().nextInt(center.getBlockY() - 2, center.getBlockY() + 3 + center.getBlockY() - 2);
+        int random_Y = ThreadLocalRandom.current().nextInt(center.getBlockY() - 2, center.getBlockY() + 3 + 1);
         String value = "X";
         if (XORY == 1) {
             value = "Z";
@@ -52,15 +52,15 @@ public class SpawningSystem {
             if (newLocation.getBlock().isEmpty()) {
 
                 if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
-                    boolean isEmpty = true;
-                    int num = newLocation.subtract(0, (double) 1, 0).getBlockY();
+
+                    int num = newLocation.getBlockY();
                     Location lastloc = newLocation;
-                    while (isEmpty) {
-                        if (lastloc.subtract(0, (double) num, 0).getBlock().isEmpty()) {
+                    while (true) {
+                        lastloc.setY(num);
+                        if (lastloc.getBlock().isEmpty()) {
                             num = num - 1;
                         } else {
-                            lastloc.add(0, 1, 0);
-                            isEmpty = false;
+                            lastloc.setY(num + 1);
                             break;
                         }
                     }
@@ -84,15 +84,14 @@ public class SpawningSystem {
 
 
                 if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
-                    boolean isEmpty = true;
-                    int num = newLocation.subtract(0, (double) 1, 0).getBlockY();
+                    int num = newLocation.getBlockY();
                     Location lastloc = newLocation;
-                    while (isEmpty) {
-                        if (lastloc.subtract(0, (double) num, 0).getBlock().isEmpty()) {
+                    while (true) {
+                        lastloc.setY(num);
+                        if (lastloc.getBlock().isEmpty()) {
                             num = num - 1;
                         } else {
-                            lastloc.add(0, 1, 0);
-                            isEmpty = false;
+                            lastloc.setY(num + 1);
                             break;
                         }
                     }
