@@ -54,13 +54,12 @@ public class MobDeathEvent implements Listener {
                 }
 
             } else {
-                Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&bYES ELSE"));
-                List<Entity> entityList = e.getEntity().getNearbyEntities(10, 10, 10);
+                List<Entity> entityList = e.getEntity().getNearbyEntities(30, 30, 30);
                 for (Entity entityy : entityList) {
-                    Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&aTOTOTO"));
                     if (entityy instanceof Player) {
                         Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&aYes containts player"));
-                        Player player = (Player) e.getEntity();
+                        Player player = (Player) entityy;
+                        Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&agot the player man"));
                         if (shortTermStorages.playersInMatch.containsKey(player.getName())) {
                             Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&aYes in the arena"));
                             String thatArenastr = shortTermStorages.playersInMatch.get(player.getName());
