@@ -13,10 +13,6 @@ public class GivePermissionReward implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(sender instanceof Player && !sender.hasPermission("dungeonslayer.givepermissionreward")) {
-            sender.sendMessage(ChatColor.RED + "You lack the required permission node to execute this command.");
-            return true;
-        }
         if(args.length != 3) {
             sender.sendMessage(ChatColor.RED + "Usage: givetagpermission <player> <permission> <alternate currency reward>");
             return true;
