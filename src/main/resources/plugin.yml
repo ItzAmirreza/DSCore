@@ -16,3 +16,8 @@ commands:
     aliases:
       - exit
       - quit
+  givepermissionreward:
+    description: gives a permission if player does not already have it otherwise gives specified amount of money.
+    permission: dscore.admin.lootcrate
+    aliases:
+      - gp
