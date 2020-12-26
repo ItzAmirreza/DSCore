@@ -10,6 +10,7 @@ import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
+import me.prismskey.rpgcore.GeneralCommands.GivePermissionReward;
 import me.prismskey.rpgcore.GeneralCommands.joinArena;
 import me.prismskey.rpgcore.GeneralCommands.leaveArena;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
@@ -50,11 +51,11 @@ public final class Rpgcore extends JavaPlugin {
         ArenaLoader arenaloader = new ArenaLoader();
         arenaloader.loadArenas();
 
-        //if(!setupEconomy()) {
-        //    getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-        //    getServer().getPluginManager().disablePlugin(this);
-        //    return;
-        //}
+        if(!setupEconomy()) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         startRegistration();
         startTasks();
 
@@ -92,7 +93,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginCommand("dscore").setExecutor(new DSCoreCommands());
         getServer().getPluginCommand("join").setExecutor(new joinArena());
         getServer().getPluginCommand("leave").setExecutor(new leaveArena());
-
+        getServer().getPluginCommand("givepermissionreward").setExecutor(new GivePermissionReward());
     }
 
     public void registerEvents() {
