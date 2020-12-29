@@ -18,7 +18,7 @@ public class OnChunkPopulate implements Listener {
 
     @EventHandler
     public void onChunkPopulate(ChunkPopulateEvent event) {
-        Chunk chunk = event.getChunk();
+        /*Chunk chunk = event.getChunk();
         if(chunk.getWorld().getName().equalsIgnoreCase("world")) {
             if(rand.nextInt(13) == 1) {
                 int x = chunk.getBlock(0, 1, 0).getX() + rand.nextInt(16);
@@ -48,6 +48,6 @@ public class OnChunkPopulate implements Listener {
                 Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in minecraft:the_end positioned " + x + " " + y + " " + z + " run function generate:dragonstone");
             }
         }
-
+*/
     }
 }
