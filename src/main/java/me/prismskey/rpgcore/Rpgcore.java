@@ -7,6 +7,7 @@ import com.gmail.nossr50.mcMMO;
 
 import me.prismskey.rpgcore.ArenaManager.*;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
+import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
 import me.prismskey.rpgcore.GeneralCommands.DSCoreCommands;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
@@ -24,6 +25,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 public final class Rpgcore extends JavaPlugin {
@@ -50,12 +52,18 @@ public final class Rpgcore extends JavaPlugin {
         configloader.loadArenaConfig();
         ArenaLoader arenaloader = new ArenaLoader();
         arenaloader.loadArenas();
-
-        if(!setupEconomy()) {
-            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            getServer().getPluginManager().disablePlugin(this);
-            return;
+        MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
+        try {
+            mlcm.loadConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        //if(!setupEconomy()) {
+            //getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            //getServer().getPluginManager().disablePlugin(this);
+            //return;
+        //}
         startRegistration();
         startTasks();
 
@@ -108,6 +116,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
         getServer().getPluginManager().registerEvents(new FinishedWaveEvent(), this);
         getServer().getPluginManager().registerEvents(new MobDeathEvent(), this);
+        getServer().getPluginManager().registerEvents(new EntityRecievingDmg(), this);
     }
 
     public void registerRecipes() {

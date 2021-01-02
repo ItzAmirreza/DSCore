@@ -6,14 +6,21 @@ import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
+import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SpawningSystem {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+    MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
+
+
 
     public void spawn(String arenaName) {
         Arena arena = shortTermStorages.arenaHashMap.get(arenaName);
@@ -26,13 +33,19 @@ public class SpawningSystem {
 
         for (DMob dMob : currentphase.mobs) {
 
+
             int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
             if (chance <= dMob.percentage) {
                 Location spawnLocation = findTheRightLocation(center, mobRange, arena);
+                int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
+                int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
                 Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
+                assignEntityData(theEnt, dMob.level, damage, health);
                 shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                 shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
             }
+
+
 
         }
 
@@ -147,6 +160,20 @@ public class SpawningSystem {
         }
 
     }
+
+
+    private void assignEntityData(Entity thatEntity, int level, int damage, int health) {
+
+        LivingEntity theEntity = (LivingEntity) thatEntity;
+        theEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Double.valueOf(damage));
+        theEntity.setMaxHealth(health);
+        theEntity.setHealth(health);
+        theEntity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(Double.valueOf(damage));
+        theEntity.setCustomName(Utils.color("&e◈ &6Level " + level + " &e◈"));
+        theEntity.setCustomNameVisible(true);
+
+    }
+
 
 
 }

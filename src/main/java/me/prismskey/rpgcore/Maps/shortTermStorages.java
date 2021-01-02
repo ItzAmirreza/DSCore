@@ -6,6 +6,7 @@ import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -33,11 +34,9 @@ public class shortTermStorages {
 
     public static ArrayList<NamespacedKey> recipeKeys = new ArrayList<>();
 
-    public static FileConfiguration getArenaConfig() {
-        return arenasConfiguration;
-    }
-
     public static HashMap<String, String> playersInMatch = new HashMap<>(); //player name , arena name
+
+    public static HashMap<String, YamlConfiguration> mobsConfig = new HashMap<>();
 
 
 
