@@ -373,7 +373,7 @@ public class DSCoreCommands implements CommandExecutor {
                         shortTermStorages.arenaHashMap.replace(arenaName, thatArena);
 
                         arenasconfig.load(arenasfile);
-                        List<String> outGoingMobList = Arrays.asList(specialMob.getName() + ":special:" + percentage + ":" + level);
+                        List<String> outGoingMobList = Arrays.asList(mob.toUpperCase() + ":special:" + percentage + ":" + level);
 
                         if (arenasconfig.isList("arenas." + arenaName + ".phases." + phaseName + ".mobs")) {
                             //when there is already a list of mobs
