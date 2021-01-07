@@ -8,15 +8,18 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
+import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +52,7 @@ public class SpawningSystem {
                     int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER, 0);
                     assignEntityData(theEnt, dMob.level, damage, health);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                     shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
@@ -65,12 +69,10 @@ public class SpawningSystem {
                     //spawn that entity
 
 
-                    Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function generate:" + dMob.mob);
+                    Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + dMob.mob);
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);
-
-
-
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER, 0);
 
                     assignEntityData(theEnt, dMob.level, damage, health);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);

@@ -1,23 +1,15 @@
 package me.prismskey.rpgcore.Enums;
 
 public enum SpecialMobs {
-    IRON_ZOMBIE("IRON_ZOMBIE"),
-    DRAGONIC_PHANTOM("DRAGONIC_PHANTOM"),
-    HOLLOWGAST("HOLLOWGAST"),
-    KILLER_BUNNY("KILLER_BUNNY"),
-    KING_SLIME("KING_SLIME"),
-    NAMELESS_ONE("NAMELESS_ONE"),
-    EARCH("EARTH"),
-    FIRE("FIRE"),
-    CHOPPER("CHOPPER"),
-    SWRODSMAN("SWORDSMAN"),
-    UNSET("UNSET"),
-    ADAMANT("ADAMANT"),
-    DRAGONSTONE("DRAGONSTONE"),
-    MITHRIL("MITHRIL"),
-    ORICHALCUM("ORICHALCUM");
-
-
+    DRACONIC_PHANTOM("boss/draconic_phantom"),
+    GIANT("boss/giant"),
+    HOLLOWGAST("boss/hollowgast"),
+    KILLER_BUNNY("boss/killer_bunny"),
+    KING_SLIME("boss/king_slime"),
+    NAMELESS_ONE("boss/nameless_one"),
+    EARTH("elemental/earth"),
+    FIRE("elemental/fire"),
+    GHOST("ghost");
 
 
 
