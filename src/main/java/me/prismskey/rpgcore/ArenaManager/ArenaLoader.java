@@ -68,6 +68,7 @@ public class ArenaLoader {
                                 String[] devide = thatmob.split(":"); //mob | type | percentage | level
                                 String mob = devide[0];
                                 String type = devide[1];
+                                System.out.println(mob);
                                 int percentage = Integer.parseInt(devide[2]);
                                 int level = Integer.parseInt(devide[3]);
                                 boolean isSpecial = false;

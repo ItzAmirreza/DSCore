@@ -373,7 +373,7 @@ public class DSCoreCommands implements CommandExecutor {
                         shortTermStorages.arenaHashMap.replace(arenaName, thatArena);
 
                         arenasconfig.load(arenasfile);
-                        List<String> outGoingMobList = Arrays.asList(mob.toUpperCase() + ":special:" + percentage + ":" + level);
+                        List<String> outGoingMobList = Arrays.asList(specialMob.getName() + ":special:" + percentage + ":" + level);
 
                         if (arenasconfig.isList("arenas." + arenaName + ".phases." + phaseName + ".mobs")) {
                             //when there is already a list of mobs
@@ -385,6 +385,7 @@ public class DSCoreCommands implements CommandExecutor {
                             arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", outGoingMobList);
                         }
 
+                        player.sendMessage(Utils.color("&aMob &e" + mob + " &aadded to &d" + phaseName + "&a."));
 
 
                     } catch (IllegalArgumentException ex) {
@@ -409,13 +410,14 @@ public class DSCoreCommands implements CommandExecutor {
                         //when there is no mobs
                         arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", outGoingMobList);
                     }
+
+                    player.sendMessage(Utils.color("&aMob &e" + mob + " &aadded to &d" + phaseName + "&a."));
                 }
 
 
 
                 setTheConfigs(arenasfile, arenasconfig);
 
-                player.sendMessage(Utils.color("&aMob &e" + mob + " &aadded to &d" + phaseName + "&a."));
 
             } else {
                 player.sendMessage(Utils.color("&cThis phase doesn't exist in this arena."));

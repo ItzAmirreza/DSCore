@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
+import me.prismskey.rpgcore.Enums.SpecialMobs;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
@@ -67,8 +68,9 @@ public class SpawningSystem {
                     int health = mlcm.getMobHealth(dMob.getSpecialMob().getName(), String.valueOf(dMob.level));
 
                     //spawn that entity
+                    SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
 
-                    Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + dMob.mob);
+                    Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER, 0);
