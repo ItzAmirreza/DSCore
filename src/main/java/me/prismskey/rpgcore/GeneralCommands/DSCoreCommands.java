@@ -84,7 +84,7 @@ public class DSCoreCommands implements CommandExecutor {
                             e.printStackTrace();
                         }
 
-                    } else if (mainarg.equalsIgnoreCase("addmob") && argscount == 5) {
+                    } else if (mainarg.equalsIgnoreCase("addmob") && argscount == 6) {
                         //dscore addmob (phase name) (arena name) (mob) (percentage) [optional level]
                         try {
                             addMob(args, player);

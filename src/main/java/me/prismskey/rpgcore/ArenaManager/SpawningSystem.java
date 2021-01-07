@@ -68,7 +68,6 @@ public class SpawningSystem {
 
                     //spawn that entity
 
-
                     Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + dMob.mob);
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);
