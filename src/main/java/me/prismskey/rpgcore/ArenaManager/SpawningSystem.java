@@ -30,7 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SpawningSystem {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
-    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+
 
 
 
@@ -70,7 +70,7 @@ public class SpawningSystem {
                     //spawn that entity
                     SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
 
-                    Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
+                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in " + spawnLocation.getWorld().getName() + " positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
                     System.out.println("I SWAER TO GOD I SPAWNED THIS ENTITY!");
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);

@@ -13,7 +13,7 @@ public class OnPvp implements Listener {
 
     @EventHandler
     public void onPvp(EntityDamageByEntityEvent event) {
-        if(!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
+        /*if(!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
             return;
         }
         Player damager = (Player) event.getDamager();
@@ -23,6 +23,6 @@ public class OnPvp implements Listener {
         RPGPlayerData victimData = configloader.getDataByUUID(victim.getUniqueId());
         if(damagerData.getPvpState() == false || victimData.getPvpState() == false) {
             event.setCancelled(true);
-        }
+        }*/
     }
 }
