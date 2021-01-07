@@ -63,8 +63,8 @@ public class SpawningSystem {
                 if (chance <= dMob.percentage) {
 
                     Location spawnLocation = findTheRightLocation(center, mobRange, arena);
-                    int damage = mlcm.getMobDamage(dMob.getSpecialMob().name(), String.valueOf(dMob.level));
-                    int health = mlcm.getMobHealth(dMob.getSpecialMob().name(), String.valueOf(dMob.level));
+                    int damage = mlcm.getMobDamage(dMob.getSpecialMob().getName(), String.valueOf(dMob.level));
+                    int health = mlcm.getMobHealth(dMob.getSpecialMob().getName(), String.valueOf(dMob.level));
 
                     //spawn that entity
 
