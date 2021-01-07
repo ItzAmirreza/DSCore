@@ -39,6 +39,16 @@ public class ArenaLoader {
                 if (!spawnLocation.equalsIgnoreCase("null")) {
                     newArena.setSpawnLocation(spawnLocation);
                 }
+
+                //getting rewards
+                List<String> rewardStringList = config.getStringList(key + ".rewards");
+                for (String strReward : rewardStringList) {
+                    String command = strReward.split(":")[0];
+                    int percentage = Integer.parseInt(strReward.split(":")[1]);
+                    PrizeObject thaPrize = new PrizeObject(command, percentage);
+                    newArena.prizeCommands.add(thaPrize);
+                }
+
                 LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
                 boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
                 if (ifConfigurationS) {
@@ -67,13 +77,13 @@ public class ArenaLoader {
 
                                 if (!isSpecial) {
                                     //adding vanilla mobs to arena
-                                    newPhase.mobs.add(new DMob(mob, percentage, false));
+                                    newPhase.mobs.add(new DMob(mob, percentage, false,level));
 
 
                                 } else {
 
                                     //adding special mobs to arena
-
+                                    newPhase.mobs.add(new DMob(mob, percentage, true, level));
 
                                 }
 

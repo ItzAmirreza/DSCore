@@ -9,16 +9,25 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SpawningSystem {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
+    ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+
 
 
 
@@ -33,23 +42,61 @@ public class SpawningSystem {
 
         for (DMob dMob : currentphase.mobs) {
 
+            if (!dMob.isSpecial) {
+                int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+                if (chance <= dMob.percentage) {
+                    Location spawnLocation = findTheRightLocation(center, mobRange, arena);
+                    int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
+                    int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
+                    Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
+                    assignEntityData(theEnt, dMob.level, damage, health);
+                    shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
+                    shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
+                }
+            } else {
 
-            int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
-            if (chance <= dMob.percentage) {
-                Location spawnLocation = findTheRightLocation(center, mobRange, arena);
-                int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
-                int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
-                Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
-                assignEntityData(theEnt, dMob.level, damage, health);
-                shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
-                shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
+                int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
+                if (chance <= dMob.percentage) {
+
+                    Location spawnLocation = findTheRightLocation(center, mobRange, arena);
+                    int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
+                    int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
+
+                    //spawn that entity
+
+
+                    Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function generate:" + dMob.mob);
+                    //get that special entity method
+                    Entity theEnt = getSpecialEntity(spawnLocation);
+
+
+
+
+                    assignEntityData(theEnt, dMob.level, damage, health);
+                    shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
+                    shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
+                }
+
             }
-
-
 
         }
 
 
+
+    }
+
+
+    private Entity getSpecialEntity(Location location) {
+        ;
+        List<Entity> finalList = new ArrayList<>();
+        ArrayList<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, 2d, 2d, 2d));
+        for (Entity entity : entities){
+            if (!(entities instanceof Player)) {
+                finalList.add(entity);
+            }
+        }
+
+        return finalList.get(0);
 
     }
 
@@ -173,6 +220,9 @@ public class SpawningSystem {
         theEntity.setCustomNameVisible(true);
 
     }
+
+
+
 
 
 

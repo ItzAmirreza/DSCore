@@ -181,6 +181,7 @@ public class DSCoreCommands implements CommandExecutor {
             arenasconfig.set("arenas." + arenaName + ".min", min);
             arenasconfig.set("arenas." + arenaName + ".max", max);
             arenasconfig.set("arenas." + arenaName + ".maxtime", maxtime);
+            arenasconfig.set("arenas." + arenaName + ".rewards", Arrays.asList("eco give %player% 100:100"));
             Rpgcore.getInstance().saveResource("arenas.yml", true);
             setTheConfigs(arenasfile, arenasconfig);
 
@@ -345,6 +346,7 @@ public class DSCoreCommands implements CommandExecutor {
         boolean special;
         try {
             EntityType type = EntityType.valueOf(mob);
+            level = Integer.parseInt(args[5]);
             special = false;
         } catch (IllegalArgumentException ex) {
             level = Integer.parseInt(args[5]);
@@ -366,8 +368,22 @@ public class DSCoreCommands implements CommandExecutor {
                     //add the special mob
                     try {
                         SpecialMobs specialMob = SpecialMobs.valueOf(mob.toUpperCase());
+                        thatPhase.addMob(new DMob(mob.toUpperCase(), percentage, true, level));
+                        thatArena.phases.replace(thatPhase.name, thatPhase);
+                        shortTermStorages.arenaHashMap.replace(arenaName, thatArena);
 
+                        arenasconfig.load(arenasfile);
+                        List<String> outGoingMobList = Arrays.asList(mob.toUpperCase() + ":special:" + percentage + ":" + level);
 
+                        if (arenasconfig.isList("arenas." + arenaName + ".phases." + phaseName + ".mobs")) {
+                            //when there is already a list of mobs
+                            List<String> mobslist = arenasconfig.getStringList("arenas." + arenaName + ".phases." + phaseName + ".mobs");
+                            mobslist.add(mob.toUpperCase() + ":special:" + percentage + ":" + level); //mob | type | percentage | level
+                            arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", mobslist);
+                        } else {
+                            //when there is no mobs
+                            arenasconfig.set("arenas." + arenaName + ".phases." + phaseName + ".mobs", outGoingMobList);
+                        }
 
 
 
@@ -377,7 +393,7 @@ public class DSCoreCommands implements CommandExecutor {
 
                 } else {
                     //not special
-                    thatPhase.addMob(new DMob(mob, percentage, false));
+                    thatPhase.addMob(new DMob(mob, percentage, false, level));
                     thatArena.phases.replace(thatPhase.name, thatPhase);
                     shortTermStorages.arenaHashMap.replace(arenaName, thatArena);
 

@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.DataManager;
 
+import me.prismskey.rpgcore.Enums.SpecialMobs;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,12 +25,15 @@ public class MobsLevelsConfigManager {
 
         //not special mobs here
         List<EntityType> allmobs = Arrays.asList(EntityType.values());
+        List<SpecialMobs> allSpecialMobs = Arrays.asList(SpecialMobs.values());
+
 
 
         File mobsfolder = new File(Rpgcore.getInstance().getDataFolder().getPath() + File.separator + "Mobs");
         if (!mobsfolder.exists()) {
             mobsfolder.mkdir();
         }
+        //For entityTypes
 
         for (EntityType mob : allmobs) {
 
@@ -56,6 +60,31 @@ public class MobsLevelsConfigManager {
 
         }
 
+        //for specialMobs
+
+        for (SpecialMobs mob : allSpecialMobs) {
+
+            File mobConfig = new File(mobsfolder.getPath() + File.separator + mob.name() + ".yml");
+                if (!mobConfig.exists()) {
+                    mobConfig.createNewFile();
+                    YamlConfiguration yml = YamlConfiguration.loadConfiguration(mobConfig);
+                    yml.set("values", null);
+                    yml.set("default.health", 10);
+                    yml.set("default.damage", 3);
+                    yml.set("values.1.health", 10);
+                    yml.set("values.1.damage", 3);
+                    yml.set("values.2.health", 20);
+                    yml.set("values.2.damage", 3);
+                    yml.set("values.3.health", 25);
+                    yml.set("values.3.damage", 4);
+                    yml.save(mobConfig);
+                    //Rpgcore.getInstance().saveResource(mobsfolder.getPath() + File.separator + mob.name() + ".yml", false);
+
+                }
+
+
+
+        }
 
 
 

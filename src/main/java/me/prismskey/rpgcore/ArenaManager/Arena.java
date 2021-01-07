@@ -2,6 +2,7 @@ package me.prismskey.rpgcore.ArenaManager;
 
 import me.prismskey.rpgcore.Enums.ArenaState;
 import me.prismskey.rpgcore.Enums.PhaseState;
+import me.prismskey.rpgcore.Events.onArenaFinish;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
@@ -31,6 +32,7 @@ public class Arena {
     public List<String> listOfFinishedPhases = new ArrayList<>();
     public Phase currentPhase;
     public Phase firstPhase;
+    public List<PrizeObject> prizeCommands = new ArrayList<>();
     public Arena(String name, int min, int max, int maxTime) {
         this.name = name;
         this.min = min;
@@ -216,6 +218,8 @@ public class Arena {
 
 
     public void finishArena() {
+        onArenaFinish event = new onArenaFinish(this.name, players);
+        Bukkit.getPluginManager().callEvent(event);
         Bukkit.getScheduler().cancelTask(taskid);
         for (Player player : players) {
             player.teleport(previousLocations.get(player.getName()));
