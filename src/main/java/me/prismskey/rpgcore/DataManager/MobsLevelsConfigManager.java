@@ -106,7 +106,7 @@ public class MobsLevelsConfigManager {
             File mobFile = new File(mobsfolder.getPath() + File.separator + name + ".yml");
             YamlConfiguration yml = YamlConfiguration.loadConfiguration(mobFile);
             shortTermStorages.mobsConfig.put(name, yml);
-            int damage = yml.getInt("values." + level + ".damage", yml.getInt("default.damage"));
+            int damage = yml.getInt("values." + level + ".damage", yml.getInt("default.damage", 10));
             return damage;
 
         }

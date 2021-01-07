@@ -64,13 +64,14 @@ public class SpawningSystem {
                 if (chance <= dMob.percentage) {
 
                     Location spawnLocation = findTheRightLocation(center, mobRange, arena);
-                    int damage = mlcm.getMobDamage(dMob.getSpecialMob().getName(), String.valueOf(dMob.level));
-                    int health = mlcm.getMobHealth(dMob.getSpecialMob().getName(), String.valueOf(dMob.level));
+                    int damage = mlcm.getMobDamage(dMob.mob, String.valueOf(dMob.level));
+                    int health = mlcm.getMobHealth(dMob.mob, String.valueOf(dMob.level));
 
                     //spawn that entity
                     SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
 
                     Bukkit.dispatchCommand(console, "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
+                    System.out.println("I SWAER TO GOD I SPAWNED THIS ENTITY!");
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER, 0);
