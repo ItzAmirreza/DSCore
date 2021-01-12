@@ -25,12 +25,13 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class SpawningSystem {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
-
+    Random r = new Random();
 
 
 
@@ -73,8 +74,10 @@ public class SpawningSystem {
                     SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
 
                     if (spawnLocation.getWorld().getName().equalsIgnoreCase("world")) {
+
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
                     } else {
+
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in " + spawnLocation.getWorld().getName() + " positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
                     }
 
@@ -102,7 +105,7 @@ public class SpawningSystem {
         List<Entity> finalList = new ArrayList<>();
         ArrayList<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, 2d, 2d, 2d));
         for (Entity entity : entities){
-            if (!(entities instanceof Player)) {
+            if (!(entity instanceof Player)) {
                 finalList.add(entity);
             }
         }
@@ -115,92 +118,20 @@ public class SpawningSystem {
 
 
     private Location findTheRightLocation(Location center, int mobRange, Arena thatArena) {
+        int low = mobRange - (mobRange * 2);
+        int high = mobRange;
 
-        //int random_int = (int)(Math.random() * (mobRange - (mobRange - mobRange * 2) + 1) + (mobRange - mobRange * 2));
-        int XORY = ThreadLocalRandom.current().nextInt(1, 2 + 1);
-        int random_int = ThreadLocalRandom.current().nextInt((mobRange - mobRange * 2), mobRange + 1);
-        //int random_Y = ThreadLocalRandom.current().nextInt(center.getBlockY() - 2, center.getBlockY() + 3 + 1);
-        String value = "X";
-        if (XORY == 1) {
-            value = "Z";
-        }
+        int resultx = r.nextInt(high - low) + low;
+        int resultz = r.nextInt(high - low) + low;
 
-        if (value.equals("X")) {
 
-            Location newLocation = center.add((double) random_int, 0, 0); //random_Y
-            if (newLocation.getBlock().isEmpty()) {
+        Location location = center.clone().add(resultx, 0, resultz);
 
-                //if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
+        if (checkIFInTheRightRegion(location, thatArena)) {
+            return location;
 
-                //    int num = newLocation.getBlockY();
-                //    Location lastloc = newLocation;
-               //     while (true) {
-                //        lastloc.setY(num);
-                //        if (lastloc.getBlock().isEmpty()) {
-                //            num = num - 1;
-                //        } else {
-                //            lastloc.setY(num + 1);
-                //            break;
-                //        }
-                //    }
-
-                //    return lastloc;
-
-                //} else {
-
-                if (checkIFInTheRightRegion(newLocation, thatArena)) {
-                    return newLocation;
-                } else {
-
-                    return findTheRightLocation(center, mobRange, thatArena);
-
-                }
-                //}
-            } else {
-
-                return findTheRightLocation(center, mobRange, thatArena);
-
-            }
         } else {
-
-            Location newLocation = center.add(0, 0, (double) random_int); //(double) random_Y
-
-            if (newLocation.getBlock().isEmpty()) {
-                if (checkIFInTheRightRegion(newLocation, thatArena)) {
-                    return newLocation;
-                } else {
-                    return findTheRightLocation(center, mobRange, thatArena);
-                }
-
-/**
-                if (newLocation.subtract(0, (double) 1, 0).getBlock().isEmpty()) {
-                    int num = newLocation.getBlockY();
-                    Location lastloc = newLocation;
-                    while (true) {
-                        lastloc.setY(num);
-                        if (lastloc.getBlock().isEmpty()) {
-                            num = num - 1;
-                        } else {
-                            lastloc.setY(num + 1);
-                            break;
-                        }
-                    }
-
-                    return lastloc;
-
-                } else {
-
-                    return newLocation;
-
-                }
-             */
-
-            } else {
-
-                return findTheRightLocation(center, mobRange, thatArena);
-
-            }
-
+            return findTheRightLocation(center, mobRange, thatArena);
         }
 
 
@@ -208,6 +139,10 @@ public class SpawningSystem {
 
 
     private boolean checkIFInTheRightRegion(Location thatLocation, Arena thatArena) {
+
+        if (!thatLocation.getBlock().isEmpty()) {
+            return false;
+        }
         BukkitAdapter.adapt(thatLocation);
         RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
         boolean result = regions.getRegion(thatArena.currentPhase.region).contains(thatLocation.getBlockX(), thatLocation.getBlockY(), thatLocation.getBlockZ());
@@ -229,13 +164,8 @@ public class SpawningSystem {
         theEntity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(Double.valueOf(damage));
         theEntity.setCustomName(Utils.color("&7[&eLvl&7:&6" + level + "&7] &e" + name + " &7[&cHealth " + health + "/Max Health " + health + "&7]"));
         theEntity.setCustomNameVisible(true);
-
         //[Lvl:#] Name [Health #/Max Health #]
-
     }
-
-
-
 
 
 

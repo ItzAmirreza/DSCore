@@ -32,6 +32,7 @@ public class Arena {
     public List<String> listOfFinishedPhases = new ArrayList<>();
     public Phase currentPhase;
     public Phase firstPhase;
+    private int checkingID = 0;
     public List<PrizeObject> prizeCommands = new ArrayList<>();
     public Arena(String name, int min, int max, int maxTime) {
         this.name = name;
@@ -188,6 +189,7 @@ public class Arena {
 
     public void startTimer() {
         Bukkit.getScheduler().cancelTask(this.taskid);
+        checkingTimer();
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
@@ -218,6 +220,7 @@ public class Arena {
         onArenaFinish event = new onArenaFinish(this.name, players);
         Bukkit.getPluginManager().callEvent(event);
         Bukkit.getScheduler().cancelTask(taskid);
+        Bukkit.getScheduler().cancelTask(checkingID);
         for (Player player : players) {
             player.teleport(previousLocations.get(player.getName()));
             shortTermStorages.playersInMatch.remove(player.getName());
@@ -254,6 +257,51 @@ public class Arena {
             }
         }, 20 * 20);
 
+    }
+
+    SpawningSystem spawningSystem = new SpawningSystem();
+
+    private void checkingTimer() {
+        checkingID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+
+                if (currentPhase.spawnedEntities.size() == 0 && currentPhase.state == PhaseState.INGAME) {
+                    //go for the next phase
+                    spawningSystem.spawn(name);
+
+                } else {
+
+                    List<Entity> deletationEntities = new ArrayList<>();
+
+                    for (Entity entity : currentPhase.spawnedEntities) {
+                        if (entity.isDead()) {
+                            deletationEntities.add(entity);
+                        }
+                    }
+
+                    for (Entity entity : deletationEntities) {
+                        currentPhase.spawnedEntities.remove(entity);
+                    }
+
+                    if (currentPhase.spawnedEntities.size() == 0 && currentPhase.state == PhaseState.INGAME) {
+                        //go for the next phase
+                        spawningSystem.spawn(name);
+                    }
+
+
+                    if (currentPhase.spawnedEntities.size() == 1) {
+                        Entity entity = currentPhase.spawnedEntities.get(0);
+                        entity.teleport(players.get(0));
+                        System.out.println("Spawned");
+                    }
+                }
+
+                System.out.println(currentPhase.spawnedEntities.size());
+
+
+            }
+        }, 0, 20 * 3);
     }
 
 

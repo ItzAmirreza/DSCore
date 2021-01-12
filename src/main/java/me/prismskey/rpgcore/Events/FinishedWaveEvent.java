@@ -40,7 +40,6 @@ public class FinishedWaveEvent implements Listener {
 
             int currentwave = shortTermStorages.arenaHashMap.get(arenaName).currentPhase.current_wave;
             Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
-
             shortTermStorages.arenaHashMap.get(arenaName).currentPhase.current_wave = currentwave + 1;
             shortTermStorages.arenaHashMap.get(arenaName).phases.get(thatArena.currentPhase.name).current_wave = currentwave + 1;
             spawningSystem.spawn(arenaName);

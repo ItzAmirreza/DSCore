@@ -19,9 +19,16 @@ public class rejoinArena implements CommandExecutor {
             if (shortTermStorages.playersInMatch.containsKey(player.getName())) {
 
                 Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
-                player.teleport(playerArena.spawnLocation);
-                playerArena.players.add(player);
-                player.sendMessage(Utils.color("&aYou have returned to dungeon."));
+
+                if (playerArena.players.contains(player)) {
+                    player.teleport(playerArena.spawnLocation);
+                    playerArena.players.add(player);
+                    player.sendMessage(Utils.color("&aYou have returned to dungeon."));
+                } else {
+
+                    player.sendMessage(Utils.color("&eYou are already in the dungeon."));
+
+                }
 
 
             } else {
