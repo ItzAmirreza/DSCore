@@ -56,11 +56,11 @@ public final class Rpgcore extends JavaPlugin {
             e.printStackTrace();
         }
 
-        //if(!setupEconomy()) {
-            //getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
-            //getServer().getPluginManager().disablePlugin(this);
-            //return;
-        //}
+        if(!setupEconomy()) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         startRegistration();
         startTasks();
 
@@ -120,7 +120,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerLeaveListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
         //test event here will remove it after development
-        getServer().getPluginManager().registerEvents(new JustTestingEvent(), this);
+        getServer().getPluginManager().registerEvents(new onPlayerJoin(), this);
 
     }
 
