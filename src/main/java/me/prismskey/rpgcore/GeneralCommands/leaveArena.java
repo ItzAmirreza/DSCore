@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.GeneralCommands;
 
+import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Location;
@@ -21,7 +22,10 @@ public class leaveArena implements CommandExecutor {
                 shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
                 Location teleporting = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).playerPhaseLocation.get(player.getName());
                 player.teleport(teleporting);
-                shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer();
+                Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
+                playerArena.players.remove(player);
+                shortTermStorages.playersInMatch.remove(player);
+                shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer(player);
                 player.sendMessage(Utils.color("&eYou have left the arena!"));
 
 

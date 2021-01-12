@@ -53,8 +53,10 @@ public class SpawningSystem {
                     int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
-                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER, 0);
-                    assignEntityData(theEnt, dMob.level, damage, health);
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
+                    assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                     shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                 }
@@ -71,12 +73,13 @@ public class SpawningSystem {
                     SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
 
                     Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in " + spawnLocation.getWorld().getName() + " positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
-                    System.out.println("I SWAER TO GOD I SPAWNED THIS ENTITY!");
+
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);
-                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER, 0);
-
-                    assignEntityData(theEnt, dMob.level, damage, health);
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
+                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
+                    assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                     shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                 }
@@ -213,15 +216,17 @@ public class SpawningSystem {
     }
 
 
-    private void assignEntityData(Entity thatEntity, int level, int damage, int health) {
+    private void assignEntityData(Entity thatEntity, int level, int damage, int health, String name) {
 
         LivingEntity theEntity = (LivingEntity) thatEntity;
         theEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Double.valueOf(damage));
         theEntity.setMaxHealth(health);
         theEntity.setHealth(health);
         theEntity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(Double.valueOf(damage));
-        theEntity.setCustomName(Utils.color("&e◈ &6Level " + level + " &e◈"));
+        theEntity.setCustomName(Utils.color("&7[&eLvl&7:&6" + level + "&7] &e" + name + " &7[&cHealth " + health + "/Max Health " + health + "&7]"));
         theEntity.setCustomNameVisible(true);
+
+        //[Lvl:#] Name [Health #/Max Health #]
 
     }
 

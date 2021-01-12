@@ -44,7 +44,7 @@ public class joinArena implements CommandExecutor {
                         List<Player> playersInParty = mcmmoParty.getOnlineMembers();
                         if (playersInParty.size() <= thatArena.max) {
 
-                            if (mcmmoParty.getLeader().getUniqueId() == player.getUniqueId()) {
+                            if (mcmmoParty.getLeader().getPlayerName() == player.getName()) {
 
                                 for (Player player1 : playersInParty) {
                                     thatArena.addPlayer(player1);

@@ -19,17 +19,16 @@ public class EntityRecievingDmg implements Listener {
 
         if (event.getEntity() instanceof LivingEntity) {
 
-            //there is a bug here so don't test this part out (or just ignore it)
-            /*LivingEntity entity = (LivingEntity) event.getEntity();
+            LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity.getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER)) {
-                String nametg = entity.getCustomName();
+            if (entity.getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING)) {
                 int maxhealth = (int) entity.getMaxHealth();
                 int currenthealth = (int) entity.getHealth();
+                int level = entity.getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER);
+                String name = entity.getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING);
 
-                entity.setCustomName(Utils.color(nametg + "&a" + currenthealth + "/" + maxhealth));
-            }*/
-
+                entity.setCustomName(Utils.color("&7[&eLvl&7:&6" + level + "&7] &e" + name + " &7[&cHealth " + currenthealth + "/Max Health " + maxhealth + "&7]"));
+            }
 
         }
 

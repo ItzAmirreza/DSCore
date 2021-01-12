@@ -23,90 +23,32 @@ public class MobDeathEvent implements Listener {
     @EventHandler
     public void onDeath(EntityDeathEvent e) {
 
-        if (!(e.getEntity() instanceof Player)) {
+            if (e.getEntity().getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING)) {
 
-            Player killer = e.getEntity().getKiller();
+                String arenaName = e.getEntity().getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING);
 
-            if (e.getEntity().getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "isspecial"), PersistentDataType.INTEGER)) {
+                Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
+                boolean result = false;
+                for (Entity entity : thatArena.currentPhase.spawnedEntities) {
+                    if (!(entity.isDead())) {
+                        result = true;
+                    } else {
 
-
-                if (killer != null) {
-
-                    if (shortTermStorages.playersInMatch.containsKey(killer.getName())) {
-
-                        String arenaName = shortTermStorages.playersInMatch.get(killer.getName());
-
-                        Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
-                        boolean result = false;
-                        for (Entity entity : thatArena.currentPhase.spawnedEntities) {
-                            if (!(entity.isDead())) {
-                                result = true;
-                            } else {
-
-                                entity.isDead();
-                                shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.get(shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.indexOf(entity)).remove();
-                                shortTermStorages.arenaHashMap.get(arenaName).phases.get(thatArena.currentPhase.name).spawnedEntities.get(shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.indexOf(entity)).remove();
-                            }
-
-                        }
-
-                        if (!result) {
-
-                            onFinishedWave waveEvent = new onFinishedWave(shortTermStorages.arenaHashMap.get(arenaName), shortTermStorages.arenaHashMap.get(arenaName).currentPhase.current_wave, shortTermStorages.arenaHashMap.get(arenaName).currentPhase);
-                            Bukkit.getPluginManager().callEvent(waveEvent);
-
-                        }
-
+                        entity.isDead();
+                        shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.get(shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.indexOf(entity)).remove();
+                        shortTermStorages.arenaHashMap.get(arenaName).phases.get(thatArena.currentPhase.name).spawnedEntities.get(shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.indexOf(entity)).remove();
                     }
 
-                } else {
-                    List<Entity> entityList = e.getEntity().getNearbyEntities(30, 30, 30);
-                    for (Entity entityy : entityList) {
-                        if (entityy instanceof Player) {
-                            Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&aYes containts player"));
-                            Player player = (Player) entityy;
-                            Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&agot the player man"));
-                            if (shortTermStorages.playersInMatch.containsKey(player.getName())) {
-                                Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&aYes in the arena"));
-                                String thatArenastr = shortTermStorages.playersInMatch.get(player.getName());
-                                Arena thatArena = shortTermStorages.arenaHashMap.get(thatArenastr);
-                                boolean result = false;
-                                for (Entity entity : thatArena.currentPhase.spawnedEntities) {
-                                    if (!(entity.isDead())) {
-                                        result = true;
-                                    } else {
-
-                                        entity.isDead();
-                                        shortTermStorages.arenaHashMap.get(thatArenastr).currentPhase.spawnedEntities.get(shortTermStorages.arenaHashMap.get(thatArenastr).currentPhase.spawnedEntities.indexOf(entity)).remove();
-                                        shortTermStorages.arenaHashMap.get(thatArenastr).phases.get(thatArena.currentPhase.name).spawnedEntities.get(shortTermStorages.arenaHashMap.get(thatArenastr).currentPhase.spawnedEntities.indexOf(entity)).remove();
-                                    }
-
-                                }
-
-                                if (!result) {
-                                    Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&egoing for next"));
-
-                                    onFinishedWave waveEvent = new onFinishedWave(shortTermStorages.arenaHashMap.get(thatArenastr), shortTermStorages.arenaHashMap.get(thatArenastr).currentPhase.current_wave, shortTermStorages.arenaHashMap.get(thatArenastr).currentPhase);
-                                    Bukkit.getPluginManager().callEvent(waveEvent);
-
-                                }
-                                break;
-
-                            }
-
-                        }
-
-                    }
                 }
 
+                if (!result) {
 
+                    onFinishedWave waveEvent = new onFinishedWave(shortTermStorages.arenaHashMap.get(arenaName), shortTermStorages.arenaHashMap.get(arenaName).currentPhase.current_wave, shortTermStorages.arenaHashMap.get(arenaName).currentPhase);
+                    Bukkit.getPluginManager().callEvent(waveEvent);
+
+                }
 
             }
-
-
-        }
-
-
 
     }
 

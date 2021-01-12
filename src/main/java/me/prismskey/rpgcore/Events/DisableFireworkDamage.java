@@ -8,8 +8,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class DisableFireworkDamage implements Listener {
     @EventHandler
     public void onFireworkDamage(EntityDamageByEntityEvent event) {
-        if(event.getDamager() instanceof Firework) {
-            event.setCancelled(true);
-        }
+//        if(event.getDamager() instanceof Firework) {
+//            event.setCancelled(true);
+//        }
     }
 }

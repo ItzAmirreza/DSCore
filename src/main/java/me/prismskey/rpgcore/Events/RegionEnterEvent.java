@@ -54,6 +54,11 @@ public class RegionEnterEvent implements Listener {
                 }
             }
 
+        } else {
+
+            if (!player.hasPermission("dscore.bypass")) {
+                player.performCommand("spawn");
+            }
         }
 
     }

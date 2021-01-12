@@ -154,7 +154,6 @@ public class Arena {
 
                     for (Player player : players) {
                         player.teleport(spawnLocation);
-                        player.setExp(levels.get(player.getName()));
                         player.sendTitle(Utils.color("&6&l" + name), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3 * 20, 5 * 20, 20);
                     }
 
@@ -165,7 +164,6 @@ public class Arena {
                     if (countdown == 10) {
                         for (Player player : players) {
                             levels.put(player.getName(), player.getExp());
-                            player.setLevel(countdown);
                             playerPhaseLocation.put(player.getName(), player.getLocation());
 
                         }
@@ -174,7 +172,6 @@ public class Arena {
                         for (Player player : players) {
 
                             player.sendMessage(Utils.color("&7You will be teleported to dungeon in &6" + countdown + " &7second(s)."));
-                            player.setLevel(countdown);
 
 
                         }
@@ -240,10 +237,23 @@ public class Arena {
         }
     }
 
-    public void checkIfStillArenaHasPlayer() {
-        if (players.size() == 0) {
-            finishArena();
-        }
+    public void checkIfStillArenaHasPlayer(Player player) {
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Rpgcore.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+
+                if (players.size() == 0) {
+                    finishArena();
+                }
+
+                if (!players.contains(player)) {
+                    shortTermStorages.playersInMatch.remove(player.getName());
+                }
+
+            }
+        }, 20 * 20);
+
     }
 
 
