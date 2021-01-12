@@ -72,7 +72,11 @@ public class SpawningSystem {
                     //spawn that entity
                     SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
 
-                    Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in " + spawnLocation.getWorld().getName() + " positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
+                    if (spawnLocation.getWorld().getName().equalsIgnoreCase("world")) {
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
+                    } else {
+                        Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in " + spawnLocation.getWorld().getName() + " positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
+                    }
 
                     //get that special entity method
                     Entity theEnt = getSpecialEntity(spawnLocation);

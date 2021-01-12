@@ -21,3 +21,5 @@ commands:
     permission: dscore.admin.lootcrate
     aliases:
       - gp
+  rejoin:
+    description: rejoin an arena
