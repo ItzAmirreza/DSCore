@@ -13,6 +13,7 @@ import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.command.ConsoleCommandSender;
@@ -140,8 +141,10 @@ public class SpawningSystem {
 
     private boolean checkIFInTheRightRegion(Location thatLocation, Arena thatArena) {
 
-        if (!thatLocation.getBlock().isEmpty()) {
-            return false;
+        if (thatLocation.getBlock().getType() != Material.WATER || thatLocation.getBlock().getType() != Material.LAVA) {
+            if (!thatLocation.getBlock().isEmpty()) {
+                return false;
+            }
         }
         BukkitAdapter.adapt(thatLocation);
         RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
