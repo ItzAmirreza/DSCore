@@ -141,10 +141,8 @@ public class SpawningSystem {
 
     private boolean checkIFInTheRightRegion(Location thatLocation, Arena thatArena) {
 
-        if (thatLocation.getBlock().getType() != Material.WATER || thatLocation.getBlock().getType() != Material.LAVA || thatLocation.getBlock().getType() != Material.LEGACY_WATER || thatLocation.getBlock().getType() != Material.LEGACY_LAVA || thatLocation.getBlock().getType() != Material.LEGACY_STATIONARY_WATER || thatLocation.getBlock().getType() != Material.LEGACY_STATIONARY_LAVA) {
-            if (!thatLocation.getBlock().isEmpty()) {
-                return false;
-            }
+        if( !(thatLocation.getBlock().getType() == Material.WATER || thatLocation.getBlock().isEmpty())) {
+            return false;
         }
         BukkitAdapter.adapt(thatLocation);
         RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
