@@ -13,7 +13,7 @@ import java.util.Random;
 public class onArenaFinishListener implements Listener {
 
     Random rand = new Random();
-
+    private final String GIVE_KEY_COMMAND = "crates givekey %player% ";
 
     @EventHandler
     public void onArenaEnd(onArenaFinish event) {
@@ -23,7 +23,17 @@ public class onArenaFinishListener implements Listener {
 
         for (Player player : event.getPlayerList()) {
 
+            //the crate key
+            double keyRoll = Math.random();
+            double totalKilledMobs = event.getArena().totalKilledMobs;
+            double totalMobs = event.getArena().totalMobs;
+            double keyDropChanceFactor = event.getArena().keyDropChanceFactor;
+            double result = totalKilledMobs/totalMobs * keyDropChanceFactor;
+            if(result >= keyRoll) {
+                Bukkit.dispatchCommand(console, GIVE_KEY_COMMAND.replace("%player%", player.getName()) + event.getArena().prizeKeyName);
+            }
 
+            //all other prizes such as money or other items
             for (PrizeObject prize : prizeObjectList) {
 
                 int  n = rand.nextInt(100) + 1;
@@ -32,7 +42,6 @@ public class onArenaFinishListener implements Listener {
                     Bukkit.dispatchCommand(console, prize.command.replace("%player%", player.getName()));
 
                 }
-
 
             }
 

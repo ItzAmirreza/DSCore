@@ -11,7 +11,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -21,6 +20,11 @@ public class Arena {
     public int min;
     public int max;
     public int maxTime;
+    public double keyDropChanceFactor;
+    public String prizeKeyName;
+    public int totalMobs = 0;
+    public int totalKilledMobs = 0;
+
     public ArenaState arenaState;
     public LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
     public List<Player> players = new ArrayList<>();
@@ -34,11 +38,13 @@ public class Arena {
     public Phase firstPhase;
     private int checkingID = 0;
     public List<PrizeObject> prizeCommands = new ArrayList<>();
-    public Arena(String name, int min, int max, int maxTime) {
+    public Arena(String name, int min, int max, int maxTime, double keyDropChanceFactor, String prizeKeyName) {
         this.name = name;
         this.min = min;
         this.max = max;
         this.maxTime = maxTime;
+        this.keyDropChanceFactor = keyDropChanceFactor;
+        this.prizeKeyName = prizeKeyName;
     }
 
     public void setSpawnLocation(Location location) {
@@ -81,6 +87,7 @@ public class Arena {
         this.playerPhaseLocation.clear();
         this.listOfFinishedPhases.clear();
         this.passedTime = 0;
+        this.totalKilledMobs = 0;
         for (Entity mob : allMobsInArena) { //removing remaining mobs
             if (!mob.isDead()) {
                 mob.remove();
@@ -104,7 +111,7 @@ public class Arena {
     public boolean checkIfArenaIsReady() {
         boolean ready = true;
 
-        if (spawnLocation == null || phases.size() == 0) {
+        if (spawnLocation == null || phases.size() == 0 || prizeKeyName == null || keyDropChanceFactor <= 0) {
             ready = false;
         }
 
@@ -304,8 +311,13 @@ public class Arena {
         }, 0, 20 * 3);
     }
 
+    public void setKeyDropChanceFactor(double factor) {
+        keyDropChanceFactor = factor;
+    }
 
-
+    public void setPrizeKeyName(String name) {
+        prizeKeyName = name;
+    }
 
 
 }

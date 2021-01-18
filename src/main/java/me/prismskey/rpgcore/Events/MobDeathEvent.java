@@ -28,6 +28,10 @@ public class MobDeathEvent implements Listener {
                 String arenaName = e.getEntity().getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING);
 
                 Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
+                thatArena.totalKilledMobs++;
+
+                Rpgcore.getInstance().getLogger().info(thatArena.name + " total killed mobs: " + thatArena.totalKilledMobs);
+
                 boolean result = false;
                 for (Entity entity : thatArena.currentPhase.spawnedEntities) {
                     if (!(entity.isDead())) {

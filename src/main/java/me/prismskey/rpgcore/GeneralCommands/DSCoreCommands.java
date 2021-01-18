@@ -30,7 +30,7 @@ import java.util.List;
 
 public class DSCoreCommands implements CommandExecutor {
 
-    private final List<String> possibleArgs = Arrays.asList("createarena", "removearena", "addphase", "removephase", "addmob", "removemob", "setspawn");
+    private final List<String> possibleArgs = Arrays.asList("createarena", "removearena", "addphase", "removephase", "addmob", "removemob", "setspawn", "setkeyname", "setkeydropchancefactor");
     private ArenaLoader arenaLoader = new ArenaLoader();
 
     @Override
@@ -50,7 +50,7 @@ public class DSCoreCommands implements CommandExecutor {
                 //dscore createarena name limit max
                 if (possibleArgs.contains(mainarg)) {
 
-                    if (mainarg.equalsIgnoreCase("createarena") && argscount == 5) {
+                    if (mainarg.equalsIgnoreCase("createarena") && argscount == 7) {
                         //createArena
                         try {
                             createArena(args, player);
@@ -107,8 +107,22 @@ public class DSCoreCommands implements CommandExecutor {
                         } catch (IOException | InvalidConfigurationException e) {
                             e.printStackTrace();
                         }
+                    } else if(mainarg.equalsIgnoreCase("setKeyName") && argscount == 3) {
+                        try {
+                            setKeyName(args, player);
+                        } catch (IOException | InvalidConfigurationException e) {
+                            e.printStackTrace();
+                        }
 
-                    } else {
+                    } else if(mainarg.equalsIgnoreCase("setkeydropchancefactor") && argscount == 3) {
+                        try {
+                            setKeyDropChanceFactor(args, player);
+                        } catch (IOException | InvalidConfigurationException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    else {
 
                         sendHelp(player);
                     }
@@ -145,7 +159,7 @@ public class DSCoreCommands implements CommandExecutor {
         //default help message
 
         player.sendMessage(Utils.color("&7&m------------------------- \n" +
-                "&7- &c/dscore createarena (arena name) (min players) (max players) (maxTime)\n" +
+                "&7- &c/dscore createarena (arena name) (min players) (max players) (maxTime) (key drop chance factor) (key name)\n" +
                 "&7- &c/dscore removearena (arena name)\n" +
                 "&7- &c/dscore addphase (phase name) (arena name) (region name) (mob spawning range) (waves count) | Note: Where you are staying when you are creating this sets the center of phase \n" +
                 "&7- &c/dscore removephase (phase name) (arena name) \n" +
@@ -154,6 +168,8 @@ public class DSCoreCommands implements CommandExecutor {
                 "&7- &c/dscore setspawn (arena name) \n" +
                 "&7- &c/dscore arenalist \n" +
                 "&7- &c/dscore phaselist (arena name) \n" +
+                "&7- &c/dscore setkeyname (arena name) (key name) \n" +
+                "&7- &c/dscore setkeydropchancefactor (arena name) (factor value) \n" +
                 "&7&m-------------------------"));
 
     }
@@ -166,8 +182,10 @@ public class DSCoreCommands implements CommandExecutor {
             int min = Integer.parseInt(args[2]);
             int max = Integer.parseInt(args[3]);
             int maxtime = Integer.parseInt(args[4]);
+            double keyDropChanceFactor = Double.parseDouble(args[5]);
+            String keyName = args[6];
 
-            Arena newArena = new Arena(arenaName, min, max, maxtime);
+            Arena newArena = new Arena(arenaName, min, max, maxtime, keyDropChanceFactor, keyName);
 
             shortTermStorages.arenas.add(newArena);
             shortTermStorages.arenaHashMap.put(newArena.name, newArena);
@@ -181,6 +199,8 @@ public class DSCoreCommands implements CommandExecutor {
             arenasconfig.set("arenas." + arenaName + ".min", min);
             arenasconfig.set("arenas." + arenaName + ".max", max);
             arenasconfig.set("arenas." + arenaName + ".maxtime", maxtime);
+            arenasconfig.set("arenas." + arenaName + ".key_drop_chance_factor", keyDropChanceFactor);
+            arenasconfig.set("arenas." + arenaName + ".prize_key_name", keyName);
             arenasconfig.set("arenas." + arenaName + ".rewards", Arrays.asList("eco give %player% 100:100"));
             Rpgcore.getInstance().saveResource("arenas.yml", true);
             setTheConfigs(arenasfile, arenasconfig);
@@ -216,6 +236,48 @@ public class DSCoreCommands implements CommandExecutor {
             doesntExist(player);
         }
 
+    }
+
+    private void setKeyDropChanceFactor(String[] args, Player player) throws IOException, InvalidConfigurationException {
+        String arenaName = args[1].toLowerCase();
+        if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
+
+            shortTermStorages.arenaHashMap.get(arenaName).setKeyDropChanceFactor(Double.parseDouble(args[2]));
+            shortTermStorages.arenaHashMap.get(arenaName).checkIfArenaIsReady();
+
+            File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
+            FileConfiguration arenasconfig = new YamlConfiguration();
+            arenasconfig.load(arenasfile);
+            arenasconfig.set("arenas." + arenaName + ".key_drop_chance_factor", args[2]);
+            setTheConfigs(arenasfile, arenasconfig);
+
+
+            player.sendMessage(Utils.color("&aYou have set the key drop chance factor to " + args[2] + "."));
+
+        } else {
+            doesntExist(player);
+        }
+    }
+
+    private void setKeyName(String[] args, Player player) throws IOException, InvalidConfigurationException {
+        String arenaName = args[1].toLowerCase();
+        if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
+
+            shortTermStorages.arenaHashMap.get(arenaName).setPrizeKeyName(args[2]);
+            shortTermStorages.arenaHashMap.get(arenaName).checkIfArenaIsReady();
+
+            File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
+            FileConfiguration arenasconfig = new YamlConfiguration();
+            arenasconfig.load(arenasfile);
+            arenasconfig.set("arenas." + arenaName + ".prize_key_name", args[2]);
+            setTheConfigs(arenasfile, arenasconfig);
+
+
+            player.sendMessage(Utils.color("&aYou have set the prize key name to " + args[2] + "."));
+
+        } else {
+            doesntExist(player);
+        }
     }
 
     private void setSpawnPoint(String[] args, Player player) throws IOException, InvalidConfigurationException {

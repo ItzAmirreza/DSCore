@@ -27,7 +27,7 @@ public class RegionEnterEvent implements Listener {
 
             Arena thatArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
 
-            for (Phase phase : thatArena.phases.values()) {
+            /*for (Phase phase : thatArena.phases.values()) {
 
                 if (phase.region.toLowerCase().equalsIgnoreCase(regionName.toLowerCase())) {
 
@@ -43,7 +43,7 @@ public class RegionEnterEvent implements Listener {
 
                 }
 
-            }
+            }*/
 
             if (thatArena.currentPhase.region.equalsIgnoreCase(regionName)) {
                 if (thatArena.currentPhase.firstTime) {
