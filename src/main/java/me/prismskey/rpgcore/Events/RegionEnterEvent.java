@@ -45,14 +45,24 @@ public class RegionEnterEvent implements Listener {
 
             }*/
 
-            if (thatArena.currentPhase.region.equalsIgnoreCase(regionName)) {
+            for(Phase phase : thatArena.phases.values()) {
+                if(phase.region.toLowerCase().equalsIgnoreCase(regionName.toLowerCase())) {
+                    if(phase.firstTime) {
+                        spawningSystem.spawn(thatArena.name, phase);
+                        shortTermStorages.arenaHashMap.get(thatArena.name).phases.get(phase.name).firstTime = false;
+                        shortTermStorages.arenaHashMap.get(thatArena.name).announceToAllPlayers("&bA new wave of mobs has spawned!");
+                    }
+                }
+            }
+
+            /*if (thatArena.currentPhase.region.equalsIgnoreCase(regionName)) {
                 if (thatArena.currentPhase.firstTime) {
                     spawningSystem.spawn(thatArena.name);
                     shortTermStorages.arenaHashMap.get(thatArena.name).currentPhase.firstTime = false;
                     shortTermStorages.arenaHashMap.get(thatArena.name).phases.get(thatArena.currentPhase.name).firstTime = false;
                     shortTermStorages.arenaHashMap.get(thatArena.name).announceToAllPlayers("&bYou have entered a new phase!");
                 }
-            }
+            }*/
 
         } else {
 

@@ -30,9 +30,9 @@ public class MobDeathEvent implements Listener {
                 Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
                 thatArena.totalKilledMobs++;
 
-                Rpgcore.getInstance().getLogger().info(thatArena.name + " total killed mobs: " + thatArena.totalKilledMobs);
 
-                boolean result = false;
+
+                /*boolean result = false;
                 for (Entity entity : thatArena.currentPhase.spawnedEntities) {
                     if (!(entity.isDead())) {
                         result = true;
@@ -50,7 +50,7 @@ public class MobDeathEvent implements Listener {
                     onFinishedWave waveEvent = new onFinishedWave(shortTermStorages.arenaHashMap.get(arenaName), shortTermStorages.arenaHashMap.get(arenaName).currentPhase.current_wave, shortTermStorages.arenaHashMap.get(arenaName).currentPhase);
                     Bukkit.getPluginManager().callEvent(waveEvent);
 
-                }
+                }*/
 
             }
 

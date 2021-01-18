@@ -199,8 +199,8 @@ public class DSCoreCommands implements CommandExecutor {
             arenasconfig.set("arenas." + arenaName + ".min", min);
             arenasconfig.set("arenas." + arenaName + ".max", max);
             arenasconfig.set("arenas." + arenaName + ".maxtime", maxtime);
-            arenasconfig.set("arenas." + arenaName + ".key_drop_chance_factor", keyDropChanceFactor);
-            arenasconfig.set("arenas." + arenaName + ".prize_key_name", keyName);
+            arenasconfig.set("arenas." + arenaName + ".keydropchancefactor", keyDropChanceFactor);
+            arenasconfig.set("arenas." + arenaName + ".prizekeyname", keyName);
             arenasconfig.set("arenas." + arenaName + ".rewards", Arrays.asList("eco give %player% 100:100"));
             Rpgcore.getInstance().saveResource("arenas.yml", true);
             setTheConfigs(arenasfile, arenasconfig);
@@ -248,7 +248,7 @@ public class DSCoreCommands implements CommandExecutor {
             File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
             FileConfiguration arenasconfig = new YamlConfiguration();
             arenasconfig.load(arenasfile);
-            arenasconfig.set("arenas." + arenaName + ".key_drop_chance_factor", args[2]);
+            arenasconfig.set("arenas." + arenaName + ".keydropchancefactor", Double.parseDouble(args[2]));
             setTheConfigs(arenasfile, arenasconfig);
 
 
@@ -269,7 +269,7 @@ public class DSCoreCommands implements CommandExecutor {
             File arenasfile = new File(Rpgcore.getInstance().getDataFolder(), "arenas.yml");
             FileConfiguration arenasconfig = new YamlConfiguration();
             arenasconfig.load(arenasfile);
-            arenasconfig.set("arenas." + arenaName + ".prize_key_name", args[2]);
+            arenasconfig.set("arenas." + arenaName + ".prizekeyname", args[2]);
             setTheConfigs(arenasfile, arenasconfig);
 
 

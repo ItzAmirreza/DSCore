@@ -25,8 +25,10 @@ public class ArenaLoader {
                 String arenaname = key;
                 int min = config.getInt(key + ".min");
                 int max = config.getInt(key + ".max");
-                double keyDropChance = config.getDouble(key + ".key_drop_chance_factor");
-                String prizeKeyName = config.getString(key + ".prize_key_name");
+                double keyDropChance = config.getDouble(key + ".keydropchancefactor");
+                String prizeKeyName = config.getString(key + ".prizekeyname");
+                Rpgcore.instance.getLogger().info("**********************************");
+                Rpgcore.instance.getLogger().info(min + " " + max + " " + keyDropChance + prizeKeyName);
                 int maxTime = config.getInt(key + ".maxtime"); //minutes
                 Arena newArena = new Arena(arenaname.toLowerCase(), min, max, maxTime, keyDropChance, prizeKeyName);
                 String spawnLocation = config.getString(key + ".spawnlocation", "null");

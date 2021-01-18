@@ -112,7 +112,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnTriggerSpecialAbilities(), this);
         getServer().getPluginManager().registerEvents(new OnPvp(), this);
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
-        getServer().getPluginManager().registerEvents(new FinishedWaveEvent(), this);
+        //getServer().getPluginManager().registerEvents(new FinishedWaveEvent(), this);
         getServer().getPluginManager().registerEvents(new MobDeathEvent(), this);
         getServer().getPluginManager().registerEvents(new EntityRecievingDmg(), this);
         getServer().getPluginManager().registerEvents(new onArenaFinishListener(), this);

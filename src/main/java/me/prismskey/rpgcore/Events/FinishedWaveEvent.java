@@ -11,7 +11,7 @@ import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class FinishedWaveEvent implements Listener {
+/*public class FinishedWaveEvent implements Listener {
 
     SpawningSystem spawningSystem = new SpawningSystem();
     @EventHandler
@@ -48,4 +48,4 @@ public class FinishedWaveEvent implements Listener {
         }
 
     }
-}
+}*/

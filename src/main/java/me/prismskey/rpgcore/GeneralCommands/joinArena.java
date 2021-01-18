@@ -29,16 +29,20 @@ public class joinArena implements CommandExecutor {
                 if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
                     Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
                     Party mcmmoParty = PartyAPI.getPartyByPlayer(player);
-                    if (mcmmoParty == null) {
-                        if (thatArena.arenaState == ArenaState.AVAILABLE) {
 
-                            thatArena.addPlayer(player);
-                            shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
-                            thatArena.startMatch();
-
-                        } else{
+                    if (thatArena.arenaState != ArenaState.AVAILABLE) {
+                        if(thatArena.arenaState == ArenaState.INGAME || thatArena.arenaState == ArenaState.RESETTING) {
+                            player.sendMessage(Utils.color("&cThat Arena is already in use. Please try again later."));
+                        } else {
                             player.sendMessage(Utils.color("&cThis arena is not available right now."));
                         }
+                        return false;
+                    }
+
+                    if (mcmmoParty == null) {
+                        thatArena.addPlayer(player);
+                        shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
+                        thatArena.startMatch();
                     } else {
                         //It does have a party
                         List<Player> playersInParty = mcmmoParty.getOnlineMembers();
@@ -68,8 +72,6 @@ public class joinArena implements CommandExecutor {
                         }
 
                     }
-
-
 
                 } else {
                     player.sendMessage(Utils.color("&cThis arena doesn't exist!"));

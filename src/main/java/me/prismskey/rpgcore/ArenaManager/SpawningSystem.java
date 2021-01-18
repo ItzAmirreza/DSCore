@@ -37,21 +37,21 @@ public class SpawningSystem {
 
 
 
-    public void spawn(String arenaName) {
+    public void spawn(String arenaName, Phase phase) {
         Arena arena = shortTermStorages.arenaHashMap.get(arenaName);
 
-        Phase currentphase = arena.currentPhase;
+        //Phase targetPhase = arena.currentPhase;
         //int wave_count = currentphase.wavescount;
         //int current_wave = currentphase.current_wave;
-        Location center = currentphase.center;
-        int mobRange = currentphase.mobSpawnRange;
+        Location center = phase.center;
+        int mobRange = phase.mobSpawnRange;
 
-        for (DMob dMob : currentphase.mobs) {
+        for (DMob dMob : phase.mobs) {
 
             if (!dMob.isSpecial) {
                 int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
                 if (chance <= dMob.percentage) {
-                    Location spawnLocation = findTheRightLocation(center, mobRange, arena);
+                    Location spawnLocation = findTheRightLocation(center, mobRange, arena, phase);
                     int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
@@ -60,14 +60,14 @@ public class SpawningSystem {
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
                     assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
-                    shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
+                    //shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                 }
             } else {
 
                 int chance = ThreadLocalRandom.current().nextInt(0, 100 + 1);
                 if (chance <= dMob.percentage) {
 
-                    Location spawnLocation = findTheRightLocation(center, mobRange, arena);
+                    Location spawnLocation = findTheRightLocation(center, mobRange, arena, phase);
                     int damage = mlcm.getMobDamage(dMob.mob, String.valueOf(dMob.level));
                     int health = mlcm.getMobHealth(dMob.mob, String.valueOf(dMob.level));
 
@@ -89,7 +89,7 @@ public class SpawningSystem {
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
                     assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
-                    shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
+                    //shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                 }
 
             }
@@ -118,7 +118,7 @@ public class SpawningSystem {
 
 
 
-    private Location findTheRightLocation(Location center, int mobRange, Arena thatArena) {
+    private Location findTheRightLocation(Location center, int mobRange, Arena thatArena, Phase thatPhase) {
         int low = mobRange - (mobRange * 2);
         int high = mobRange;
 
@@ -128,25 +128,26 @@ public class SpawningSystem {
 
         Location location = center.clone().add(resultx, 0, resultz);
 
-        if (checkIFInTheRightRegion(location, thatArena)) {
+        if (checkIFInTheRightRegion(location, thatPhase)) {
             return location;
 
         } else {
-            return findTheRightLocation(center, mobRange, thatArena);
+            return findTheRightLocation(center, mobRange, thatArena, thatPhase);
         }
 
 
     }
 
 
-    private boolean checkIFInTheRightRegion(Location thatLocation, Arena thatArena) {
+    private boolean checkIFInTheRightRegion(Location thatLocation, Phase targetPhase) {
 
         if( !(thatLocation.getBlock().getType() == Material.WATER || thatLocation.getBlock().isEmpty())) {
             return false;
         }
         BukkitAdapter.adapt(thatLocation);
         RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
-        boolean result = regions.getRegion(thatArena.currentPhase.region).contains(thatLocation.getBlockX(), thatLocation.getBlockY(), thatLocation.getBlockZ());
+        //boolean result = regions.getRegion(thatArena.currentPhase.region).contains(thatLocation.getBlockX(), thatLocation.getBlockY(), thatLocation.getBlockZ());
+        boolean result = regions.getRegion(targetPhase.region).contains(thatLocation.getBlockX(), thatLocation.getBlockY(), thatLocation.getBlockZ());
         if (result) {
             return true;
         } else {

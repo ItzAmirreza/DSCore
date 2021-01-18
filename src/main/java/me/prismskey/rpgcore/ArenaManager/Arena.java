@@ -34,9 +34,9 @@ public class Arena {
     public List<Entity> allMobsInArena = new ArrayList<>();
     public HashMap<String, Location> playerPhaseLocation = new HashMap<>();
     public List<String> listOfFinishedPhases = new ArrayList<>();
-    public Phase currentPhase;
+    //public Phase currentPhase;
     public Phase firstPhase;
-    private int checkingID = 0;
+    //private int checkingID = 0;
     public List<PrizeObject> prizeCommands = new ArrayList<>();
     public Arena(String name, int min, int max, int maxTime, double keyDropChanceFactor, String prizeKeyName) {
         this.name = name;
@@ -111,6 +111,11 @@ public class Arena {
     public boolean checkIfArenaIsReady() {
         boolean ready = true;
 
+        Rpgcore.instance.getLogger().info("--------------------------------------------------------");
+        Rpgcore.instance.getLogger().info(prizeKeyName + " " + keyDropChanceFactor);
+        Rpgcore.instance.getLogger().info("" + phases.size());
+        Rpgcore.instance.getLogger().info("" + spawnLocation);
+
         if (spawnLocation == null || phases.size() == 0 || prizeKeyName == null || keyDropChanceFactor <= 0) {
             ready = false;
         }
@@ -145,7 +150,7 @@ public class Arena {
 
         for (Phase phase: phases.values()) {
             this.firstPhase = phase;
-            this.currentPhase = phase;
+            //this.currentPhase = phase;
             break;
         }
 
@@ -196,7 +201,7 @@ public class Arena {
 
     public void startTimer() {
         Bukkit.getScheduler().cancelTask(this.taskid);
-        checkingTimer();
+        //checkingTimer();
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
@@ -227,7 +232,7 @@ public class Arena {
         onArenaFinish event = new onArenaFinish(this.name, players);
         Bukkit.getPluginManager().callEvent(event);
         Bukkit.getScheduler().cancelTask(taskid);
-        Bukkit.getScheduler().cancelTask(checkingID);
+        //Bukkit.getScheduler().cancelTask(checkingID);
         for (Player player : players) {
             player.teleport(previousLocations.get(player.getName()));
             shortTermStorages.playersInMatch.remove(player.getName());
@@ -268,7 +273,7 @@ public class Arena {
 
     SpawningSystem spawningSystem = new SpawningSystem();
 
-    private void checkingTimer() {
+    /*private void checkingTimer() {
         checkingID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
@@ -309,7 +314,7 @@ public class Arena {
 
             }
         }, 0, 20 * 3);
-    }
+    }*/
 
     public void setKeyDropChanceFactor(double factor) {
         keyDropChanceFactor = factor;
