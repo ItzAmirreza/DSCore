@@ -76,7 +76,7 @@ public class SpawningSystem {
                     }
 
 
-                    assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
+                    //assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                     LivingEntity living = (LivingEntity) theEnt;
                     living.setRemoveWhenFarAway(false);
@@ -119,7 +119,7 @@ public class SpawningSystem {
                         shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).finalBossMobsRemaining++;
                     }
 
-                    assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
+                    //assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                     LivingEntity living = (LivingEntity) theEnt;
                     living.setRemoveWhenFarAway(false);
@@ -198,14 +198,21 @@ public class SpawningSystem {
 
     private void assignEntityData(Entity thatEntity, int level, int damage, int health, String name) {
 
-        LivingEntity theEntity = (LivingEntity) thatEntity;
+        /*LivingEntity theEntity = (LivingEntity) thatEntity;
         theEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Double.valueOf(damage));
         theEntity.setMaxHealth(health);
         theEntity.setHealth(health);
         theEntity.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(Double.valueOf(damage));
         theEntity.setCustomName(Utils.color("&7[&eLvl&7:&6" + level + "&7] &e" + name + " &7[&cHealth " + health + "/Max Health " + health + "&7]"));
         theEntity.setCustomNameVisible(true);
-        //[Lvl:#] Name [Health #/Max Health #]
+        //[Lvl:#] Name [Health #/Max Health #]*/
+        /*LivingEntity living = (LivingEntity) thatEntity;
+        int maxhealth = (int) living.getMaxHealth();
+        int currenthealth = (int) living.getHealth();
+        //int level = entity.getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER);
+        //String name = entity.getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING);
+
+        living.setCustomName(Utils.color("&7" + currenthealth + "/" + maxhealth + "&7]"));*/
     }
 
 
