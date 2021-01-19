@@ -27,14 +27,18 @@ public class ArenaLoader {
                 int max = config.getInt(key + ".max");
                 double keyDropChance = config.getDouble(key + ".keydropchancefactor");
                 String prizeKeyName = config.getString(key + ".prizekeyname");
-                Rpgcore.instance.getLogger().info("**********************************");
-                Rpgcore.instance.getLogger().info(min + " " + max + " " + keyDropChance + prizeKeyName);
+                //Rpgcore.instance.getLogger().info("**********************************");
+                //Rpgcore.instance.getLogger().info(min + " " + max + " " + keyDropChance + prizeKeyName);
                 int maxTime = config.getInt(key + ".maxtime"); //minutes
                 Arena newArena = new Arena(arenaname.toLowerCase(), min, max, maxTime, keyDropChance, prizeKeyName);
                 String spawnLocation = config.getString(key + ".spawnlocation", "null");
                 if (!spawnLocation.equalsIgnoreCase("null")) {
                     newArena.setSpawnLocation(spawnLocation);
                 }
+
+                //setting the mainRegion
+                String mainRegion = config.getString(key + ".mainregion");
+                newArena.setMainRegion(mainRegion);
 
                 //getting rewards
                 List<String> rewardStringList = config.getStringList(key + ".rewards");

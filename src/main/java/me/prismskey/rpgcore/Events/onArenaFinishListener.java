@@ -1,6 +1,7 @@
 package me.prismskey.rpgcore.Events;
 
 import me.prismskey.rpgcore.ArenaManager.PrizeObject;
+import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ public class onArenaFinishListener implements Listener {
     private final String GIVE_KEY_COMMAND = "crates givekey %player% ";
 
     @EventHandler
-    public void onArenaEnd(onArenaFinish event) {
+    public void onArenaWon(onArenaFinish event) {
 
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         List<PrizeObject> prizeObjectList = event.getArena().prizeCommands;
@@ -44,7 +45,7 @@ public class onArenaFinishListener implements Listener {
                 }
 
             }
-
+            player.sendMessage(Utils.color("&aDungeon cleared!"));
 
         }
 

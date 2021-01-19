@@ -17,8 +17,6 @@ public class joinArena implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-
-
         if (sender instanceof Player) {
 
             Player player = (Player) sender;
@@ -32,13 +30,16 @@ public class joinArena implements CommandExecutor {
 
                     if (thatArena.arenaState != ArenaState.AVAILABLE) {
                         if(thatArena.arenaState == ArenaState.INGAME || thatArena.arenaState == ArenaState.RESETTING) {
-                            player.sendMessage(Utils.color("&cThat Arena is already in use. Please try again later."));
+                            player.sendMessage(Utils.color("&cThat dungeon is already in use. Please try again later."));
                         } else {
-                            player.sendMessage(Utils.color("&cThis arena is not available right now."));
+                            player.sendMessage(Utils.color("&cThis dungeon is not available right now."));
                         }
                         return false;
                     }
-
+                    if(shortTermStorages.playersInMatch.containsKey(player.getName())) {
+                        player.sendMessage(Utils.color("&cYou already joined a dungeon!"));
+                        return false;
+                    }
                     if (mcmmoParty == null) {
                         thatArena.addPlayer(player);
                         shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
@@ -67,7 +68,7 @@ public class joinArena implements CommandExecutor {
                         } else {
                             //Too many members / can not start the dungeon / passed the limit
 
-                            player.sendMessage(Utils.color("&cYou can not enter the dungeon because amount of your party members are higher than max limit of dungeon. &eMax: " + thatArena.max));
+                            player.sendMessage(Utils.color("&cYou can not enter the dungeon because the amount of your party members is higher than max limit of the dungeon. &eMax: " + thatArena.max));
 
                         }
 
@@ -78,7 +79,7 @@ public class joinArena implements CommandExecutor {
                 }
 
             } else {
-                player.sendMessage(Utils.color("&cPlease write the name of the arena for second argument."));
+                player.sendMessage(Utils.color("&cPlease write the name of the arena for the second argument."));
 
             }
 

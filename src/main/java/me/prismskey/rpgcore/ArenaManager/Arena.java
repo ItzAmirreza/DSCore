@@ -1,5 +1,12 @@
 package me.prismskey.rpgcore.ArenaManager;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.managers.RegionManager;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.prismskey.rpgcore.Enums.ArenaState;
 import me.prismskey.rpgcore.Enums.PhaseState;
 import me.prismskey.rpgcore.Events.onArenaFinish;
@@ -9,8 +16,7 @@ import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import java.util.*;
 
@@ -24,6 +30,7 @@ public class Arena {
     public String prizeKeyName;
     public int totalMobs = 0;
     public int totalKilledMobs = 0;
+    public String mainRegion = null;
 
     public ArenaState arenaState;
     public LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
@@ -92,12 +99,35 @@ public class Arena {
         for (Entity mob : allMobsInArena) { //removing remaining mobs
             if (!mob.isDead()) {
                 mob.remove();
-
             }
+        }
+        allMobsInArena.clear();
 
+        //ensure remaining mobs are removed
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionManager regions = container.get(BukkitAdapter.adapt(Bukkit.getWorld("dungeons")));
+        if(regions != null) {
+            ProtectedRegion region = regions.getRegion(mainRegion);
+            Region rg = new CuboidRegion(region.getMaximumPoint(), region.getMinimumPoint());
+            Location center = new Location(Bukkit.getWorld("dungeons"), rg.getCenter().getX(), rg.getCenter().getY(), rg.getCenter().getZ());
+            Collection<Entity> entities = Bukkit.getWorld("dungeons").getNearbyEntities(center, rg.getWidth() / 2, rg.getHeight() / 2, rg.getLength() / 2);
+            for(Entity entity: entities) {
+                if(!(entity instanceof LivingEntity)) {
+                    continue;
+                }
+                if(entity instanceof Player) {
+                    continue;
+                }
+                if(entity instanceof Tameable) {
+                    Tameable tameable = (Tameable) entity;
+                    if(tameable.isTamed()) {
+                        continue;
+                    }
+                }
+                entity.remove();
+            }
         }
 
-        allMobsInArena.clear();
 
         for(Phase phase: phases.values()) {
             phase.bossMobsRemaining = 0;
@@ -123,7 +153,7 @@ public class Arena {
         Rpgcore.instance.getLogger().info("" + phases.size());
         Rpgcore.instance.getLogger().info("" + spawnLocation);
 
-        if (spawnLocation == null || phases.size() == 0 || prizeKeyName == null || keyDropChanceFactor <= 0) {
+        if (spawnLocation == null || phases.size() == 0 || prizeKeyName == null || keyDropChanceFactor <= 0 || mainRegion == null) {
             ready = false;
         }
 
@@ -236,8 +266,8 @@ public class Arena {
 
 
     public void finishArena() {
-        onArenaFinish event = new onArenaFinish(this.name, players);
-        Bukkit.getPluginManager().callEvent(event);
+        //onArenaFinish event = new onArenaFinish(this.name, players);
+        //Bukkit.getPluginManager().callEvent(event);
         Bukkit.getScheduler().cancelTask(taskid);
         //Bukkit.getScheduler().cancelTask(checkingID);
         for (Player player : players) {
@@ -329,6 +359,10 @@ public class Arena {
 
     public void setPrizeKeyName(String name) {
         prizeKeyName = name;
+    }
+
+    public void setMainRegion(String region) {
+        mainRegion = region;
     }
 
 
