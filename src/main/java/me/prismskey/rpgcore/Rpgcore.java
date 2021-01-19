@@ -100,6 +100,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginCommand("leave").setExecutor(new leaveArena());
         getServer().getPluginCommand("givepermissionreward").setExecutor(new GivePermissionReward());
         getServer().getPluginCommand("rejoin").setExecutor(new rejoinArena());
+        getServer().getPluginCommand("fillblocks").setExecutor(new FillBlocksCommand());
     }
 
     public void registerEvents() {

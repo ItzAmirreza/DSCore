@@ -23,3 +23,6 @@ commands:
       - gp
   rejoin:
     description: rejoin an arena
+  fillblocks:
+    description: used by the dungeon system to fill blocks
+    permission: dscore.admin.fillblocks

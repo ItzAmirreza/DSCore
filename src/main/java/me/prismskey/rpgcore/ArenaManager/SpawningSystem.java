@@ -46,6 +46,10 @@ public class SpawningSystem {
         Location center = phase.center;
         int mobRange = phase.mobSpawnRange;
 
+        for(String cmd: phase.startCommands) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+        }
+
         for (DMob dMob : phase.mobs) {
 
             if (!dMob.isSpecial) {
@@ -58,8 +62,24 @@ public class SpawningSystem {
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
+
+
+                    if(dMob.isBoss) {
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isBoss"), PersistentDataType.INTEGER, 1);
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
+                        shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).bossMobsRemaining++;
+                    }
+                    if(dMob.isFinalBoss) {
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isFinalBoss"), PersistentDataType.INTEGER, 1);
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
+                        shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).finalBossMobsRemaining++;
+                    }
+
+
                     assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
+                    LivingEntity living = (LivingEntity) theEnt;
+                    living.setRemoveWhenFarAway(false);
                     //shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                 }
             } else {
@@ -87,13 +107,27 @@ public class SpawningSystem {
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
+
+                    if(dMob.isBoss) {
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isBoss"), PersistentDataType.INTEGER, 1);
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
+                        shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).bossMobsRemaining++;
+                    }
+                    if(dMob.isFinalBoss) {
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isFinalBoss"), PersistentDataType.INTEGER, 1);
+                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
+                        shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).finalBossMobsRemaining++;
+                    }
+
                     assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
                     shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
+                    LivingEntity living = (LivingEntity) theEnt;
+                    living.setRemoveWhenFarAway(false);
                     //shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                 }
 
             }
-
+            shortTermStorages.arenaHashMap.get(arenaName).totalMobs++;
         }
 
 

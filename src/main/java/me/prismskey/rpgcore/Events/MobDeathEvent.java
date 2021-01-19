@@ -30,6 +30,25 @@ public class MobDeathEvent implements Listener {
                 Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
                 thatArena.totalKilledMobs++;
 
+                if(e.getEntity().getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "isBoss"), PersistentDataType.INTEGER)) {
+                    String homePhaseName = e.getEntity().getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING);
+                    shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).bossMobsRemaining--;
+                    Rpgcore.getInstance().getLogger().info("value: " + shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).bossMobsRemaining);
+                    if(shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).bossMobsRemaining == 0) {
+                        for(String cmd: shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).endCommands) {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
+                        }
+                        thatArena.announceToAllPlayers(Utils.color("&aSection cleared! You may now proceed."));
+                    }
+                }
+
+                if(e.getEntity().getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "isFinalBoss"), PersistentDataType.INTEGER)) {
+                    String homePhaseName = e.getEntity().getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING);
+                    shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).finalBossMobsRemaining--;
+                    if(shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).finalBossMobsRemaining == 0) {
+                        //TODO: end the arena
+                    }
+                }
 
 
                 /*boolean result = false;

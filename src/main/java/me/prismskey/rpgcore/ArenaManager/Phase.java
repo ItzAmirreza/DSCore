@@ -17,12 +17,18 @@ public class Phase {
     public String arena; //not really reliable
     public Location center;
     public List<DMob> mobs = new ArrayList<>();
+    public List<String> startCommands = new ArrayList<>();
+    public List<String> endCommands = new ArrayList<>();
     public List<Player> playersInPhase = new ArrayList<>();
     public int mobSpawnRange;
     public PhaseState state = PhaseState.LOCKED;
     public List<Entity> spawnedEntities = new ArrayList<>();
     public int current_wave;
     public boolean firstTime = true;
+    public int finalBossMobs = 0;
+    public int bossMobs = 0; // not including final boss mobs.
+    public int bossMobsRemaining = 0;
+    public int finalBossMobsRemaining = 0;
 
 
 

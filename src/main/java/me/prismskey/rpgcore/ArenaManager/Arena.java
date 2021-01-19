@@ -88,6 +88,7 @@ public class Arena {
         this.listOfFinishedPhases.clear();
         this.passedTime = 0;
         this.totalKilledMobs = 0;
+        this.totalMobs = 0;
         for (Entity mob : allMobsInArena) { //removing remaining mobs
             if (!mob.isDead()) {
                 mob.remove();
@@ -95,7 +96,13 @@ public class Arena {
             }
 
         }
+
         allMobsInArena.clear();
+
+        for(Phase phase: phases.values()) {
+            phase.bossMobsRemaining = 0;
+            phase.finalBossMobsRemaining = 0;
+        }
 
         for (Phase phase : phases.values()) { //removing players from phases
             phase.resetPhase();

@@ -47,7 +47,7 @@ public class ArenaLoader {
 
                 LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
                 boolean ifConfigurationS = config.isConfigurationSection(key + ".phases");
-                AtomicInteger totalMobs = new AtomicInteger();
+                //AtomicInteger totalMobs = new AtomicInteger();
                 if (ifConfigurationS) {
                     ConfigurationSection phaseSection = config.getConfigurationSection(key + ".phases");
                     phaseSection.getKeys(false).forEach(phase -> {
@@ -62,7 +62,7 @@ public class ArenaLoader {
                         if (mobsList) {
                             List<String> mobs = config.getStringList(key + ".phases." + phase + ".mobs");
                             for (String thatmob : mobs) {
-                                totalMobs.getAndIncrement();
+                                //totalMobs.getAndIncrement();
                                 String[] devide = thatmob.split(":"); //mob | type | percentage | level
                                 String mob = devide[0];
                                 String type = devide[1];
@@ -89,6 +89,92 @@ public class ArenaLoader {
                             }
 
                         }
+                        boolean bossMobsList = config.isList(key + ".phases." + phase + ".bossmobs");
+                        if (bossMobsList) {
+                            List<String> bossmobs = config.getStringList(key + ".phases." + phase + ".bossmobs");
+                            for (String thatmob : bossmobs) {
+                                //totalMobs.getAndIncrement();
+                                newPhase.bossMobs++;
+                                String[] devide = thatmob.split(":"); //mob | type | percentage | level
+                                String mob = devide[0];
+                                String type = devide[1];
+                                System.out.println(mob);
+                                int percentage = Integer.parseInt(devide[2]);
+                                int level = Integer.parseInt(devide[3]);
+                                boolean isSpecial = false;
+                                if (type.equalsIgnoreCase("special")) {
+                                    isSpecial = true;
+                                }
+
+                                if (!isSpecial) {
+                                    //adding vanilla mobs to arena
+                                    newPhase.mobs.add(new DMob(mob, percentage, false,level, true, false));
+
+
+                                } else {
+
+                                    //adding special mobs to arena
+                                    newPhase.mobs.add(new DMob(mob, percentage, true, level, true, false));
+
+                                }
+
+                            }
+
+                        }
+                        boolean finalBossMobsList = config.isList(key + ".phases." + phase + ".finalbossmobs");
+                        if (finalBossMobsList) {
+                            List<String> finalbossmobs = config.getStringList(key + ".phases." + phase + ".finalbossmobs");
+                            for (String thatmob : finalbossmobs) {
+                               //totalMobs.getAndIncrement();
+                                newPhase.finalBossMobs++;
+                                String[] devide = thatmob.split(":"); //mob | type | percentage | level
+                                String mob = devide[0];
+                                String type = devide[1];
+                                System.out.println(mob);
+                                int percentage = Integer.parseInt(devide[2]);
+                                int level = Integer.parseInt(devide[3]);
+                                boolean isSpecial = false;
+                                if (type.equalsIgnoreCase("special")) {
+                                    isSpecial = true;
+                                }
+
+                                if (!isSpecial) {
+                                    //adding vanilla mobs to arena
+                                    newPhase.mobs.add(new DMob(mob, percentage, false,level, false, true));
+
+
+                                } else {
+
+                                    //adding special mobs to arena
+                                    newPhase.mobs.add(new DMob(mob, percentage, true, level, false, true));
+
+                                }
+
+                            }
+
+                        }
+                        boolean startCommandsList = config.isList(key + ".phases." + phase + ".startCommands");
+                       //Rpgcore.getInstance().getLogger().info("YYYYYYYYYYYYYYYYYYYYYYYYYY");
+                        if (startCommandsList) {
+                            List<String> startCommands = config.getStringList(key + ".phases." + phase + ".startCommands");
+                            //Rpgcore.getInstance().getLogger().info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+                            for (String cmd : startCommands) {
+                                //totalMobs.getAndIncrement();
+                                Rpgcore.getInstance().getLogger().info(cmd);
+                                newPhase.startCommands.add(cmd);
+                            }
+
+                        }
+
+                        boolean endCommandsList = config.isList(key + ".phases." + phase + ".endCommands");
+                        if (endCommandsList) {
+                            List<String> endCommands = config.getStringList(key + ".phases." + phase + ".endCommands");
+                            for (String cmd : endCommands) {
+                                //totalMobs.getAndIncrement();
+                                newPhase.endCommands.add(cmd);
+                            }
+
+                        }
 
                         phases.put(newPhase.name, newPhase);
 
@@ -100,7 +186,7 @@ public class ArenaLoader {
                     Rpgcore.getInstance().getServer().getConsoleSender().sendMessage(Utils.color("&b" + str));
                 }
 
-                newArena.totalMobs = totalMobs.get();
+                //newArena.totalMobs = totalMobs.get();
                 Rpgcore.getInstance().getLogger().info("Total Mobs: " + newArena.totalMobs);
                 newArena.setPhasesMap(phases);
                 newArena.checkIfArenaIsReady();

@@ -9,12 +9,22 @@ public class DMob {
     public int percentage;
     public boolean isSpecial;
     public int level = 1;
+    public boolean isBoss = false;
+    public boolean isFinalBoss = false;
 
 
     public DMob(String mob, int percentage, boolean isSpecial, int level) {
         this.mob = mob;
         this.percentage = percentage;
         this.isSpecial = isSpecial;
+    }
+
+    public DMob(String mob, int percentage, boolean isSpecial, int level, boolean isBoss, boolean isFinalBoss) {
+        this.mob = mob;
+        this.percentage = percentage;
+        this.isSpecial = isSpecial;
+        this.isBoss = isBoss;
+        this.isFinalBoss = isFinalBoss;
     }
 
 
