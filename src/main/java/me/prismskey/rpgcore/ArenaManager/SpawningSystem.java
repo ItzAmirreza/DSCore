@@ -174,9 +174,14 @@ public class SpawningSystem {
 
 
     private boolean checkIFInTheRightRegion(Location thatLocation, Phase targetPhase) {
-
-        if( !(thatLocation.getBlock().getType() == Material.WATER || thatLocation.getBlock().isEmpty())) {
-            return false;
+        //ensure mob does not spawn inside wall such as spiders.
+        for(int x = thatLocation.getBlockX() - 1; x <= thatLocation.getBlockX() + 1; x++) {
+            for(int z = thatLocation.getBlockZ() - 1; z <= thatLocation.getBlockZ() + 1; z++) {
+                Location test = new Location(thatLocation.getWorld(), x, thatLocation.getBlockY(), z);
+                if( !(test.getBlock().getType() == Material.WATER || test.getBlock().isEmpty())) {
+                    return false;
+                }
+            }
         }
         BukkitAdapter.adapt(thatLocation);
         RegionManager regions = container.get(BukkitAdapter.adapt(thatLocation.getWorld()));
