@@ -45,9 +45,18 @@ public class MobDeathEvent implements Listener {
                     String homePhaseName = e.getEntity().getPersistentDataContainer().get(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING);
                     shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).finalBossMobsRemaining--;
                     if(shortTermStorages.arenaHashMap.get(arenaName).phases.get(homePhaseName).finalBossMobsRemaining == 0) {
+                        for(Player player: thatArena.players) {
+                            player.sendMessage(Utils.color("&aDungeon Cleared! You will be teleported out in 30 seconds."));
+                        }
                         onArenaFinish event = new onArenaFinish(thatArena.name, thatArena.players);
                         Bukkit.getPluginManager().callEvent(event);
-                        thatArena.finishArena();
+                        thatArena.cancelTimerTask();
+                        Bukkit.getScheduler().runTaskLater(Rpgcore.getInstance(), new Runnable() {
+                            @Override
+                            public void run() {
+                                thatArena.finishArena();
+                            }
+                        }, 20 * 30);
                     }
                 }
 

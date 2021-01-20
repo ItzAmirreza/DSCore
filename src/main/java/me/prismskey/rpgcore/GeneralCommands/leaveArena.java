@@ -26,6 +26,7 @@ public class leaveArena implements CommandExecutor {
                 playerArena.players.remove(player);
                 shortTermStorages.playersInMatch.remove(player);
                 shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer(player);
+                playerArena.absentPlayers.remove(player.getUniqueId());
                 player.sendMessage(Utils.color("&eYou have left the arena!"));
 
 

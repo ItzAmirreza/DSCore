@@ -33,7 +33,7 @@ public class rejoinArena implements CommandExecutor {
 
             } else {
 
-                player.sendMessage(Utils.color("&e You are not in any arena to rejoin!"));
+                player.sendMessage(Utils.color("&eThere is no dungeon to rejoin!"));
 
             }
 

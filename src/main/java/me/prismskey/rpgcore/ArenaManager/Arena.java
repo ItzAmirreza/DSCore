@@ -4,9 +4,11 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldedit.regions.Region;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import me.prismskey.rpgcore.Enums.ArenaState;
 import me.prismskey.rpgcore.Enums.PhaseState;
 import me.prismskey.rpgcore.Events.onArenaFinish;
@@ -17,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 
@@ -45,6 +48,8 @@ public class Arena {
     public Phase firstPhase;
     //private int checkingID = 0;
     public List<PrizeObject> prizeCommands = new ArrayList<>();
+    public List<UUID> absentPlayers = new ArrayList<>();
+
     public Arena(String name, int min, int max, int maxTime, double keyDropChanceFactor, String prizeKeyName) {
         this.name = name;
         this.min = min;
@@ -66,6 +71,7 @@ public class Arena {
     public void addPhase(Phase phase) {
         this.phases.put(phase.name, phase);
     }
+
     public void removePhase(Phase phase) {
         this.phases.remove(phase);
     }
@@ -77,12 +83,15 @@ public class Arena {
     public void addPlayer(Player player) {
         this.players.add(player);
     }
+
     public void removePlayer(Player player) {
         this.players.remove(player);
     }
+
     public ArenaState getArenaState() {
         return this.arenaState;
     }
+
     public void setArenaState(ArenaState state) {
         this.arenaState = state;
     }
@@ -106,21 +115,21 @@ public class Arena {
         //ensure remaining mobs are removed
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(BukkitAdapter.adapt(Bukkit.getWorld("dungeons")));
-        if(regions != null) {
+        if (regions != null) {
             ProtectedRegion region = regions.getRegion(mainRegion);
             Region rg = new CuboidRegion(region.getMaximumPoint(), region.getMinimumPoint());
             Location center = new Location(Bukkit.getWorld("dungeons"), rg.getCenter().getX(), rg.getCenter().getY(), rg.getCenter().getZ());
             Collection<Entity> entities = Bukkit.getWorld("dungeons").getNearbyEntities(center, rg.getWidth() / 2, rg.getHeight() / 2, rg.getLength() / 2);
-            for(Entity entity: entities) {
-                if(!(entity instanceof LivingEntity)) {
+            for (Entity entity : entities) {
+                if (!(entity instanceof LivingEntity)) {
                     continue;
                 }
-                if(entity instanceof Player) {
+                if (entity instanceof Player) {
                     continue;
                 }
-                if(entity instanceof Tameable) {
+                if (entity instanceof Tameable) {
                     Tameable tameable = (Tameable) entity;
-                    if(tameable.isTamed()) {
+                    if (tameable.isTamed()) {
                         continue;
                     }
                 }
@@ -129,7 +138,7 @@ public class Arena {
         }
 
 
-        for(Phase phase: phases.values()) {
+        for (Phase phase : phases.values()) {
             phase.bossMobsRemaining = 0;
             phase.finalBossMobsRemaining = 0;
         }
@@ -185,7 +194,7 @@ public class Arena {
 
         }
 
-        for (Phase phase: phases.values()) {
+        for (Phase phase : phases.values()) {
             this.firstPhase = phase;
             //this.currentPhase = phase;
             break;
@@ -197,6 +206,7 @@ public class Arena {
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             int countdown = 10;
             HashMap<String, Float> levels = new HashMap<>();
+
             @Override
             public void run() {
 
@@ -209,6 +219,7 @@ public class Arena {
 
 
                     startTimer();
+                    checkIfPlayersAreInArena();
 
                 } else {
                     if (countdown == 10) {
@@ -242,21 +253,21 @@ public class Arena {
         this.taskid = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
-                if (arenaState == ArenaState.INGAME){
+                if (arenaState == ArenaState.INGAME) {
                     setPassedTime(passedTime + 1);
-                    if (passedTime/60 >= maxTime) {
+                    if (passedTime / 60 >= maxTime) {
                         finishArena();
 
                     } else {
-                        //if (passedTime/60 == 30) {
+                        if (passedTime / 60 == 30) {
 
-                         //   announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
+                            announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime / 60)) + " minutes");
 
-                        //} else if (passedTime/60 == 15) {
-                        //    announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
-                       // } else if (passedTime/60 == 1) {
-                        //    announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime/60)) + " minutes");
-                        //}
+                        } else if (passedTime / 60 == 15) {
+                            announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime / 60)) + " minutes");
+                        } else if (passedTime / 60 == 1) {
+                            announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime / 60)) + " minutes");
+                        }
                     }
                 }
 
@@ -269,9 +280,19 @@ public class Arena {
         //onArenaFinish event = new onArenaFinish(this.name, players);
         //Bukkit.getPluginManager().callEvent(event);
         Bukkit.getScheduler().cancelTask(taskid);
+        Bukkit.getScheduler().cancelTask(checkIfPlayersAreInArenaTaskID);
         //Bukkit.getScheduler().cancelTask(checkingID);
         for (Player player : players) {
-            player.teleport(previousLocations.get(player.getName()));
+
+            com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(player.getLocation());
+            RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            RegionQuery query = container.createQuery();
+            ApplicableRegionSet set = query.getApplicableRegions(loc);
+            for (ProtectedRegion region : set) {
+                if (region.getId().equalsIgnoreCase(mainRegion)) {
+                    player.teleport(previousLocations.get(player.getName()));
+                }
+            }
             shortTermStorages.playersInMatch.remove(player.getName());
         }
 
@@ -282,11 +303,55 @@ public class Arena {
 
     }
 
+    public void cancelTimerTask() {
+        Bukkit.getScheduler().cancelTask(taskid);
+    }
+
 
     public void announceToAllPlayers(String str) {
         for (Player player : players) {
             player.sendMessage(Utils.color(str));
         }
+    }
+
+    private int checkIfPlayersAreInArenaTaskID = -1;
+
+    public void checkIfPlayersAreInArena() {
+        if (checkIfPlayersAreInArenaTaskID != -1) {
+            Bukkit.getScheduler().cancelTask(checkIfPlayersAreInArenaTaskID);
+        }
+        checkIfPlayersAreInArenaTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                for (Player player : players) {
+                    com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(player.getLocation());
+                    RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                    RegionQuery query = container.createQuery();
+                    ApplicableRegionSet set = query.getApplicableRegions(loc);
+                    boolean inDungeon = false;
+                    for (ProtectedRegion region : set) {
+                        if (region.getId().equalsIgnoreCase(mainRegion)) {
+                            inDungeon = true;
+                            break;
+                        }
+                    }
+                    if (!inDungeon) {
+                        if (absentPlayers.contains(player.getUniqueId())) {
+                            shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
+                            Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
+                            playerArena.players.remove(player);
+                            shortTermStorages.playersInMatch.remove(player);
+                            shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer(player);
+                            playerArena.absentPlayers.remove(player.getUniqueId());
+                            player.sendMessage(Utils.color("&eYou have been kicked from the dungeon!"));
+                        } else {
+                            player.sendMessage(Utils.color("&4You have left the dungeon. Do /rejoin to rejoin the dungeon otherwise you will be kicked."));
+                            absentPlayers.add(player.getUniqueId());
+                        }
+                    }
+                }
+            }
+        }, 20, 20 * 30);
     }
 
     public void checkIfStillArenaHasPlayer(Player player) {

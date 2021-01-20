@@ -45,7 +45,6 @@ public class onArenaFinishListener implements Listener {
                 }
 
             }
-            player.sendMessage(Utils.color("&aDungeon cleared!"));
 
         }
 
