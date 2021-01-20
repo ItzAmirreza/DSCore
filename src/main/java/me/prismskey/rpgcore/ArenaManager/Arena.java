@@ -34,6 +34,7 @@ public class Arena {
     public int totalMobs = 0;
     public int totalKilledMobs = 0;
     public String mainRegion = null;
+    public String friendlyName = "";
 
     public ArenaState arenaState;
     public LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
@@ -105,6 +106,22 @@ public class Arena {
         this.passedTime = 0;
         this.totalKilledMobs = 0;
         this.totalMobs = 0;
+
+        clearOutMobs();
+
+        for (Phase phase : phases.values()) {
+            phase.bossMobsRemaining = 0;
+            phase.finalBossMobsRemaining = 0;
+        }
+
+        for (Phase phase : phases.values()) { //removing players from phases
+            phase.resetPhase();
+        }
+
+        this.arenaState = ArenaState.AVAILABLE;
+    }
+
+    public void clearOutMobs() {
         for (Entity mob : allMobsInArena) { //removing remaining mobs
             if (!mob.isDead()) {
                 mob.remove();
@@ -136,18 +153,6 @@ public class Arena {
                 entity.remove();
             }
         }
-
-
-        for (Phase phase : phases.values()) {
-            phase.bossMobsRemaining = 0;
-            phase.finalBossMobsRemaining = 0;
-        }
-
-        for (Phase phase : phases.values()) { //removing players from phases
-            phase.resetPhase();
-        }
-
-        this.arenaState = ArenaState.AVAILABLE;
     }
 
     public void setPassedTime(int passedTime) {
@@ -214,7 +219,7 @@ public class Arena {
 
                     for (Player player : players) {
                         player.teleport(spawnLocation);
-                        player.sendTitle(Utils.color("&6&l" + name), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3 * 20, 5 * 20, 20);
+                        player.sendTitle(Utils.color("&6&l" + friendlyName), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3 * 20, 5 * 20, 20);
                     }
 
 
@@ -428,6 +433,10 @@ public class Arena {
 
     public void setMainRegion(String region) {
         mainRegion = region;
+    }
+
+    public void setFriendlyName(String name) {
+        friendlyName = name;
     }
 
 

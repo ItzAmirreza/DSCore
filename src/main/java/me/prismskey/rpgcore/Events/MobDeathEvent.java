@@ -51,6 +51,7 @@ public class MobDeathEvent implements Listener {
                         onArenaFinish event = new onArenaFinish(thatArena.name, thatArena.players);
                         Bukkit.getPluginManager().callEvent(event);
                         thatArena.cancelTimerTask();
+                        thatArena.clearOutMobs();
                         Bukkit.getScheduler().runTaskLater(Rpgcore.getInstance(), new Runnable() {
                             @Override
                             public void run() {

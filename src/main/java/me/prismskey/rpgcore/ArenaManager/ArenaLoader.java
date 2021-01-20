@@ -40,6 +40,10 @@ public class ArenaLoader {
                 String mainRegion = config.getString(key + ".mainregion");
                 newArena.setMainRegion(mainRegion);
 
+                //setting the friendlyName
+                String friendlyName = config.getString(key + ".friendlyname");
+                newArena.setFriendlyName(friendlyName);
+
                 //getting rewards
                 List<String> rewardStringList = config.getStringList(key + ".rewards");
                 for (String strReward : rewardStringList) {
