@@ -12,6 +12,8 @@ public class RPGPlayerData {
     private int strikeBoltCooldownTime;
     private int lifeDrainCooldown;
     private int deathsCallCooldown;
+
+    private int pvpToggleCoolDown;
     private boolean pvpOn;
 
 
@@ -22,6 +24,7 @@ public class RPGPlayerData {
         strikeBoltCooldownTime = 0;
         lifeDrainCooldown = 0;
         deathsCallCooldown = 0;
+        pvpToggleCoolDown = 0;
 
         pvpOn = shortTermStorages.pvpStatesConfiguration.getBoolean(playerUUID.toString());
 
@@ -68,6 +71,10 @@ public class RPGPlayerData {
         if(deathsCallCooldown > 0) {
             deathsCallCooldown--;
         }
+
+        if(pvpToggleCoolDown > 0) {
+            pvpToggleCoolDown--;
+        }
     }
 
     @Override
@@ -90,11 +97,20 @@ public class RPGPlayerData {
         return pvpOn;
     }
 
+    public int getPvpToggleCoolDown() {
+        return pvpToggleCoolDown;
+    }
+
+    public void resetPvpToggleCooldown() {
+        pvpToggleCoolDown = 60 * 20;
+    }
+
     public boolean isPlayerOnline() {
         return Bukkit.getPlayer(playerUUID) != null;
     }
 
     public boolean allCooldownsOff() {
-        return camelotsMightCooldownTime <= 0 && strikeBoltCooldownTime <= 0;
+        return camelotsMightCooldownTime <= 0 && strikeBoltCooldownTime <= 0 && lifeDrainCooldown <= 0 &&
+                deathsCallCooldown <= 0 && pvpToggleCoolDown <= 0;
     }
 }

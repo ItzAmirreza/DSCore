@@ -27,7 +27,8 @@ public class onPlayerJoin implements Listener {
         if(shortTermStorages.playerData.contains(data)) {
             return;
         }
-
+        boolean pvp = shortTermStorages.pvpStatesConfiguration.getBoolean(player.getUniqueId().toString());
+        data.setPvpState(pvp);
         shortTermStorages.playerData.add(data);
         if(data.getPvpState()) {
             player.sendMessage(ChatColor.GREEN + "PVP IS ENABLED FOR YOU.");

@@ -26,3 +26,5 @@ commands:
   fillblocks:
     description: used by the dungeon system to fill blocks
     permission: dscore.admin.fillblocks
+  pvp:
+    description: toggle pvp
