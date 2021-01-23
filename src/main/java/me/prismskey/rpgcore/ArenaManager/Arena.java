@@ -328,27 +328,35 @@ public class Arena {
         checkIfPlayersAreInArenaTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(Rpgcore.getInstance(), new Runnable() {
             @Override
             public void run() {
+
                 for (Player player : players) {
-                    com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(player.getLocation());
-                    RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-                    RegionQuery query = container.createQuery();
-                    ApplicableRegionSet set = query.getApplicableRegions(loc);
                     boolean inDungeon = false;
-                    for (ProtectedRegion region : set) {
-                        if (region.getId().equalsIgnoreCase(mainRegion)) {
-                            inDungeon = true;
-                            break;
+                    if(!player.isOnline()) {
+                        inDungeon = false;
+                    } else {
+                        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(player.getLocation());
+                        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+                        RegionQuery query = container.createQuery();
+                        ApplicableRegionSet set = query.getApplicableRegions(loc);
+
+                        for (ProtectedRegion region : set) {
+                            if (region.getId().equalsIgnoreCase(mainRegion)) {
+                                inDungeon = true;
+                                break;
+                            }
                         }
                     }
                     if (!inDungeon) {
-                        if (absentPlayers.contains(player.getUniqueId())) {
+                        if (absentPlayers.contains(player.getUniqueId()) || !player.isOnline()) {
                             shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
                             Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
                             playerArena.players.remove(player);
                             shortTermStorages.playersInMatch.remove(player);
                             shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer(player);
                             playerArena.absentPlayers.remove(player.getUniqueId());
-                            player.sendMessage(Utils.color("&eYou have been kicked from the dungeon!"));
+                            if(player.isOnline()) {
+                                player.sendMessage(Utils.color("&eYou have been kicked from the dungeon!"));
+                            }
                         } else {
                             player.sendMessage(Utils.color("&4You have left the dungeon. Do /rejoin to rejoin the dungeon otherwise you will be kicked."));
                             absentPlayers.add(player.getUniqueId());

@@ -1,6 +1,11 @@
 package me.prismskey.rpgcore.Events;
 
+import me.prismskey.rpgcore.DataManager.RPGPlayerData;
+import me.prismskey.rpgcore.Maps.shortTermStorages;
+import me.prismskey.rpgcore.Rpgcore;
+import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -11,15 +16,31 @@ import java.util.List;
 public class onPlayerJoin implements Listener {
 
     @EventHandler
-    public void onMeAndKeyJoiningCauseWeAreCursed(PlayerJoinEvent event) {
-        List<String> meAndKeys = Arrays.asList("Dead_Light", "Keys9");
-        if (event.getPlayer().getName().equalsIgnoreCase("Dead_Light") && event.getPlayer().getName().equalsIgnoreCase("Keys9")) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
 
-            event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(Double.valueOf(20));
-            event.getPlayer().setMaxHealth(20);
-            event.getPlayer().setHealth(20);
-            event.getPlayer().getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).setBaseValue(Double.valueOf(1));
+        //checkPlayerInDungeon(event.getPlayer());
+        tryCreatePlayerProfile(event.getPlayer());
+    }
 
+    private void tryCreatePlayerProfile(Player player) {
+        RPGPlayerData data = new RPGPlayerData(player.getUniqueId());
+        if(shortTermStorages.playerData.contains(data)) {
+            return;
+        }
+
+        shortTermStorages.playerData.add(data);
+        if(data.getPvpState()) {
+            player.sendMessage(ChatColor.GREEN + "PVP IS ENABLED FOR YOU.");
+        } else {
+            player.sendMessage(ChatColor.GREEN + "PVP IS DISABLED FOR YOU.");
         }
     }
+
+    /*private void checkPlayerInDungeon(Player player) {
+        if(Rpgcore.instance.isWithinDungeon(player.getLocation())) {
+            player.teleport(Rpgcore.instance.getSpawn());
+            player.sendMessage("Because you logged in inside a dungeon you have been teleported to spawn.");
+        }
+    }*/
+
 }

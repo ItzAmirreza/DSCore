@@ -8,6 +8,7 @@ import com.gmail.nossr50.mcMMO;
 import me.prismskey.rpgcore.ArenaManager.*;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
+import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.GeneralCommands.*;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
@@ -19,11 +20,16 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 
 import org.bukkit.command.CommandMap;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public final class Rpgcore extends JavaPlugin {
 
@@ -41,6 +47,7 @@ public final class Rpgcore extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
         enemySpecialsManager = new EnemySpecialsManager();
         saveDefaultConfig();
         ConfigLoader configloader = new ConfigLoader();
@@ -153,6 +160,8 @@ public final class Rpgcore extends JavaPlugin {
     public static Economy getEconomy() {
         return econ;
     }
+
+
 
 
 }
