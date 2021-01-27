@@ -1,8 +1,10 @@
 package me.prismskey.rpgcore.Events;
 
+import me.prismskey.rpgcore.DataManager.ClickCombo;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
+import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -20,6 +22,13 @@ public class onPlayerJoin implements Listener {
 
         //checkPlayerInDungeon(event.getPlayer());
         tryCreatePlayerProfile(event.getPlayer());
+        ClickCombo combo = new ClickCombo();
+        shortTermStorages.clickComboHashMap.put(event.getPlayer().getUniqueId(), combo);
+
+        if(Utils.checkIfInDungeon(event.getPlayer())) {
+            event.getPlayer().teleport(shortTermStorages.spawn);
+            event.getPlayer().sendMessage(ChatColor.RED + "You cannot log back into a dungeon so you were teleported to spawn.");
+        }
     }
 
     private void tryCreatePlayerProfile(Player player) {

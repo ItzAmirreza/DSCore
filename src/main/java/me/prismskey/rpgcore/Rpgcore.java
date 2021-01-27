@@ -1,35 +1,28 @@
 package me.prismskey.rpgcore;
 
 
-import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.mcMMO;
 
 
 import me.prismskey.rpgcore.ArenaManager.*;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
-import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.GeneralCommands.*;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
 import me.prismskey.rpgcore.Recipes.*;
+import me.prismskey.rpgcore.Tasks.ComboResetTimer;
+import me.prismskey.rpgcore.Tasks.CoralArmorFeedTimer;
 import me.prismskey.rpgcore.Tasks.cooldownCheckTask;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 
-import org.bukkit.command.CommandMap;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 
 public final class Rpgcore extends JavaPlugin {
 
@@ -40,7 +33,6 @@ public final class Rpgcore extends JavaPlugin {
 
     private static Economy econ = null;
     private EnemySpecialsManager enemySpecialsManager;
-
 
     private static mcMMO mcMMOPlugin;
     
@@ -87,6 +79,11 @@ public final class Rpgcore extends JavaPlugin {
         cooldownCheckTask cooldownCheckTask = new cooldownCheckTask(this);
         cooldownCheckTask.runTaskTimer(this, 0, 1);
 
+        ComboResetTimer comboTimerTask = new ComboResetTimer(this);
+        comboTimerTask.runTaskTimer(this, 0, 1);
+
+        CoralArmorFeedTimer coralFeedTimer = new CoralArmorFeedTimer(this);
+        coralFeedTimer.runTaskTimer(this, 0, 20 * 30);
     }
 
     private boolean setupEconomy() {
@@ -135,10 +132,7 @@ public final class Rpgcore extends JavaPlugin {
 
     public void registerRecipes() {
 
-        DragonStoneRecipes dragonStoneRecipes = new DragonStoneRecipes();
-        AdamantRecipes adamantRecipes = new AdamantRecipes();
-        MithrilRecipes mithrilRecipes = new MithrilRecipes();
-        OrichalcumRecipes orichalcumRecipes = new OrichalcumRecipes();
+
     }
 
     private void unRegisterRecipes() {

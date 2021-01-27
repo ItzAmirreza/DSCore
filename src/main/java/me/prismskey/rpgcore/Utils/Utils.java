@@ -1,12 +1,22 @@
 package me.prismskey.rpgcore.Utils;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
+import com.sk89q.worldguard.protection.regions.RegionQuery;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class Utils {
+
+    public static final ArrayList<String> DUNGEON_REGIONS = new ArrayList<>(Arrays.asList("creepy_crypt1", "sunken_temple1"));
 
     //Dead_Light edit
 
@@ -24,7 +34,18 @@ public class Utils {
         return net.md_5.bungee.api.ChatColor.translateAlternateColorCodes('&', str);
     }
 
-
+    public static boolean checkIfInDungeon(Player player) {
+        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(player.getLocation());
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(loc);
+        for (ProtectedRegion region : set) {
+            if (DUNGEON_REGIONS.contains(region.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     //Location to string serializer
     public static String convertLocToString(Location location) {

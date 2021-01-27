@@ -1,11 +1,8 @@
 package me.prismskey.rpgcore.Events;
 
-import de.tr7zw.nbtapi.NBTItem;
+import me.prismskey.rpgcore.Utils.NBTItem;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -13,14 +10,13 @@ import org.bukkit.event.player.PlayerItemMendEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class onCustomItemDegradeOrMend implements Listener {
 
-    private Random rand;
+    private final Random rand;
 
     public onCustomItemDegradeOrMend() {
         rand = new Random();

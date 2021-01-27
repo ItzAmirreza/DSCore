@@ -58,9 +58,9 @@ public class ConfigLoader {
 
     public void parseDefaultConfig() {
         ConfigurationSection spawnSection = Rpgcore.getInstance().getConfig().getConfigurationSection("spawn");
-        int x = spawnSection.getInt("x");
-        int y = spawnSection.getInt("y");
-        int z = spawnSection.getInt("z");
+        double x = spawnSection.getDouble("x");
+        double y = spawnSection.getDouble("y");
+        double z = spawnSection.getDouble("z");
         String world = spawnSection.getString("world");
         shortTermStorages.spawn = new Location(Rpgcore.getInstance().getServer().getWorld(world), x, y, z);
     }

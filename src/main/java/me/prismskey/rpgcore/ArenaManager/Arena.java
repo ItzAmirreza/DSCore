@@ -358,7 +358,10 @@ public class Arena {
                                 player.sendMessage(Utils.color("&eYou have been kicked from the dungeon!"));
                             }
                         } else {
-                            player.sendMessage(Utils.color("&4You have left the dungeon. Do /rejoin to rejoin the dungeon otherwise you will be kicked."));
+                            if(player.isOnline()) {
+                                player.sendMessage(Utils.color("&4You have left the dungeon. Do /rejoin to rejoin the dungeon otherwise you will be kicked."));
+                            }
+
                             absentPlayers.add(player.getUniqueId());
                         }
                     }

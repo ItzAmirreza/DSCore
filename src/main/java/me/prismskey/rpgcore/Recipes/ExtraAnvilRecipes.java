@@ -1,9 +1,6 @@
 package me.prismskey.rpgcore.Recipes;
 
-import de.tr7zw.nbtapi.NBTItem;
-import me.prismskey.rpgcore.Maps.shortTermStorages;
-import me.prismskey.rpgcore.Rpgcore;
-import org.bukkit.Bukkit;
+import me.prismskey.rpgcore.Utils.NBTItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -13,7 +10,6 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.util.ArrayList;
 
@@ -21,7 +17,7 @@ public class ExtraAnvilRecipes implements Listener {
     @EventHandler
     public void onPlaceItemInAnvil(PrepareAnvilEvent event) {
         AnvilInventory inv = event.getInventory();
-        if(inv.getItem(0) == null || inv.getItem(1) == null) {
+        if (inv.getItem(0) == null || inv.getItem(1) == null) {
             return;
         }
 
@@ -175,27 +171,27 @@ public class ExtraAnvilRecipes implements Listener {
 
     private boolean itemAndRepairMaterialMatch(NBTItem toRepair, NBTItem material) {
         boolean matches = false;
-        if (toRepair.hasKey("dragonstone") && material.getItem().getType() == Material.STRAY_SPAWN_EGG ||
+        /*if (toRepair.hasKey("dragonstone") && material.getItem().getType() == Material.STRAY_SPAWN_EGG ||
                 toRepair.hasKey("orichalcum") && material.getItem().getType() == Material.PARROT_SPAWN_EGG ||
                 toRepair.hasKey("adamant") && material.getItem().getType() == Material.DROWNED_SPAWN_EGG ||
                 toRepair.hasKey("mithril") && material.getItem().getType() == Material.GHAST_SPAWN_EGG
         ) {
             matches = true;
+        }*/
+        /*if (!(toRepair.hasKey("dragonstone") || toRepair.hasKey("orichalcum") ||
+                toRepair.hasKey("adamant") || toRepair.hasKey("mithril"))) {*/
+        if (isIronRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.IRON_INGOT ||
+                isDiamondRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.DIAMOND ||
+                isLeatherRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.LEATHER ||
+                isGoldRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.GOLD_INGOT ||
+                isNetheriteRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.NETHERITE_INGOT ||
+                toRepair.getItem().getType() == Material.BOW && material.getItem().getType() == Material.STRING ||
+                toRepair.getItem().getType() == Material.TRIDENT && material.getItem().getType() == Material.IRON_INGOT
+        ) {
+            matches = true;
         }
-        if (!(toRepair.hasKey("dragonstone") || toRepair.hasKey("orichalcum") ||
-                toRepair.hasKey("adamant") || toRepair.hasKey("mithril"))) {
-            if (isIronRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.IRON_INGOT ||
-                    isDiamondRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.DIAMOND ||
-                    isLeatherRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.LEATHER ||
-                    isGoldRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.GOLD_INGOT ||
-                    isNetheriteRepairableItem(toRepair.getItem()) && material.getItem().getType() == Material.NETHERITE_INGOT ||
-                    toRepair.getItem().getType() == Material.BOW && material.getItem().getType() == Material.STRING ||
-                    toRepair.getItem().getType() == Material.TRIDENT && material.getItem().getType() == Material.IRON_INGOT
-            ) {
-                matches = true;
-            }
 
-        }
+        //}
 
         return matches;
     }

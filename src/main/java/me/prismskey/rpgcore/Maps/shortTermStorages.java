@@ -2,6 +2,7 @@ package me.prismskey.rpgcore.Maps;
 
 import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.ArenaManager.Phase;
+import me.prismskey.rpgcore.DataManager.ClickCombo;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class shortTermStorages {
 
@@ -37,6 +39,8 @@ public class shortTermStorages {
     public static HashMap<String, String> playersInMatch = new HashMap<>(); //player name , arena name
 
     public static HashMap<String, YamlConfiguration> mobsConfig = new HashMap<>();
+
+    public static HashMap<UUID, ClickCombo> clickComboHashMap = new HashMap<>();
 
 
 

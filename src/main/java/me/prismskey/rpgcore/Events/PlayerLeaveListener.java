@@ -16,13 +16,14 @@ public class PlayerLeaveListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
+        shortTermStorages.clickComboHashMap.remove(player.getUniqueId());
 
         if (shortTermStorages.playersInMatch.containsKey(player.getName())) {
             Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
 
             playerArena.players.remove(player);
             playerArena.checkIfStillArenaHasPlayer(player);
-
+            shortTermStorages.playersInMatch.remove(player);
         }
 
         RPGPlayerData data = loader.getDataByUUID(player.getUniqueId());
