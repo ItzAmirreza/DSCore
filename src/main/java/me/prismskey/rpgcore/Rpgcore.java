@@ -127,6 +127,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
         //test event here will remove it after development
         getServer().getPluginManager().registerEvents(new onPlayerJoin(), this);
+        getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
 
     }
 

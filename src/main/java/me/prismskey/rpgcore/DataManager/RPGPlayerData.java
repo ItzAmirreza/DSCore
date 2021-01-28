@@ -1,7 +1,6 @@
 package me.prismskey.rpgcore.DataManager;
 
 import me.prismskey.rpgcore.Maps.shortTermStorages;
-import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.Bukkit;
 
 import java.util.UUID;
@@ -12,6 +11,10 @@ public class RPGPlayerData {
     private int strikeBoltCooldownTime;
     private int lifeDrainCooldown;
     private int deathsCallCooldown;
+    private int startRainCooldown;
+    private int masterSwordBeamCooldown;
+    private KEYBLADE_MODE keybladeMode;
+
 
     private int pvpToggleCoolDown;
     private boolean pvpOn;
@@ -25,6 +28,9 @@ public class RPGPlayerData {
         lifeDrainCooldown = 0;
         deathsCallCooldown = 0;
         pvpToggleCoolDown = 0;
+        startRainCooldown = 0;
+        masterSwordBeamCooldown = 0;
+        keybladeMode = KEYBLADE_MODE.FIRE;
 
         pvpOn = shortTermStorages.pvpStatesConfiguration.getBoolean(playerUUID.toString());
 
@@ -75,6 +81,12 @@ public class RPGPlayerData {
         if(pvpToggleCoolDown > 0) {
             pvpToggleCoolDown--;
         }
+        if(startRainCooldown > 0) {
+            startRainCooldown--;
+        }
+        if(masterSwordBeamCooldown > 0) {
+            masterSwordBeamCooldown--;
+        }
     }
 
     @Override
@@ -111,6 +123,36 @@ public class RPGPlayerData {
 
     public boolean allCooldownsOff() {
         return camelotsMightCooldownTime <= 0 && strikeBoltCooldownTime <= 0 && lifeDrainCooldown <= 0 &&
-                deathsCallCooldown <= 0 && pvpToggleCoolDown <= 0;
+                deathsCallCooldown <= 0 && pvpToggleCoolDown <= 0 && startRainCooldown <= 0 || masterSwordBeamCooldown <= 0;
+    }
+
+    public int getStarRainCooldown() {
+        return startRainCooldown;
+    }
+
+    public void setStarRainCooldown(int cooldown) {
+        startRainCooldown = cooldown;
+    }
+
+    public int getMasterSwordBeamCooldown() {
+        return masterSwordBeamCooldown;
+    }
+
+    public void setMasterSwordBeamCooldown(int cooldown) {
+        masterSwordBeamCooldown = cooldown;
+    }
+
+    public void switchKeyBladeMode() {
+        if(keybladeMode == KEYBLADE_MODE.FIRE) {
+            keybladeMode = KEYBLADE_MODE.ICE;
+        } else if(keybladeMode == KEYBLADE_MODE.ICE) {
+            keybladeMode = KEYBLADE_MODE.LIGHTNING;
+        } else if(keybladeMode == KEYBLADE_MODE.LIGHTNING) {
+            keybladeMode = KEYBLADE_MODE.FIRE;
+        }
+    }
+
+    public KEYBLADE_MODE getKeybladeMode() {
+        return keybladeMode;
     }
 }
