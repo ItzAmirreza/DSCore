@@ -5,6 +5,7 @@ import me.prismskey.rpgcore.Enums.CooldownTimes;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.NBTItem;
+import me.prismskey.rpgcore.Utils.Utils;
 import me.prismskey.rpgcore.VFireworks.InstantFirework;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -68,26 +69,122 @@ public class OnTriggerSpecialAbilities implements Listener {
             handleHollowScytheSpecials(event, data);
         } else if (nbti.hasKey("galaxy")) {
             handleGalaxySwordSpecials(event, data);
-        } else if(nbti.hasKey("master_sword")) {
+        } else if (nbti.hasKey("master_sword")) {
             handleMasterSwordSpecials(event, data);
-        } else if(nbti.hasKey("keyblade")) {
+        } else if (nbti.hasKey("keyblade")) {
             handleKeyBladeSpecials(event, data);
+        } else if (nbti.hasKey("daylight")) {
+            Bukkit.getWorld("world").setTime(0);
+            event.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+        } else if (nbti.hasKey("midnight")) {
+            Bukkit.getWorld("world").setTime(13000);
+            event.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+        } else if (nbti.hasKey("sun")) {
+            Bukkit.getWorld("world").setStorm(false);
+            event.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+        } else if (nbti.hasKey("thunder")) {
+            Bukkit.getWorld("world").setStorm(true);
+            Bukkit.getWorld("world").setThundering(true);
+            event.getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+        } else if (nbti.hasKey("lostvayne")) {
+            handleLostvayneSpecials(event, data);
+        }
+
+        if(combo.isComplete()) {
+            combo.resetCombo();
         }
     }
 
     public boolean isActiveSpecialAbilityItem(ItemStack item) {
         NBTItem nbti = new NBTItem(item);
         if (nbti.hasKey("Excalibur") || nbti.hasKey("lich") || nbti.hasKey("Hollowscythe")
-                || nbti.hasKey("galaxy") || nbti.hasKey("master_sword") || nbti.hasKey("keyblade")) {
+                || nbti.hasKey("galaxy") || nbti.hasKey("master_sword") || nbti.hasKey("keyblade")
+                || nbti.hasKey("lostvayne")) {
             return true;
         }
         return false;
     }
 
+    private void handleLostvayneSpecials(PlayerInteractEvent event, RPGPlayerData data) {
+        Player player = event.getPlayer();
+        ClickCombo combo = shortTermStorages.clickComboHashMap.get(player.getUniqueId());
+        if (combo.getCombo().equalsIgnoreCase("[ R R R ]")) {
+            data.chargeLostvayne();
+            player.sendMessage(ChatColor.GREEN + "Charge: " + data.getLostvayneCharge());
+            combo.resetCombo();
+        } else if (combo.getCombo().equalsIgnoreCase("[ R L L ]")) {
+
+            if (data.getLostvayneCharge() > 0) {
+                triggerLostVayneBlast(player, data);
+                data.decrementLostvayneCharge();
+            } else {
+                player.sendMessage(ChatColor.RED + "Recharge required.");
+            }
+
+            combo.resetCombo();
+        }
+    }
+
+    private void triggerLostVayneBlast(Player player, RPGPlayerData data) {
+
+        Location startLoc = player.getEyeLocation();
+        // We need to clone() this location, because we will add() to it later.
+        Location particleLoc = startLoc.clone();
+        World world = startLoc.getWorld();
+        // dir is the Vector direction (offset from 0,0,0) the player is facing in 3D space
+        Vector dir = startLoc.getDirection();
+        Vector vecOffset = dir.clone().multiply(.5);
+
+        //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound minecraft:excalibur.ability.blast master @a " + startLoc.getX() + " " + startLoc.getY() + " " + startLoc.getZ() + " 1 1");
+
+        int maxBeamLength = 30;
+
+        for (int i = 0; i < maxBeamLength; i++) {
+            if (!(particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
+                break;
+            }
+            int get = 0;
+            List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
+            while (get < entities.size()) {
+                if (get >= entities.size()) {
+                    break;
+                }
+                Entity entity = entities.get(get);
+                if (entity instanceof LivingEntity && entity != player) {
+                    Vector particleMinVector = new Vector(
+                            particleLoc.getX() - 0.25,
+                            particleLoc.getY() - 0.25,
+                            particleLoc.getZ() - 0.25);
+                    Vector particleMaxVector = new Vector(
+                            particleLoc.getX() + 0.25,
+                            particleLoc.getY() + 0.25,
+                            particleLoc.getZ() + 0.25);
+
+                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
+                        //world.spawnParticle(Particle.FLASH, particleLoc, 0);
+                        //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+                        ((Damageable) entity).damage(2, player);
+                        maxBeamLength = 0;
+                        break;
+                    }
+                }
+                get++;
+            }
+
+            particleLoc.add(vecOffset);
+
+            Particle.DustOptions blackDust = new Particle.DustOptions(Color.fromRGB(0, 0, 0), 3);
+            Particle.DustOptions purpleDust = new Particle.DustOptions(Color.fromRGB(69, 0, 196), 3);
+            world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, blackDust);
+            world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, purpleDust);
+
+        }
+    }
+
     private void handleKeyBladeSpecials(PlayerInteractEvent event, RPGPlayerData data) {
         Player player = event.getPlayer();
         ClickCombo combo = shortTermStorages.clickComboHashMap.get(player.getUniqueId());
-        if(combo.getCombo().equalsIgnoreCase("[ R L L ]")) {
+        if (combo.getCombo().equalsIgnoreCase("[ R L L ]")) {
             data.switchKeyBladeMode();
             player.sendMessage(ChatColor.GREEN + "Mode switched to " + data.getKeybladeMode().toString() + ".");
             combo.resetCombo();
@@ -100,8 +197,8 @@ public class OnTriggerSpecialAbilities implements Listener {
         Player player = event.getPlayer();
         ClickCombo combo = shortTermStorages.clickComboHashMap.get(player.getUniqueId());
         if (combo.getCombo().equalsIgnoreCase("[ R L L ]")) {
-            if(event.getPlayer().getHealth() == event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
-                if(data.getMasterSwordBeamCooldown() <= 0) {
+            if (event.getPlayer().getHealth() == event.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()) {
+                if (data.getMasterSwordBeamCooldown() <= 0) {
                     triggerMasterSwordBeam(player);
                     data.setMasterSwordBeamCooldown(CooldownTimes.MASTER_SWORD_BEAM.cooldown);
                 } else {
@@ -129,7 +226,7 @@ public class OnTriggerSpecialAbilities implements Listener {
         int maxBeamLength = 30;
 
         for (int i = 0; i < maxBeamLength; i++) {
-            if (!( particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
+            if (!(particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
                 break;
             }
             int get = 0;
@@ -214,7 +311,7 @@ public class OnTriggerSpecialAbilities implements Listener {
                             particleSpawn.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, particleSpawn, 1);
                             particleSpawn.getWorld().playSound(particleSpawn, Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
                         }
-                            this.cancel();
+                        this.cancel();
                     }
 
                     for (Entity entity : particleSpawn.getWorld().getNearbyEntities(particleSpawn, 1, 1, 1)) {
@@ -243,7 +340,7 @@ public class OnTriggerSpecialAbilities implements Listener {
 
                     particleSpawn.add(0, -.2, 0);
 
-                    trail+=.2;
+                    trail += .2;
                 }
             }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
         }
@@ -282,6 +379,13 @@ public class OnTriggerSpecialAbilities implements Listener {
                                 //world.spawnParticle(Particle.FLASH, particleLoc, 0);
                                 //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
                                 ((Damageable) entity).damage(19, player);
+
+                                if (entity instanceof Player) {
+                                    if (!Utils.pvpCheck(player, (Player) entity)) {
+                                        continue;
+                                    }
+                                }
+
                                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.WITHER, 20 * 10, 1));
                                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 20 * 10, 1));
                                 ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 5));
@@ -297,7 +401,7 @@ public class OnTriggerSpecialAbilities implements Listener {
 
                     particleSpawn.add(0, .2, 0);
 
-                    trail+=.2;
+                    trail += .2;
                 }
             }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
         }
@@ -411,6 +515,13 @@ public class OnTriggerSpecialAbilities implements Listener {
                     if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
                         //world.spawnParticle(Particle.FLASH, particleLoc, 0);
                         //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+
+                        if (entity instanceof Player) {
+                            if (!Utils.pvpCheck(player, (Player) entity)) {
+                                continue;
+                            }
+                        }
+
                         ((Damageable) entity).damage(4, player);
                         player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), player.getHealth() + 2));
                         maxBeamLength = 0;
@@ -422,7 +533,7 @@ public class OnTriggerSpecialAbilities implements Listener {
 
             particleLoc.add(vecOffset);
             world.spawnParticle(Particle.VILLAGER_HAPPY, particleLoc, 0);
-            maxBeamLength--;
+            //maxBeamLength--;
         }
     }
 
@@ -430,7 +541,7 @@ public class OnTriggerSpecialAbilities implements Listener {
     private void handleExcaliburSpecials(PlayerInteractEvent event, RPGPlayerData data) {
         Player player = event.getPlayer();
         ClickCombo combo = shortTermStorages.clickComboHashMap.get(player.getUniqueId());
-        if (combo.getCombo().equalsIgnoreCase("[ R L L ]")) {
+        if (combo.getCombo().equalsIgnoreCase("[ R L R ]")) {
             if (data.getCamelotsMightCooldown() <= 0) {
                 //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute as " + player.getName() + " run function excalibur:ability/heal");
                 triggerCamelotsMight(player);
@@ -440,7 +551,7 @@ public class OnTriggerSpecialAbilities implements Listener {
             }
             combo.resetCombo();
         }
-        if (combo.getCombo().equalsIgnoreCase("[ R L R ]")) {
+        if (combo.getCombo().equalsIgnoreCase("[ R L L ]")) {
             if (data.getStrikeBoltCooldown() <= 0) {
                 //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "execute as " + player.getName() + " run function excalibur:ability/blast");
                 triggerStrikeBolt(player);
@@ -462,7 +573,6 @@ public class OnTriggerSpecialAbilities implements Listener {
             if (e instanceof LivingEntity) {
                 if (e instanceof Player) {
                     e.sendMessage(ChatColor.BOLD + "" + ChatColor.GOLD + "For Camelot!");
-                    continue;
                 }
 
                 if (e instanceof Villager || e instanceof WanderingTrader || e instanceof Cow ||
@@ -548,9 +658,9 @@ public class OnTriggerSpecialAbilities implements Listener {
             handleCoralSwordPassives(event);
         } else if (nbti.hasKey("coral") && nbti.getItem().getType() == Material.DIAMOND_AXE) {
             handleCoralAxePassives(event);
-        } else if(nbti.hasKey("swordfish")) {
+        } else if (nbti.hasKey("swordfish")) {
             handleSwordFishSwordPassives(event);
-        } else if(nbti.hasKey("keyblade")) {
+        } else if (nbti.hasKey("keyblade")) {
             handleKeyBladePassives(event);
         }
     }
@@ -559,14 +669,21 @@ public class OnTriggerSpecialAbilities implements Listener {
 
         RPGPlayerData data = configloader.getDataByUUID(event.getDamager().getUniqueId());
         KEYBLADE_MODE mode = data.getKeybladeMode();
-        if(mode == KEYBLADE_MODE.FIRE) {
+
+        if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+            if (!Utils.pvpCheck((Player) event.getDamager(), (Player) event.getEntity())) {
+                return;
+            }
+        }
+
+        if (mode == KEYBLADE_MODE.FIRE) {
             event.getEntity().setFireTicks(300);
-        } else if(mode == KEYBLADE_MODE.ICE) {
-            if(event.getEntity() instanceof LivingEntity) {
+        } else if (mode == KEYBLADE_MODE.ICE) {
+            if (event.getEntity() instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) event.getEntity();
                 living.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 300, 2));
             }
-        } else if(mode == KEYBLADE_MODE.LIGHTNING) {
+        } else if (mode == KEYBLADE_MODE.LIGHTNING) {
             event.getEntity().getWorld().strikeLightningEffect(event.getEntity().getLocation());
             event.setDamage(event.getDamage() * 2);
         }
@@ -574,7 +691,7 @@ public class OnTriggerSpecialAbilities implements Listener {
 
     private void handleSwordFishSwordPassives(EntityDamageByEntityEvent event) {
         Entity attacker = event.getDamager();
-        if(attacker.getLocation().getBlock().getType() == Material.WATER) {
+        if (attacker.getLocation().getBlock().getType() == Material.WATER) {
             event.setDamage(event.getDamage() * 2.2);
         }
     }
@@ -597,9 +714,16 @@ public class OnTriggerSpecialAbilities implements Listener {
         Player player = (Player) event.getDamager();
         Location attackerLoc = player.getLocation();
         Location victimLoc = event.getEntity().getLocation();
+        if (event.getEntity() instanceof Player) {
+            if (!Utils.pvpCheck(player, (Player) event.getEntity())) {
+                return;
+            }
+        }
+
         if (attackerLoc.distance(victimLoc) <= 1.5) {
             event.setDamage(event.getDamage() * 3);
             player.getWorld().playSound(attackerLoc, Sound.ENTITY_GHAST_SCREAM, 1f, 0f);
+
         }
     }
 

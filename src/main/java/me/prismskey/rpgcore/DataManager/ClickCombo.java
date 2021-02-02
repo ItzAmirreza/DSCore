@@ -62,4 +62,8 @@ public class ClickCombo {
     public void incrementTimer() {
         currentTicks++;
     }
+
+    public boolean isComplete() {
+        return combo[0] != '-' && combo[1] != '-' && combo[2] != '-';
+    }
 }

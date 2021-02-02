@@ -14,6 +14,7 @@ public class RPGPlayerData {
     private int startRainCooldown;
     private int masterSwordBeamCooldown;
     private KEYBLADE_MODE keybladeMode;
+    private int lostvayneCharge;
 
 
     private int pvpToggleCoolDown;
@@ -154,5 +155,23 @@ public class RPGPlayerData {
 
     public KEYBLADE_MODE getKeybladeMode() {
         return keybladeMode;
+    }
+
+    public int getLostvayneCharge() {
+        return lostvayneCharge;
+    }
+
+    public void chargeLostvayne() {
+        if(lostvayneCharge < 20) {
+            lostvayneCharge++;
+        }
+    }
+
+    public void decrementLostvayneCharge() {
+        lostvayneCharge--;
+    }
+
+    public void resetLostvayneCharge() {
+        lostvayneCharge = 0;
     }
 }

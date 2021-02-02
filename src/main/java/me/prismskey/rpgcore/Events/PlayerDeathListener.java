@@ -17,19 +17,18 @@ public class PlayerDeathListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
-        if (shortTermStorages.playersInMatch.containsKey(event.getEntity().getName())) {
-            OfflinePlayer offplayer = Bukkit.getOfflinePlayer(player.getName());
-            double playerMoney = Rpgcore.getEconomy().getBalance(offplayer);
-            int threepercentpunishment = (int)(playerMoney / 100)*3;
 
-            Rpgcore.getEconomy().withdrawPlayer(offplayer, threepercentpunishment);
+        OfflinePlayer offplayer = Bukkit.getOfflinePlayer(player.getName());
+        double playerMoney = Rpgcore.getEconomy().getBalance(offplayer);
+        int onePercentPunishment = (int) (playerMoney / 100);
+        int withdrawAmount = Math.min(onePercentPunishment, 10000);
+        Rpgcore.getEconomy().withdrawPlayer(offplayer, withdrawAmount);
 
-            Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
-            playerArena.players.remove(player);
-            playerArena.checkIfStillArenaHasPlayer(player);
-            player.sendMessage(Utils.color("&cYou died in dungeon and lost 3% of your money!"));
-            player.sendMessage(Utils.color("&eAttention! &7You have less than a minute to &b/rejoin&7 to your previous dungeon, otherwise you will abandon the dungeon automatically."));
-        }
+        //Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
+        // playerArena.players.remove(player);
+        player.sendMessage(Utils.color("&cYou died and lost $" + withdrawAmount + "."));
+        //player.sendMessage(Utils.color("&eAttention! &7You have less than a minute to &b/rejoin&7 to your previous dungeon, otherwise you will abandon the dungeon automatically."));
+
 
     }
 

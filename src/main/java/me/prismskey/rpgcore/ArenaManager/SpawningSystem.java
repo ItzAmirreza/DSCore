@@ -1,31 +1,27 @@
 package me.prismskey.rpgcore.ArenaManager;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
-import com.sk89q.worldedit.world.World;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.protection.managers.RegionManager;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
 import me.prismskey.rpgcore.Enums.SpecialMobs;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
-import me.prismskey.rpgcore.Utils.Utils;
+import me.prismskey.rpgcore.Utils.APIUsages;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.loot.LootTable;
+import org.bukkit.loot.Lootable;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -33,8 +29,6 @@ public class SpawningSystem {
     RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
     MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
     Random r = new Random();
-
-
 
 
     public void spawn(String arenaName, Phase phase) {
@@ -46,7 +40,7 @@ public class SpawningSystem {
         Location center = phase.center;
         int mobRange = phase.mobSpawnRange;
 
-        for(String cmd: phase.startCommands) {
+        for (String cmd : phase.startCommands) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd);
         }
 
@@ -59,17 +53,19 @@ public class SpawningSystem {
                     int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
+
+
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
-                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
-                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
+                    //theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
+                    //theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
 
 
-                    if(dMob.isBoss) {
+                    if (dMob.isBoss) {
                         theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isBoss"), PersistentDataType.INTEGER, 1);
                         theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
                         shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).bossMobsRemaining++;
                     }
-                    if(dMob.isFinalBoss) {
+                    if (dMob.isFinalBoss) {
                         theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isFinalBoss"), PersistentDataType.INTEGER, 1);
                         theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
                         shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).finalBossMobsRemaining++;
@@ -77,7 +73,7 @@ public class SpawningSystem {
 
 
                     //assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
-                    shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
+                    //shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
                     LivingEntity living = (LivingEntity) theEnt;
                     living.setRemoveWhenFarAway(false);
                     //shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
@@ -93,6 +89,7 @@ public class SpawningSystem {
 
                     //spawn that entity
                     SpecialMobs thatmob = SpecialMobs.valueOf(dMob.mob);
+                    //Entity specialMob = spawnSpecialMob(thatmob, spawnLocation);
 
                     if (spawnLocation.getWorld().getName().equalsIgnoreCase("world")) {
 
@@ -107,29 +104,46 @@ public class SpawningSystem {
                     Bukkit.getScheduler().runTaskLater(Rpgcore.getInstance(), new Runnable() {
                         @Override
                         public void run() {
-                            Entity theEnt = getSpecialEntity(spawnLocation);
-                            theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
+                            //ArrayList<Entity> theEnts = getSpecialEntity(spawnLocation);
+                            applyPersistentDataToNearbyArenaMobsAndSetRemoveWhenFarAwayFalse(spawnLocation, arenaName);
+                            //theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
                             //theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);
                             //theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "name"), PersistentDataType.STRING, dMob.mob);
 
                             if(dMob.isBoss) {
-                                theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isBoss"), PersistentDataType.INTEGER, 1);
-                                theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
-                                shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).bossMobsRemaining++;
-                            }
-                            if(dMob.isFinalBoss) {
-                                theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isFinalBoss"), PersistentDataType.INTEGER, 1);
-                                theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
-                                shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).finalBossMobsRemaining++;
+                                ArrayList<Entity> bosses = getBossEntities(spawnLocation);
+                                for (Entity theEnt : bosses) {
+                                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isBoss"), PersistentDataType.INTEGER, 1);
+
+                                    if(!theEnt.getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING)) {
+                                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
+                                    }
+
+                                    shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).bossMobsRemaining++;
+                                }
                             }
 
+                            if (dMob.isFinalBoss) {
+                                ArrayList<Entity> finalBosses = getFinalBossEntities(spawnLocation);
+                                for (Entity theEnt : finalBosses) {
+                                    theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "isFinalBoss"), PersistentDataType.INTEGER, 1);
+
+                                    if(!theEnt.getPersistentDataContainer().has(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING)) {
+                                        theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "homePhase"), PersistentDataType.STRING, phase.name);
+                                    }
+
+                                    shortTermStorages.arenaHashMap.get(arenaName).phases.get(phase.name).finalBossMobsRemaining++;
+                                }
+                            }
+
+
                             //assignEntityData(theEnt, dMob.level, damage, health, dMob.mob);
-                            shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
-                            LivingEntity living = (LivingEntity) theEnt;
-                            living.setRemoveWhenFarAway(false);
+                            //shortTermStorages.arenaHashMap.get(arenaName).allMobsInArena.add(theEnt);
+                            //LivingEntity living = (LivingEntity) theEnt;
+                            //living.setRemoveWhenFarAway(false);
                             //shortTermStorages.arenaHashMap.get(arenaName).currentPhase.spawnedEntities.add(theEnt);
                         }
-                    }, 20);
+                    }, 2);
 
                 }
 
@@ -138,25 +152,47 @@ public class SpawningSystem {
         }
 
 
+    }
 
+    private void applyPersistentDataToNearbyArenaMobsAndSetRemoveWhenFarAwayFalse(Location loc, String arenaName) {
+        for (Entity e : loc.getWorld().getNearbyEntities(loc, 10, 10, 10)) {
+            if (!(e instanceof Player) && e instanceof LivingEntity) {
+                e.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
+                ((LivingEntity) e).setRemoveWhenFarAway(false);
+            }
+        }
     }
 
 
-    private Entity getSpecialEntity(Location location) {
-        ;
-        List<Entity> finalList = new ArrayList<>();
-        ArrayList<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, 2d, 2d, 2d));
-        for (Entity entity : entities){
+    private ArrayList<Entity> getBossEntities(Location location) {
+        ArrayList<Entity> finalList = new ArrayList<>();
+        ArrayList<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, 10, 10d, 10d));
+        for (Entity entity : entities) {
             if (!(entity instanceof Player)) {
-                finalList.add(entity);
+                if (APIUsages.hasMobNBT(entity, "targetBoss")) {
+                    finalList.add(entity);
+                }
             }
         }
 
-        return finalList.get(0);
+        return finalList;
 
     }
 
+    private ArrayList<Entity> getFinalBossEntities(Location location) {
+        ArrayList<Entity> finalList = new ArrayList<>();
+        ArrayList<Entity> entities = new ArrayList<>(location.getWorld().getNearbyEntities(location, 10, 10d, 10d));
+        for (Entity entity : entities) {
+            if (!(entity instanceof Player)) {
+                if (APIUsages.hasMobNBT(entity, "targetFinalBoss")) {
+                    finalList.add(entity);
+                }
+            }
+        }
 
+        return finalList;
+
+    }
 
 
     private Location findTheRightLocation(Location center, int mobRange, Arena thatArena, Phase thatPhase) {
@@ -182,10 +218,10 @@ public class SpawningSystem {
 
     private boolean checkIFInTheRightRegion(Location thatLocation, Phase targetPhase) {
         //ensure mob does not spawn inside wall such as spiders.
-        for(int x = thatLocation.getBlockX() - 1; x <= thatLocation.getBlockX() + 1; x++) {
-            for(int z = thatLocation.getBlockZ() - 1; z <= thatLocation.getBlockZ() + 1; z++) {
+        for (int x = thatLocation.getBlockX() - 1; x <= thatLocation.getBlockX() + 1; x++) {
+            for (int z = thatLocation.getBlockZ() - 1; z <= thatLocation.getBlockZ() + 1; z++) {
                 Location test = new Location(thatLocation.getWorld(), x, thatLocation.getBlockY(), z);
-                if( !(test.getBlock().getType() == Material.WATER || test.getBlock().isEmpty())) {
+                if (!(test.getBlock().getType() == Material.WATER || test.getBlock().isEmpty())) {
                     return false;
                 }
             }
@@ -201,7 +237,6 @@ public class SpawningSystem {
         }
 
     }
-
 
     private void assignEntityData(Entity thatEntity, int level, int damage, int health, String name) {
 
@@ -221,7 +256,6 @@ public class SpawningSystem {
 
         living.setCustomName(Utils.color("&7" + currenthealth + "/" + maxhealth + "&7]"));*/
     }
-
 
 
 }

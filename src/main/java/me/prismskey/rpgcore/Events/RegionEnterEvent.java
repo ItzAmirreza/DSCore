@@ -64,12 +64,12 @@ public class RegionEnterEvent implements Listener {
                 }
             }*/
 
-        } else {
+        } /*else {
 
             if (!player.hasPermission("dscore.bypass")) {
                 player.performCommand("spawn");
             }
-        }
+        }*/
 
     }
 

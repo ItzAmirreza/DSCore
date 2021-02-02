@@ -1,11 +1,11 @@
 package me.prismskey.rpgcore.Mobs;
 
 import me.prismskey.rpgcore.Enums.MobAbilityCoolDownTimes;
+import me.prismskey.rpgcore.Enums.MobSpecialAttackCooldownTimes;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.APIUsages;
-import org.bukkit.*;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.Damageable;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -13,19 +13,20 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class EnemySpecialsManager implements Listener {
 
-    private HashMap<String, Integer> enemySpecialCooldowns;
-    private HashSet<UUID> processedEntities;
-    private Random random;
+    private final HashMap<String, Integer> enemyMasterAttackCooldowns;
+    private final HashMap<String, Integer> enemySpecialCooldowns;
+    private final HashSet<UUID> processedEntities;
+    private final Random random;
 
     public EnemySpecialsManager() {
-        enemySpecialCooldowns = new HashMap<String, Integer>();
+        enemySpecialCooldowns = new HashMap<>();
+        enemyMasterAttackCooldowns = new HashMap<>();
         random = new Random();
 
         processedEntities = new HashSet<>();
@@ -33,6 +34,37 @@ public class EnemySpecialsManager implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
+
+
+                Iterator it = enemyMasterAttackCooldowns.keySet().iterator();
+                while(it.hasNext()) {
+                    String key = (String) it.next();
+                    enemyMasterAttackCooldowns.merge(key, -1, Integer::sum);
+
+                    try {
+                        if( ((LivingEntity) Bukkit.getEntity(UUID.fromString(key))).isDead()) {
+                            it.remove();
+                        }
+                    } catch (NullPointerException e) {
+                        it.remove();
+                    }
+
+                }
+
+                it = enemySpecialCooldowns.keySet().iterator();
+                while(it.hasNext()) {
+                    String key = (String) it.next();
+                    enemySpecialCooldowns.merge(key, -1, Integer::sum);
+
+                    try {
+                        if( ((LivingEntity) Bukkit.getEntity(UUID.fromString(key.split(":")[0]))).isDead()) {
+                            it.remove();
+                        }
+                    } catch (NullPointerException e) {
+                        it.remove();
+                    }
+                }
+
                 processedEntities.clear();
                 for(Player player: Bukkit.getOnlinePlayers()) {
                     processEnemiesAroundPlayer(player);
@@ -49,124 +81,178 @@ public class EnemySpecialsManager implements Listener {
                 } else {
                     processedEntities.add(e.getUniqueId());
                 }
-                checkCooldownsForEntity((LivingEntity) e);
+                chooseAttackForEntity((LivingEntity) e);
             }
         }
     }
 
-    private void checkCooldownsForEntity(LivingEntity e) {
-        //Rpgcore.instance.getLogger().info("CheckCooldown");
-        if(APIUsages.hasMobNBT(e, "lich")) {
-            //Rpgcore.instance.getLogger().info("lich");
-            processEnemyCooldown(e, "lifeDrainBeam");
+    private boolean checkMasterCooldown(LivingEntity e) {
+        Integer value = null;
+        if(APIUsages.hasMobNBT(e, "hollow")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+        } else if(APIUsages.hasMobNBT(e,"ghost")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+        } else if(APIUsages.hasMobNBT(e, "lich")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+        }
+
+        //Rpgcore.getInstance().getLogger().info("value: " + value);
+
+        if(value == null || value > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private void chooseAttackForEntity(LivingEntity e) {
+
+        if(!checkMasterCooldown(e)) {
+            return;
+        }
+
+        ArrayList<String> attacks = new ArrayList<>();
+        if(APIUsages.hasMobNBT(e, "lifeDrainBeam")) {
+            attacks.add("lifeDrainBeam");
+        }
+        if(APIUsages.hasMobNBT(e, "deathsCall")) {
+            attacks.add("deathsCall");
+        }
+        if(APIUsages.hasMobNBT(e, "void")) {
+            attacks.add("void");
+        }
+        if(APIUsages.hasMobNBT(e, "fire")) {
+            attacks.add("fire");
+        }
+        if(APIUsages.hasMobNBT(e, "earth")) {
+            attacks.add("earth");
+        }
+        if(APIUsages.hasMobNBT(e, "undeadSummoner")) {
+            attacks.add("undeadSummoner");
+        }
+        if(APIUsages.hasMobNBT(e, "findNewTarget")) {
+            attacks.add("findNewTarget");
+        }
+        if(APIUsages.hasMobNBT(e, "rush")) {
+            attacks.add("rush");
+        }
+        if(APIUsages.hasMobNBT(e, "magiGuard")) {
+            attacks.add("magiGuard");
+        }
+
+        if(attacks.size() > 0) {
+            String randomAttack = attacks.get(random.nextInt(attacks.size()));
+            boolean attacked = processEnemyAttack(e, randomAttack);
+
+            if (attacked) {
+                resetMasterCooldownForEntity(e);
+            }
+        }
+
+    }
+
+    private void resetMasterCooldownForEntity(LivingEntity e) {
+        if(APIUsages.hasMobNBT(e,"hollow")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.HOLLOWGHAST.cooldown);
+        } else if(APIUsages.hasMobNBT(e,"ghost")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.GHOST.cooldown);
+        } else if(APIUsages.hasMobNBT(e,"lich")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.NAMELESS_ONE.cooldown);
         }
     }
 
-    private void processEnemyCooldown(LivingEntity e, String attackName) {
-        String keyString = e.getUniqueId().toString() + ":" + attackName;
+
+    private boolean processEnemyAttack(LivingEntity e, String type) {
+        String keyString = e.getUniqueId().toString() + ":" + type;
+        enemySpecialCooldowns.putIfAbsent(keyString, 0);
 
         //returns null if keyString is not in the map
-        if(enemySpecialCooldowns.putIfAbsent(keyString, MobAbilityCoolDownTimes.LIFE_DRAIN.cooldown) != null) {
-            enemySpecialCooldowns.merge(keyString, -1, Integer::sum);
-        }
-        if(enemySpecialCooldowns.get(keyString) <= 0) {
-            tryUseSpecial(e, attackName);
-            enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.LIFE_DRAIN.cooldown);
-        }
-    }
-
-    private void tryUseSpecial(LivingEntity e, String attackName) {
-        if(attackName.equals("lifeDrainBeam")) {
-            triggerLifeDrainBeam(e);
-        }
-    }
-
-    private void triggerLifeDrainBeam(LivingEntity ent) {
-        Player target = getRandomPlayerTarget(ent);
-
-        if(target == null) return;
-
-        Location startLoc = ent.getLocation();
-        Location endLoc = target.getLocation();
-
-        Location particleLoc = startLoc.clone();
-        particleLoc.setY(particleLoc.getY() + 1);
-        World world = startLoc.getWorld();
-        // dir is the Vector direction (offset from 0,0,0) the player is facing in 3D space
-        //Vector dir = startLoc.getDirection();
-        //Vector vecOffset = dir.clone().multiply(.5);
-
-        //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound minecraft:excalibur.ability.blast master @a " + startLoc.getX() + " " + startLoc.getY() + " " + startLoc.getZ() + " 1 1");
-
-        int beamLength = (int) (startLoc.distance(endLoc)/.5) + 1;
-        Rpgcore.instance.getLogger().info("" + beamLength);
-        double xIncrease = (endLoc.getX() - startLoc.getX()) / beamLength;
-        double yIncrease = (endLoc.getY() - startLoc.getY()) / beamLength;
-        double slope = (endLoc.getZ() - startLoc.getZ()) / (endLoc.getX() - startLoc.getX());
-
-
-        for (int i = 0; i < beamLength; i++) {
-            for (Entity entity : world.getNearbyEntities(particleLoc, 5, 5, 5)) {
-
-
-                if (entity instanceof Damageable) {
-                    if (entity == ent) {
-                        continue;
-                    }
-
-                    Vector particleMinVector = new Vector(
-                            particleLoc.getX() - 0.25,
-                            particleLoc.getY() - 0.25,
-                            particleLoc.getZ() - 0.25);
-                    Vector particleMaxVector = new Vector(
-                            particleLoc.getX() + 0.25,
-                            particleLoc.getY() + 0.25,
-                            particleLoc.getZ() + 0.25);
-
-                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
-                        //world.spawnParticle(Particle.FLASH, particleLoc, 0);
-                        //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                        ((Damageable) entity).damage(5, ent);
-                        ent.setHealth(Math.min(ent.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), ent.getHealth() + 1));
-                        return;
-                    }
-
+        boolean usedSpecial = true;
+        switch (type) {
+            case "lifeDrainBeam":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new LifeDrainBeam().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.LIFE_DRAIN.cooldown);
                 }
-            }
-            Rpgcore.instance.getLogger().info("" + particleLoc.getX() + " " + particleLoc.getY() + " " + particleLoc.getZ());
-            particleLoc.setX(particleLoc.getX() + xIncrease);
-            particleLoc.setY(particleLoc.getY() + yIncrease);
-            double z = slope * particleLoc.getX() - slope * startLoc.getX() + startLoc.getZ();
-            particleLoc.setZ(z);
-
-            //particleLoc.add(vecOffset);
-            world.spawnParticle(Particle.SOUL, particleLoc, 0);
+                break;
+            case "deathsCall":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new DeathsCall().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.DEATH_CALL.cooldown);
+                }
+                break;
+            case "void":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new VoidTarget().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.VOID.cooldown);
+                }
+                break;
+            case "fire":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    //tryUseSpecial(e, type);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.FLAME_WAVE.cooldown);
+                }
+                break;
+            case "earth":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    //tryUseSpecial(e, type);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.EARTH_BLAST.cooldown);
+                }
+                break;
+            case "undeadSummoner":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    int countedEntities = 0;
+                    for(Entity ent: e.getNearbyEntities(10, 10, 10)) {
+                        if(ent instanceof Player) {
+                            continue;
+                        }
+                        if(!(ent instanceof LivingEntity)) {
+                            continue;
+                        }
+                        countedEntities++;
+                    }
+                    if(countedEntities < 30) {
+                        new UndeadSummoner().start(e);
+                        enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.UNDEAD_SUMMONER.cooldown);
+                    }
+                }
+                break;
+            case "findNewTarget":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new FindNewTarget().start((Creature) e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.FIND_NEW_TARGET.cooldown);
+                }
+                break;
+            case "rush":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new Rush().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.RUSH.cooldown);
+                }
+                break;
+            case "magiGuard":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new MagiGuard().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.MAGIGUARD.cooldown);
+                }
+            default:
+                usedSpecial = false;
+                break;
         }
+        return usedSpecial;
     }
 
-
-    private Player getRandomPlayerTarget(LivingEntity ent) {
+    public static Player getRandomPlayerTarget(LivingEntity ent) {
         List<Entity> nearbyPlayers = ent.getNearbyEntities(20, 20, 20)
                 .stream()
                 .filter(e -> e instanceof Player)
                 .collect(Collectors.toList());
 
-        if(nearbyPlayers.size() == 0) return null;
+        if(nearbyPlayers.isEmpty()) return null;
 
-        return (Player) nearbyPlayers.get(random.nextInt(nearbyPlayers.size()));
+        return (Player) nearbyPlayers.get(new Random().nextInt(nearbyPlayers.size()));
     }
 
     @EventHandler
     public void onEnemyDie(EntityDeathEvent event) {
-
-        Iterator<String> iterator = enemySpecialCooldowns.keySet().iterator();
-
-        while(iterator.hasNext()) {
-            String keyString = iterator.next();
-            if(keyString.contains(event.getEntity().getUniqueId().toString())) {
-                iterator.remove();
-            }
-        }
-
+        enemySpecialCooldowns.keySet().removeIf(keyString -> keyString.contains(event.getEntity().getUniqueId().toString()));
     }
 }

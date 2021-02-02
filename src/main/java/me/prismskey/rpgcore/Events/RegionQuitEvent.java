@@ -31,11 +31,11 @@ public class RegionQuitEvent implements Listener {
             }
 
 
-        } else {
+        } /*else {
             if (!player.hasPermission("dscore.bypass")) {
                 player.performCommand("spawn");
             }
-        }
+        }*/
 
 
     }

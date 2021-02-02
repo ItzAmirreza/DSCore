@@ -2,6 +2,7 @@ package me.prismskey.rpgcore.Events;
 
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
+import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +14,7 @@ public class OnPvp implements Listener {
 
     @EventHandler
     public void onPvp(EntityDamageByEntityEvent event) {
-        /*if(!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
+        if(!(event.getDamager() instanceof Player && event.getEntity() instanceof Player)) {
             return;
         }
         Player damager = (Player) event.getDamager();
@@ -21,8 +22,9 @@ public class OnPvp implements Listener {
 
         RPGPlayerData damagerData = configloader.getDataByUUID(damager.getUniqueId());
         RPGPlayerData victimData = configloader.getDataByUUID(victim.getUniqueId());
-        if(damagerData.getPvpState() == false || victimData.getPvpState() == false) {
+        if(damagerData.getPvpState() == false || victimData.getPvpState() == false ||
+            Utils.checkIfInDungeon(damager) || Utils.checkIfInDungeon(victim)) {
             event.setCancelled(true);
-        }*/
+        }
     }
 }

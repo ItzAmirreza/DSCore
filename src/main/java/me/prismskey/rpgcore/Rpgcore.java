@@ -13,9 +13,7 @@ import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
 import me.prismskey.rpgcore.Recipes.*;
-import me.prismskey.rpgcore.Tasks.ComboResetTimer;
-import me.prismskey.rpgcore.Tasks.CoralArmorFeedTimer;
-import me.prismskey.rpgcore.Tasks.cooldownCheckTask;
+import me.prismskey.rpgcore.Tasks.*;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
 
@@ -84,6 +82,12 @@ public final class Rpgcore extends JavaPlugin {
 
         CoralArmorFeedTimer coralFeedTimer = new CoralArmorFeedTimer(this);
         coralFeedTimer.runTaskTimer(this, 0, 20 * 30);
+
+        LostvayneParticleTask lostvayneParticleTask = new LostvayneParticleTask();
+        lostvayneParticleTask.runTaskTimer(this, 0, 5);
+
+        MagiGuardTask magiGuardTask = new MagiGuardTask();
+        magiGuardTask.runTaskTimer(this, 0, 1);
     }
 
     private boolean setupEconomy() {
@@ -128,7 +132,7 @@ public final class Rpgcore extends JavaPlugin {
         //test event here will remove it after development
         getServer().getPluginManager().registerEvents(new onPlayerJoin(), this);
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
-
+        getServer().getPluginManager().registerEvents(new OnMagiGuardEntityAttacked(), this);
     }
 
     public void registerRecipes() {

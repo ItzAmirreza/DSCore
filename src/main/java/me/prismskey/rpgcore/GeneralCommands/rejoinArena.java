@@ -22,7 +22,7 @@ public class rejoinArena implements CommandExecutor {
 
                 if (playerArena.players.contains(player)) {
                     player.teleport(playerArena.spawnLocation);
-                    playerArena.players.add(player);
+                    //playerArena.players.add(player);
                     player.sendMessage(Utils.color("&aYou have returned to dungeon."));
                 } else {
 

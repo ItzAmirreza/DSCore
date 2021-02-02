@@ -122,12 +122,12 @@ public class Arena {
     }
 
     public void clearOutMobs() {
-        for (Entity mob : allMobsInArena) { //removing remaining mobs
+        /*for (Entity mob : allMobsInArena) { //removing remaining mobs
             if (!mob.isDead()) {
                 mob.remove();
             }
         }
-        allMobsInArena.clear();
+        allMobsInArena.clear();*/
 
         //ensure remaining mobs are removed
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -329,7 +329,9 @@ public class Arena {
             @Override
             public void run() {
 
-                for (Player player : players) {
+                Iterator it = players.iterator();
+                while (it.hasNext()) {
+                    Player player = (Player) it.next();
                     boolean inDungeon = false;
                     if(!player.isOnline()) {
                         inDungeon = false;
@@ -349,11 +351,11 @@ public class Arena {
                     if (!inDungeon) {
                         if (absentPlayers.contains(player.getUniqueId()) || !player.isOnline()) {
                             shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
-                            Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
-                            playerArena.players.remove(player);
+                            //Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
+                            it.remove();
                             shortTermStorages.playersInMatch.remove(player);
-                            shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer(player);
-                            playerArena.absentPlayers.remove(player.getUniqueId());
+                            checkIfStillArenaHasPlayer(player);
+                            absentPlayers.remove(player.getUniqueId());
                             if(player.isOnline()) {
                                 player.sendMessage(Utils.color("&eYou have been kicked from the dungeon!"));
                             }
