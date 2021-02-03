@@ -9,7 +9,11 @@ public enum MobAbilityCoolDownTimes {
     UNDEAD_SUMMONER(20 * 10),
     FIND_NEW_TARGET(20 * 10),
     RUSH(20 * 10),
-    MAGIGUARD(20 * 10);
+    MAGIGUARD(20 * 10),
+    METEOR(20 * 10),
+    EGYPTIAN_MINION_SUMMONER(20 * 10),
+    SLOW_BEAM(20 * 15),
+    AFFLICTION(20 * 30);
 
     public final int cooldown;
 

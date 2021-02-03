@@ -94,6 +94,10 @@ public class EnemySpecialsManager implements Listener {
             value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
         } else if(APIUsages.hasMobNBT(e, "lich")) {
             value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+        } else if(APIUsages.hasMobNBT(e, "fire")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+        } else if(APIUsages.hasMobNBT(e, "pharaoh")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
         }
 
         //Rpgcore.getInstance().getLogger().info("value: " + value);
@@ -120,12 +124,6 @@ public class EnemySpecialsManager implements Listener {
         if(APIUsages.hasMobNBT(e, "void")) {
             attacks.add("void");
         }
-        if(APIUsages.hasMobNBT(e, "fire")) {
-            attacks.add("fire");
-        }
-        if(APIUsages.hasMobNBT(e, "earth")) {
-            attacks.add("earth");
-        }
         if(APIUsages.hasMobNBT(e, "undeadSummoner")) {
             attacks.add("undeadSummoner");
         }
@@ -137,6 +135,21 @@ public class EnemySpecialsManager implements Listener {
         }
         if(APIUsages.hasMobNBT(e, "magiGuard")) {
             attacks.add("magiGuard");
+        }
+        if(APIUsages.hasMobNBT(e, "meteor")) {
+            attacks.add("meteor");
+        }
+        if(APIUsages.hasMobNBT(e, "flameWave")) {
+            attacks.add("flameWave");
+        }
+        if(APIUsages.hasMobNBT(e, "egyptianMinions")) {
+            attacks.add("egyptianMinions");
+        }
+        if(APIUsages.hasMobNBT(e, "slowBeam")) {
+            attacks.add("slowBeam");
+        }
+        if(APIUsages.hasMobNBT(e, "affliction")) {
+            attacks.add("affliction");
         }
 
         if(attacks.size() > 0) {
@@ -157,6 +170,10 @@ public class EnemySpecialsManager implements Listener {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.GHOST.cooldown);
         } else if(APIUsages.hasMobNBT(e,"lich")) {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.NAMELESS_ONE.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fire")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.FIRE_ELEMENTAL.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "pharaoh")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.PHARAOH.cooldown);
         }
     }
 
@@ -184,18 +201,6 @@ public class EnemySpecialsManager implements Listener {
                 if (enemySpecialCooldowns.get(keyString) <= 0) {
                     new VoidTarget().start(e);
                     enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.VOID.cooldown);
-                }
-                break;
-            case "fire":
-                if (enemySpecialCooldowns.get(keyString) <= 0) {
-                    //tryUseSpecial(e, type);
-                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.FLAME_WAVE.cooldown);
-                }
-                break;
-            case "earth":
-                if (enemySpecialCooldowns.get(keyString) <= 0) {
-                    //tryUseSpecial(e, type);
-                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.EARTH_BLAST.cooldown);
                 }
                 break;
             case "undeadSummoner":
@@ -233,6 +238,37 @@ public class EnemySpecialsManager implements Listener {
                     new MagiGuard().start(e);
                     enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.MAGIGUARD.cooldown);
                 }
+                break;
+            case "meteor":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new Meteor().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.METEOR.cooldown);
+                }
+                break;
+            case "flameWave":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new FlameWave().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.FLAME_WAVE.cooldown);
+                }
+                break;
+            case "egyptianMinions":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new EgyptianMinionSummoner().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.EGYPTIAN_MINION_SUMMONER.cooldown);
+                }
+                break;
+            case "slowBeam":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new SlowBeam().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.SLOW_BEAM.cooldown);
+                }
+                break;
+            case "affliction":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new Affliction().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.AFFLICTION.cooldown);
+                }
+                break;
             default:
                 usedSpecial = false;
                 break;

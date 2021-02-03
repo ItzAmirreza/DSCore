@@ -532,7 +532,7 @@ public class OnTriggerSpecialAbilities implements Listener {
             }
 
             particleLoc.add(vecOffset);
-            world.spawnParticle(Particle.VILLAGER_HAPPY, particleLoc, 0);
+            world.spawnParticle(Particle.VILLAGER_HAPPY, particleLoc, 0, 0, 0, 0, 0);
             //maxBeamLength--;
         }
     }

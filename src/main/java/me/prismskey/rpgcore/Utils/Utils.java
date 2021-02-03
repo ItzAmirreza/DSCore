@@ -11,7 +11,8 @@ import me.prismskey.rpgcore.Maps.shortTermStorages;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.entity.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +45,19 @@ public class Utils {
         ApplicableRegionSet set = query.getApplicableRegions(loc);
         for (ProtectedRegion region : set) {
             if (DUNGEON_REGIONS.contains(region.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isWithinRegion(Location loca, String name) {
+        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(loca);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(loc);
+        for (ProtectedRegion region : set) {
+            if (name.equalsIgnoreCase(region.getId())) {
                 return true;
             }
         }
@@ -87,19 +101,18 @@ public class Utils {
         return false;
     }
 
+    public static boolean entityIsHostile(Entity e) {
+        if(e instanceof Skeleton || e instanceof Zombie || e instanceof Drowned || e instanceof Stray) {
+            return true;
+        }
+        return false;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static boolean isClearSpace(Location loc) {
+        if(loc.getBlock().getType() == Material.AIR || loc.getBlock().getType() == Material.WATER) {
+            return true;
+        }
+        return false;
+    }
 
 }

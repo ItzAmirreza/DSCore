@@ -88,6 +88,12 @@ public final class Rpgcore extends JavaPlugin {
 
         MagiGuardTask magiGuardTask = new MagiGuardTask();
         magiGuardTask.runTaskTimer(this, 0, 1);
+
+        EnsureTargetPlayer ensureTargetPlayer = new EnsureTargetPlayer();
+        ensureTargetPlayer.runTaskTimer(this, 0, 1);
+
+        AfflictionTask afflictionTask = new AfflictionTask();
+        afflictionTask.runTaskTimer(this, 0, 1);
     }
 
     private boolean setupEconomy() {
@@ -133,6 +139,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new onPlayerJoin(), this);
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
         getServer().getPluginManager().registerEvents(new OnMagiGuardEntityAttacked(), this);
+        getServer().getPluginManager().registerEvents(new OnHostileDamageHostile(), this);
     }
 
     public void registerRecipes() {

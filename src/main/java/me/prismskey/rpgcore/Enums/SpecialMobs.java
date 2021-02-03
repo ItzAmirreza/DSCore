@@ -9,7 +9,9 @@ public enum SpecialMobs {
     NAMELESS_ONE("boss/nameless_one"),
     EARTH("elemental/earth"),
     FIRE("elemental/fire"),
-    GHOST("ghost");
+    GHOST("ghost"),
+    PHARAOH("boss/pharaoh"),
+    MUMMY("mummy");
 
 
 
