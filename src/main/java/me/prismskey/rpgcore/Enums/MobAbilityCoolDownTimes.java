@@ -13,7 +13,10 @@ public enum MobAbilityCoolDownTimes {
     METEOR(20 * 10),
     EGYPTIAN_MINION_SUMMONER(20 * 10),
     SLOW_BEAM(20 * 15),
-    AFFLICTION(20 * 30);
+    AFFLICTION(20 * 30),
+    POISON_ARROW(20 * 5),
+    BANSHEE_SCREAM(20 * 5),
+    STONE_GAZE(20 * 15);
 
     public final int cooldown;
 

@@ -98,6 +98,8 @@ public class EnemySpecialsManager implements Listener {
             value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
         } else if(APIUsages.hasMobNBT(e, "pharaoh")) {
             value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+        } else if(APIUsages.hasMobNBT(e, "earth")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
         }
 
         //Rpgcore.getInstance().getLogger().info("value: " + value);
@@ -151,6 +153,18 @@ public class EnemySpecialsManager implements Listener {
         if(APIUsages.hasMobNBT(e, "affliction")) {
             attacks.add("affliction");
         }
+        if (APIUsages.hasMobNBT(e, "poisonArrow")) {
+            attacks.add("poisonArrow");
+        }
+        if(APIUsages.hasMobNBT(e, "earthBlast")) {
+            attacks.add("earthBlast");
+        }
+        if(APIUsages.hasMobNBT(e, "bansheeScream")) {
+            attacks.add("bansheeScream");
+        }
+        if(APIUsages.hasMobNBT(e, "stoneGaze")) {
+            attacks.add("stoneGaze");
+        }
 
         if(attacks.size() > 0) {
             String randomAttack = attacks.get(random.nextInt(attacks.size()));
@@ -174,6 +188,8 @@ public class EnemySpecialsManager implements Listener {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.FIRE_ELEMENTAL.cooldown);
         } else if(APIUsages.hasMobNBT(e, "pharaoh")) {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.PHARAOH.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "earth")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.EARTH_ELEMENTAL.cooldown);
         }
     }
 
@@ -267,6 +283,30 @@ public class EnemySpecialsManager implements Listener {
                 if (enemySpecialCooldowns.get(keyString) <= 0) {
                     new Affliction().start(e);
                     enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.AFFLICTION.cooldown);
+                }
+                break;
+            case "poisonArrow":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new PoisonArrow().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.POISON_ARROW.cooldown);
+                }
+                break;
+            case "earthBlast":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new EarthBlast().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.EARTH_BLAST.cooldown);
+                }
+                break;
+            case "bansheeScream":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new BansheeScream().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.BANSHEE_SCREAM.cooldown);
+                }
+                break;
+            case "stoneGaze":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new StoneGaze().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.STONE_GAZE.cooldown);
                 }
                 break;
             default:

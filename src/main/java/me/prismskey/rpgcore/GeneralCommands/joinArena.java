@@ -1,8 +1,9 @@
 package me.prismskey.rpgcore.GeneralCommands;
 
-import com.gmail.nossr50.api.PartyAPI;
-import com.gmail.nossr50.datatypes.party.Party;
+//import com.gmail.nossr50.api.PartyAPI;
+//import com.gmail.nossr50.datatypes.party.Party;
 import me.prismskey.rpgcore.ArenaManager.Arena;
+import me.prismskey.rpgcore.DataManager.Party;
 import me.prismskey.rpgcore.Enums.ArenaState;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Utils.Utils;
@@ -10,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class joinArena implements CommandExecutor {
                 String arenaName = args[0].toLowerCase();
                 if (shortTermStorages.arenaHashMap.containsKey(arenaName)) {
                     Arena thatArena = shortTermStorages.arenaHashMap.get(arenaName);
-                    Party mcmmoParty = PartyAPI.getPartyByPlayer(player);
+                    Party party = Party.getPartyByPlayer(player);
 
                     if (thatArena.arenaState != ArenaState.AVAILABLE) {
                         if(thatArena.arenaState == ArenaState.INGAME || thatArena.arenaState == ArenaState.RESETTING) {
@@ -40,16 +42,16 @@ public class joinArena implements CommandExecutor {
                         player.sendMessage(Utils.color("&cYou already joined a dungeon!"));
                         return false;
                     }
-                    if (mcmmoParty == null) {
+                    if (party == null) {
                         thatArena.addPlayer(player);
                         shortTermStorages.arenaHashMap.replace(thatArena.name, thatArena);
                         thatArena.startMatch();
                     } else {
                         //It does have a party
-                        List<Player> playersInParty = mcmmoParty.getOnlineMembers();
+                        List<Player> playersInParty = party.getOnlineMembers();
                         if (playersInParty.size() <= thatArena.max) {
 
-                            if (mcmmoParty.getLeader().getPlayerName() == player.getName()) {
+                            if (party.hostUUID.equals(player.getUniqueId()) ) {
 
                                 for (Player player1 : playersInParty) {
                                     thatArena.addPlayer(player1);

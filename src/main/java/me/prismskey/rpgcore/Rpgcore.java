@@ -94,6 +94,12 @@ public final class Rpgcore extends JavaPlugin {
 
         AfflictionTask afflictionTask = new AfflictionTask();
         afflictionTask.runTaskTimer(this, 0, 1);
+
+        PartyInvitationTask partyInvitationTask = new PartyInvitationTask();
+        partyInvitationTask.runTaskTimer(this, 0, 1);
+
+        DryadTreePlantTask dryadTreePlantTask = new DryadTreePlantTask();
+        dryadTreePlantTask.runTaskTimer(this, 0, 20 * 120);
     }
 
     private boolean setupEconomy() {
@@ -116,6 +122,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginCommand("rejoin").setExecutor(new rejoinArena());
         getServer().getPluginCommand("fillblocks").setExecutor(new FillBlocksCommand());
         getServer().getPluginCommand("pvp").setExecutor(new PvpCommand());
+        getServer().getPluginCommand("party").setExecutor(new PartyCommand());
     }
 
     public void registerEvents() {

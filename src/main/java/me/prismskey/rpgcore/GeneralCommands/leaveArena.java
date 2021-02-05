@@ -1,8 +1,10 @@
 package me.prismskey.rpgcore.GeneralCommands;
 
 import me.prismskey.rpgcore.ArenaManager.Arena;
+import me.prismskey.rpgcore.DataManager.Party;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,8 +29,15 @@ public class leaveArena implements CommandExecutor {
                 shortTermStorages.playersInMatch.remove(player);
                 shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).checkIfStillArenaHasPlayer(player);
                 playerArena.absentPlayers.remove(player.getUniqueId());
+
+
                 player.sendMessage(Utils.color("&eYou have left the arena!"));
 
+                Party party = Party.getPartyByPlayer(player);
+                if(party != null) {
+                    party.removeMember(player.getUniqueId());
+                    player.sendMessage(ChatColor.YELLOW + "Because you have left the arena you have been automatically kicked form your party.");
+                }
 
 
             } else {

@@ -5,6 +5,7 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
+import me.prismskey.rpgcore.ArenaManager.Arena;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
 import me.prismskey.rpgcore.DataManager.RPGPlayerData;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
@@ -47,6 +48,26 @@ public class Utils {
             if (DUNGEON_REGIONS.contains(region.getId())) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public static boolean checkIfRegisteredForDungeon(Player player) {
+        for(Arena arena: shortTermStorages.arenas) {
+            if(arena.players.contains(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean locationInAnyRegion(Location loca) {
+        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(loca);
+        RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        RegionQuery query = container.createQuery();
+        ApplicableRegionSet set = query.getApplicableRegions(loc);
+        if(set.size() > 1) {
+            return true;
         }
         return false;
     }

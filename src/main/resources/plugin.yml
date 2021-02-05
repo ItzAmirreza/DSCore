@@ -4,7 +4,7 @@ main: me.prismskey.rpgcore.Rpgcore
 api-version: 1.16
 authors: [prismskey]
 description: RPG Core for custom RPG server
-depend: [WorldGuard, mcMMO, Vault, NBTAPI]
+depend: [WorldGuard, Vault, NBTAPI]
 commands:
   dscore:
     description: admin-commands
@@ -28,3 +28,6 @@ commands:
     permission: dscore.admin.fillblocks
   pvp:
     description: toggle pvp
+  party:
+    description: used to handle parties for dungeon raiding
+    usage: /party create/join/invite/leave/disband (player_name)

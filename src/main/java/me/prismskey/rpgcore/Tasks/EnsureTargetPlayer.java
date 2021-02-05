@@ -3,6 +3,7 @@ package me.prismskey.rpgcore.Tasks;
 import me.prismskey.rpgcore.Utils.APIUsages;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import scala.concurrent.impl.FutureConvertersImpl;
@@ -24,7 +25,7 @@ public class EnsureTargetPlayer extends BukkitRunnable {
                         if(!(creature.getTarget() instanceof Player)) {
                             ArrayList<Player> possibleTargets = new ArrayList<>();
                             for(Entity ent: creature.getNearbyEntities(16, 16, 16)) {
-                                if(ent instanceof Player) {
+                                if(ent instanceof Player && ((Player) ent).getGameMode() == GameMode.SURVIVAL) {
                                     possibleTargets.add((Player) ent);
                                 }
                             }

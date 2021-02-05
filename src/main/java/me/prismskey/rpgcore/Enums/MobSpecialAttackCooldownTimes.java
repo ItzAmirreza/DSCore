@@ -6,7 +6,8 @@ public enum MobSpecialAttackCooldownTimes {
     GHOST(20 * 5),
     NAMELESS_ONE(20 * 5),
     FIRE_ELEMENTAL(20 * 5),
-    PHARAOH(20 * 5);
+    PHARAOH(20 * 5),
+    EARTH_ELEMENTAL(20 * 5);
 
 
     public final int cooldown;
