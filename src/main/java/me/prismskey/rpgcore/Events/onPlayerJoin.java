@@ -26,8 +26,12 @@ public class onPlayerJoin implements Listener {
         shortTermStorages.clickComboHashMap.put(event.getPlayer().getUniqueId(), combo);
 
         if(Utils.checkIfInDungeon(event.getPlayer())) {
+            event.getPlayer().resetPlayerTime();
             event.getPlayer().teleport(shortTermStorages.spawn);
             event.getPlayer().sendMessage(ChatColor.RED + "You cannot log back into a dungeon so you were teleported to spawn.");
+        }
+        if(Utils.isWithinRegion(event.getPlayer().getLocation(), "spawn")) {
+            event.getPlayer().setPlayerTime(6000, false);
         }
     }
 

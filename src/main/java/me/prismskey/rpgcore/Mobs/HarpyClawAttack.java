@@ -8,10 +8,10 @@ import org.bukkit.entity.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Rush {
+public class HarpyClawAttack {
     Random r = new Random();
 
-    public void start(LivingEntity e, int damage) {
+    public void start(LivingEntity e) {
         ArrayList<Player> potentialTargets = new ArrayList<>();
         for(Entity ent: e.getNearbyEntities(10, 10, 10)) {
             if(ent instanceof Player && ((Player) ent).getGameMode() == GameMode.SURVIVAL) {
@@ -22,8 +22,9 @@ public class Rush {
             Player randomTarget = potentialTargets.get(r.nextInt(potentialTargets.size()));
             ((Creature) e).setTarget(randomTarget);
             e.teleport(randomTarget.getLocation());
-            randomTarget.sendMessage(ChatColor.RED + "The enemy rushes at you.");
-            ((Damageable) randomTarget).damage(damage,e);
+            randomTarget.sendMessage(ChatColor.RED + "The harpy digs into you with its claws causing you to bleed.");
+            ((Damageable) randomTarget).damage(7,e);
+            Bleed.bleeds.add(new Bleed(5, 1, randomTarget, e));
         }
 
     }

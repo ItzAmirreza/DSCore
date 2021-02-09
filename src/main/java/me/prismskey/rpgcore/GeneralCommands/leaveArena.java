@@ -23,6 +23,7 @@ public class leaveArena implements CommandExecutor {
 
                 shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
                 Location teleporting = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).playerPhaseLocation.get(player.getName());
+                player.resetPlayerTime();
                 player.teleport(teleporting);
                 Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
                 playerArena.players.remove(player);

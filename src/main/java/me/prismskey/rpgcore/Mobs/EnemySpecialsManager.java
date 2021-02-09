@@ -1,5 +1,6 @@
 package me.prismskey.rpgcore.Mobs;
 
+import me.prismskey.rpgcore.DataManager.Bleed;
 import me.prismskey.rpgcore.Enums.MobAbilityCoolDownTimes;
 import me.prismskey.rpgcore.Enums.MobSpecialAttackCooldownTimes;
 import me.prismskey.rpgcore.Rpgcore;
@@ -165,6 +166,12 @@ public class EnemySpecialsManager implements Listener {
         if(APIUsages.hasMobNBT(e, "stoneGaze")) {
             attacks.add("stoneGaze");
         }
+        if(APIUsages.hasMobNBT(e, "harpyClawAttack")) {
+            attacks.add("harpyClawAttack");
+        }
+        if(APIUsages.hasMobNBT(e, "griffinClawAttack")) {
+            attacks.add("griffinClawAttack");
+        }
 
         if(attacks.size() > 0) {
             String randomAttack = attacks.get(random.nextInt(attacks.size()));
@@ -245,7 +252,7 @@ public class EnemySpecialsManager implements Listener {
                 break;
             case "rush":
                 if (enemySpecialCooldowns.get(keyString) <= 0) {
-                    new Rush().start(e);
+                    new Rush().start(e, 7);
                     enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.RUSH.cooldown);
                 }
                 break;
@@ -309,6 +316,18 @@ public class EnemySpecialsManager implements Listener {
                     enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.STONE_GAZE.cooldown);
                 }
                 break;
+            case "harpyClawAttack":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new HarpyClawAttack().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.HARPY_CLAW_ATTACK.cooldown);
+                }
+                break;
+            case "griffinClawAttack":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new GryphonClawAttack().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.GRYPHON_CLAW_ATTACK.cooldown);
+                }
+                break;
             default:
                 usedSpecial = false;
                 break;
@@ -328,7 +347,15 @@ public class EnemySpecialsManager implements Listener {
     }
 
     @EventHandler
-    public void onEnemyDie(EntityDeathEvent event) {
+    public void onEntityDeath(EntityDeathEvent event) {
         enemySpecialCooldowns.keySet().removeIf(keyString -> keyString.contains(event.getEntity().getUniqueId().toString()));
+
+        Iterator it = Bleed.bleeds.iterator();
+        while(it.hasNext()) {
+            Bleed bleed = (Bleed) it.next();
+            if(event.getEntity().getUniqueId().equals(bleed.bleedTarget.getUniqueId())) {
+                it.remove();
+            }
+        }
     }
 }

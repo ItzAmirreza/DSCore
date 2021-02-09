@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArenaLoader {
 
@@ -25,6 +24,7 @@ public class ArenaLoader {
                 String arenaname = key;
                 int min = config.getInt(key + ".min");
                 int max = config.getInt(key + ".max");
+
                 double keyDropChance = config.getDouble(key + ".keydropchancefactor");
                 String prizeKeyName = config.getString(key + ".prizekeyname");
                 //Rpgcore.instance.getLogger().info("**********************************");
@@ -35,6 +35,10 @@ public class ArenaLoader {
                 if (!spawnLocation.equalsIgnoreCase("null")) {
                     newArena.setSpawnLocation(spawnLocation);
                 }
+
+                //setting time
+                int displayTime = config.getInt(key + ".display_time");
+                newArena.setDisplayTime(displayTime);
 
                 //setting the mainRegion
                 String mainRegion = config.getString(key + ".mainregion");

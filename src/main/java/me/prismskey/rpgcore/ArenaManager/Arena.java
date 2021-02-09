@@ -35,6 +35,7 @@ public class Arena {
     public int totalKilledMobs = 0;
     public String mainRegion = null;
     public String friendlyName = "";
+    public int arenaDisplayTime;
 
     public ArenaState arenaState;
     public LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
@@ -219,6 +220,8 @@ public class Arena {
 
                     for (Player player : players) {
                         player.teleport(spawnLocation);
+                        player.setPlayerTime(arenaDisplayTime, false);
+
                         player.sendTitle(Utils.color("&6&l" + friendlyName), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3 * 20, 5 * 20, 20);
                     }
 
@@ -356,6 +359,7 @@ public class Arena {
                             shortTermStorages.playersInMatch.remove(player);
                             checkIfStillArenaHasPlayer(player);
                             absentPlayers.remove(player.getUniqueId());
+
                             if(player.isOnline()) {
                                 player.sendMessage(Utils.color("&eYou have been kicked from the dungeon!"));
                             }
@@ -450,6 +454,10 @@ public class Arena {
 
     public void setFriendlyName(String name) {
         friendlyName = name;
+    }
+
+    public void setDisplayTime(int arenaDisplayTime) {
+        this.arenaDisplayTime = arenaDisplayTime;
     }
 
 

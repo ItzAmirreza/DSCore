@@ -18,6 +18,7 @@ import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,6 +31,7 @@ import java.util.UUID;
 
 public class DryadTreePlantTask extends BukkitRunnable {
     Random r = new Random();
+
     //Player npcPlayer;
     public DryadTreePlantTask() {
         super();
@@ -44,31 +46,27 @@ public class DryadTreePlantTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        ArrayList<Player> players = new ArrayList();
-        players.addAll(Bukkit.getWorld("world").getPlayers());
-        players.addAll(Bukkit.getWorld("world_nether").getPlayers());
-        players.addAll(Bukkit.getWorld("world_the_end").getPlayers());
-        for(Player player: players) {
-            for(Entity nearby: player.getNearbyEntities(50, 50, 50)) {
-                if(APIUsages.hasMobNBT(nearby, "dryad")) {
-                    //Rpgcore.getInstance().getLogger().info("check a");
-
-                    tryPlantSapling(nearby.getLocation());
-
-                }
+        ArrayList<LivingEntity> livingEntities = new ArrayList();
+        livingEntities.addAll(Bukkit.getWorld("world").getLivingEntities());
+        livingEntities.addAll(Bukkit.getWorld("world_nether").getLivingEntities());
+        livingEntities.addAll(Bukkit.getWorld("world_the_end").getLivingEntities());
+        for (LivingEntity living : livingEntities) {
+            if (APIUsages.hasMobNBT(living, "dryad")) {
+                //Rpgcore.getInstance().getLogger().info("check a");
+                tryPlantSapling(living.getLocation());
             }
         }
     }
 
     private void tryPlantSapling(Location loc) {
-        for(int x = -5; x <= 5; x++) {
+        for (int x = -5; x <= 5; x++) {
             for (int y = -5; y <= 5; y++) {
                 for (int z = -5; z <= 5; z++) {
                     Location theLoc = loc.clone().add(x, y, z);
-                    if(Utils.locationInAnyRegion(theLoc)) {
+                    if (Utils.locationInAnyRegion(theLoc)) {
                         continue;
                     }
-                    if(isLogOrSaplingBlock(theLoc.getBlock())) {
+                    if (isLogOrSaplingBlock(theLoc.getBlock())) {
                         return;
                     }
                 }
@@ -77,21 +75,21 @@ public class DryadTreePlantTask extends BukkitRunnable {
 
         ArrayList<Location> validPlantingSpots = new ArrayList<>();
 
-        for(int x = -5; x <= 5; x++) {
+        for (int x = -5; x <= 5; x++) {
             for (int y = -5; y <= 5; y++) {
                 for (int z = -5; z <= 5; z++) {
                     Location theLoc = loc.clone().add(x, y, z);
-                    if(theLoc.getBlock() == null) {
+                    if (theLoc.getBlock() == null) {
                         continue;
                     }
-                    if(isValidPlantingSpot(theLoc)) {
+                    if (isValidPlantingSpot(theLoc)) {
                         validPlantingSpots.add(theLoc);
                     }
                 }
             }
         }
 
-        if(validPlantingSpots.size() > 0) {
+        if (validPlantingSpots.size() > 0) {
             Location random = validPlantingSpots.get(r.nextInt(validPlantingSpots.size()));
             random.getBlock().setType(getRandomSaplingTypeForLocation(random));
         }
@@ -100,93 +98,93 @@ public class DryadTreePlantTask extends BukkitRunnable {
     private Material getRandomSaplingTypeForLocation(Location loc) {
         ArrayList<Material> saplingTypes = new ArrayList<>();
         Biome biome = loc.getBlock().getBiome();
-        if(biomeMatchesOak(biome)) {
+        if (biomeMatchesOak(biome)) {
             saplingTypes.add(Material.OAK_SAPLING);
         }
-        if(biomeMatchesDarkOak(biome)) {
+        if (biomeMatchesDarkOak(biome)) {
             saplingTypes.add(Material.DARK_OAK_SAPLING);
         }
-        if(biomeMatchesBirch(biome)) {
+        if (biomeMatchesBirch(biome)) {
             saplingTypes.add(Material.BIRCH_SAPLING);
         }
-        if(biomeMatchesAcacia(biome)) {
+        if (biomeMatchesAcacia(biome)) {
             saplingTypes.add(Material.ACACIA_SAPLING);
         }
-        if(biomeMatchesJungle(biome)) {
+        if (biomeMatchesJungle(biome)) {
             saplingTypes.add(Material.JUNGLE_SAPLING);
         }
-        if(biomeMatchesSpruce(biome)) {
+        if (biomeMatchesSpruce(biome)) {
             saplingTypes.add(Material.SPRUCE_SAPLING);
         }
-        if(saplingTypes.size() > 0) {
+        if (saplingTypes.size() > 0) {
             return saplingTypes.get(r.nextInt(saplingTypes.size()));
         }
         return Material.AIR;
     }
 
     private boolean biomeMatchesOak(Biome biome) {
-        if(biome == Biome.BAMBOO_JUNGLE || biome == Biome.BAMBOO_JUNGLE_HILLS || biome == Biome.DARK_FOREST ||
-        biome == Biome.DARK_FOREST_HILLS || biome == Biome.FOREST || biome == Biome.FLOWER_FOREST || biome == Biome.JUNGLE ||
-        biome == Biome.JUNGLE_EDGE || biome == Biome.JUNGLE_HILLS || biome == Biome.MODIFIED_JUNGLE || biome == Biome.MODIFIED_JUNGLE_EDGE ||
-        biome == Biome.PLAINS || biome == Biome.SUNFLOWER_PLAINS || biome == Biome.RIVER || biome == Biome.SAVANNA || biome == Biome.SAVANNA_PLATEAU ||
-        biome == Biome.SWAMP || biome == Biome.WOODED_BADLANDS_PLATEAU || biome == Biome.MODIFIED_WOODED_BADLANDS_PLATEAU || biome == Biome.WOODED_MOUNTAINS || biome == Biome.WOODED_HILLS) {
+        if (biome == Biome.BAMBOO_JUNGLE || biome == Biome.BAMBOO_JUNGLE_HILLS || biome == Biome.DARK_FOREST ||
+                biome == Biome.DARK_FOREST_HILLS || biome == Biome.FOREST || biome == Biome.FLOWER_FOREST || biome == Biome.JUNGLE ||
+                biome == Biome.JUNGLE_EDGE || biome == Biome.JUNGLE_HILLS || biome == Biome.MODIFIED_JUNGLE || biome == Biome.MODIFIED_JUNGLE_EDGE ||
+                biome == Biome.PLAINS || biome == Biome.SUNFLOWER_PLAINS || biome == Biome.RIVER || biome == Biome.SAVANNA || biome == Biome.SAVANNA_PLATEAU ||
+                biome == Biome.SWAMP || biome == Biome.WOODED_BADLANDS_PLATEAU || biome == Biome.MODIFIED_WOODED_BADLANDS_PLATEAU || biome == Biome.WOODED_MOUNTAINS || biome == Biome.WOODED_HILLS) {
             return true;
         }
         return false;
     }
 
     private boolean biomeMatchesDarkOak(Biome biome) {
-        if(biome == Biome.DARK_FOREST_HILLS || biome == Biome.DARK_FOREST) {
+        if (biome == Biome.DARK_FOREST_HILLS || biome == Biome.DARK_FOREST) {
             return true;
         }
         return false;
     }
 
     private boolean biomeMatchesBirch(Biome biome) {
-        if(biome == Biome.FOREST || biome == Biome.BIRCH_FOREST || biome == Biome.BIRCH_FOREST_HILLS || biome == Biome.DARK_FOREST ||
-        biome == Biome.DARK_FOREST_HILLS) {
+        if (biome == Biome.FOREST || biome == Biome.BIRCH_FOREST || biome == Biome.BIRCH_FOREST_HILLS || biome == Biome.DARK_FOREST ||
+                biome == Biome.DARK_FOREST_HILLS) {
             return true;
         }
         return false;
     }
 
     private boolean biomeMatchesJungle(Biome biome) {
-        if(biome == Biome.BAMBOO_JUNGLE || biome == Biome.BAMBOO_JUNGLE_HILLS || biome == Biome.JUNGLE ||
-        biome == Biome.JUNGLE_EDGE || biome == Biome.JUNGLE_HILLS || biome == Biome.MODIFIED_JUNGLE_EDGE || biome == Biome.MODIFIED_JUNGLE) {
+        if (biome == Biome.BAMBOO_JUNGLE || biome == Biome.BAMBOO_JUNGLE_HILLS || biome == Biome.JUNGLE ||
+                biome == Biome.JUNGLE_EDGE || biome == Biome.JUNGLE_HILLS || biome == Biome.MODIFIED_JUNGLE_EDGE || biome == Biome.MODIFIED_JUNGLE) {
             return true;
         }
         return false;
     }
 
     private boolean biomeMatchesSpruce(Biome biome) {
-        if(biome == Biome.GIANT_SPRUCE_TAIGA || biome == Biome.GIANT_SPRUCE_TAIGA_HILLS || biome == Biome.GIANT_TREE_TAIGA || biome == Biome.GIANT_TREE_TAIGA_HILLS ||
-        biome == Biome.SNOWY_MOUNTAINS || biome == Biome.SNOWY_TAIGA || biome == Biome.SNOWY_TAIGA_HILLS || biome ==  Biome.SNOWY_TAIGA_MOUNTAINS ||
-        biome == Biome.SNOWY_TUNDRA) {
+        if (biome == Biome.GIANT_SPRUCE_TAIGA || biome == Biome.GIANT_SPRUCE_TAIGA_HILLS || biome == Biome.GIANT_TREE_TAIGA || biome == Biome.GIANT_TREE_TAIGA_HILLS ||
+                biome == Biome.SNOWY_MOUNTAINS || biome == Biome.SNOWY_TAIGA || biome == Biome.SNOWY_TAIGA_HILLS || biome == Biome.SNOWY_TAIGA_MOUNTAINS ||
+                biome == Biome.SNOWY_TUNDRA) {
             return true;
         }
         return false;
     }
 
     private boolean biomeMatchesAcacia(Biome biome) {
-        if(biome == Biome.SAVANNA_PLATEAU || biome == Biome.SAVANNA) {
+        if (biome == Biome.SAVANNA_PLATEAU || biome == Biome.SAVANNA) {
             return true;
         }
         return false;
     }
 
     private boolean isValidPlantingSpot(Location loc) {
-        if(Utils.locationInAnyRegion(loc)) {
+        if (Utils.locationInAnyRegion(loc)) {
             return false;
         }
-        if(loc.getBlock() == null) {
+        if (loc.getBlock() == null) {
             return false;
         }
-        if(loc.getBlock().getType() == Material.AIR) {
+        if (loc.getBlock().getType() == Material.AIR) {
             Block below = loc.clone().add(0, -1, 0).getBlock();
-            if(below == null) {
+            if (below == null) {
                 return false;
             }
-            if(below.getType() == Material.DIRT || below.getType() == Material.PODZOL || below.getType() == Material.GRASS_BLOCK) {
+            if (below.getType() == Material.DIRT || below.getType() == Material.PODZOL || below.getType() == Material.GRASS_BLOCK) {
                 return true;
             }
         }

@@ -9,6 +9,7 @@ import me.prismskey.rpgcore.Enums.SpecialMobs;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.APIUsages;
+import me.prismskey.rpgcore.Utils.NBTMobAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -53,7 +54,6 @@ public class SpawningSystem {
                     int damage = mlcm.getMobDamage(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     int health = mlcm.getMobHealth(dMob.getEntityType().name(), String.valueOf(dMob.level));
                     Entity theEnt = center.getWorld().spawnEntity(spawnLocation, dMob.getEntityType());
-
 
                     theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "arena"), PersistentDataType.STRING, arenaName);
                     //theEnt.getPersistentDataContainer().set(new NamespacedKey(Rpgcore.getInstance(), "level"), PersistentDataType.INTEGER, dMob.level);

@@ -21,7 +21,8 @@ import java.util.List;
 
 public class Utils {
 
-    public static final ArrayList<String> DUNGEON_REGIONS = new ArrayList<>(Arrays.asList("creepy_crypt1", "sunken_temple1"));
+    public static final ArrayList<String> DUNGEON_REGIONS = new ArrayList<>(Arrays.asList("creepy_crypt1", "sunken_temple1", "sandy_tombs1," +
+            "creepy_crypt2", "sunken_temple2", "sandy_tombs2", "creepy_crypt3", "sunken_temple3", "sandy_tombs3"));
     private static final ConfigLoader loader = new ConfigLoader();
     //Dead_Light edit
 
@@ -40,7 +41,11 @@ public class Utils {
     }
 
     public static boolean checkIfInDungeon(Player player) {
-        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(player.getLocation());
+       return checkIfInDungeon(player.getLocation());
+    }
+
+    public static boolean checkIfInDungeon(Location theLocation) {
+        com.sk89q.worldedit.util.Location loc = BukkitAdapter.adapt(theLocation);
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionQuery query = container.createQuery();
         ApplicableRegionSet set = query.getApplicableRegions(loc);

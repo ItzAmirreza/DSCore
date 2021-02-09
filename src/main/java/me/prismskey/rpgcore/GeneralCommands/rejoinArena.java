@@ -22,6 +22,7 @@ public class rejoinArena implements CommandExecutor {
 
                 if (playerArena.players.contains(player)) {
                     player.teleport(playerArena.spawnLocation);
+                    player.setPlayerTime(playerArena.arenaDisplayTime, false);
                     //playerArena.players.add(player);
                     player.sendMessage(Utils.color("&aYou have returned to dungeon."));
                 } else {

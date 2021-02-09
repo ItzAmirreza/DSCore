@@ -16,7 +16,9 @@ public enum MobAbilityCoolDownTimes {
     AFFLICTION(20 * 30),
     POISON_ARROW(20 * 5),
     BANSHEE_SCREAM(20 * 5),
-    STONE_GAZE(20 * 15);
+    STONE_GAZE(20 * 15),
+    HARPY_CLAW_ATTACK(20 * 10),
+    GRYPHON_CLAW_ATTACK(20 * 10);
 
     public final int cooldown;
 

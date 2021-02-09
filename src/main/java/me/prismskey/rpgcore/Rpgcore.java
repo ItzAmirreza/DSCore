@@ -100,6 +100,9 @@ public final class Rpgcore extends JavaPlugin {
 
         DryadTreePlantTask dryadTreePlantTask = new DryadTreePlantTask();
         dryadTreePlantTask.runTaskTimer(this, 0, 20 * 120);
+
+        BleedTask bleedTask = new BleedTask();
+        bleedTask.runTaskTimer(this, 0, 20);
     }
 
     private boolean setupEconomy() {
@@ -126,6 +129,7 @@ public final class Rpgcore extends JavaPlugin {
     }
 
     public void registerEvents() {
+        getServer().getPluginManager().registerEvents(enemySpecialsManager, this);
         getServer().getPluginManager().registerEvents(new OnChunkPopulate(), this);
         getServer().getPluginManager().registerEvents(new RegionEnterEvent(), this);
         getServer().getPluginManager().registerEvents(new RegionQuitEvent(), this);
@@ -147,6 +151,9 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
         getServer().getPluginManager().registerEvents(new OnMagiGuardEntityAttacked(), this);
         getServer().getPluginManager().registerEvents(new OnHostileDamageHostile(), this);
+        getServer().getPluginManager().registerEvents(new OnCreatureSpawnTrySpawnCustomMob(), this);
+        //getServer().getPluginManager().registerEvents(new OnUndeadMobSpawn(), this);
+        getServer().getPluginManager().registerEvents(new OnPlayerTeleport(), this);
     }
 
     public void registerRecipes() {

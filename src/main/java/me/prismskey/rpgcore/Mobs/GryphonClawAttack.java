@@ -8,23 +8,24 @@ import org.bukkit.entity.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Rush {
+public class GryphonClawAttack {
+
     Random r = new Random();
 
-    public void start(LivingEntity e, int damage) {
+    public void start(LivingEntity e) {
         ArrayList<Player> potentialTargets = new ArrayList<>();
-        for(Entity ent: e.getNearbyEntities(10, 10, 10)) {
-            if(ent instanceof Player && ((Player) ent).getGameMode() == GameMode.SURVIVAL) {
+        for (Entity ent : e.getNearbyEntities(10, 10, 10)) {
+            if (ent instanceof Player && ((Player) ent).getGameMode() == GameMode.SURVIVAL) {
                 potentialTargets.add((Player) ent);
             }
         }
-        if(potentialTargets.size() > 0) {
+        if (potentialTargets.size() > 0) {
             Player randomTarget = potentialTargets.get(r.nextInt(potentialTargets.size()));
             ((Creature) e).setTarget(randomTarget);
             e.teleport(randomTarget.getLocation());
-            randomTarget.sendMessage(ChatColor.RED + "The enemy rushes at you.");
-            ((Damageable) randomTarget).damage(damage,e);
+            randomTarget.sendMessage(ChatColor.RED + "The griffin digs into you with its claws causing you to bleed.");
+            ((Damageable) randomTarget).damage(8, e);
+            Bleed.bleeds.add(new Bleed(6, 2, randomTarget, e));
         }
-
     }
 }
