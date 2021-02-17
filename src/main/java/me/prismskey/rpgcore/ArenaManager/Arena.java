@@ -18,6 +18,7 @@ import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.*;
 import org.bukkit.util.Vector;
 
@@ -36,12 +37,13 @@ public class Arena {
     public String mainRegion = null;
     public String friendlyName = "";
     public int arenaDisplayTime;
+    public int winCash;
 
     public ArenaState arenaState;
     public LinkedHashMap<String, Phase> phases = new LinkedHashMap<>();
     public List<Player> players = new ArrayList<>();
     public Location spawnLocation;
-    public int passedTime = 1;
+    public double passedTime = 1;
     private HashMap<String, Location> previousLocations = new HashMap<>();
     public List<Entity> allMobsInArena = new ArrayList<>();
     public HashMap<String, Location> playerPhaseLocation = new HashMap<>();
@@ -59,6 +61,7 @@ public class Arena {
         this.maxTime = maxTime;
         this.keyDropChanceFactor = keyDropChanceFactor;
         this.prizeKeyName = prizeKeyName;
+        this.winCash = 0;
     }
 
     public void setSpawnLocation(Location location) {
@@ -156,7 +159,7 @@ public class Arena {
         }
     }
 
-    public void setPassedTime(int passedTime) {
+    public void setPassedTime(double passedTime) {
         this.passedTime = passedTime;
     }
 
@@ -241,7 +244,7 @@ public class Arena {
                         for (Player player : players) {
 
                             player.sendMessage(Utils.color("&7You will be teleported to dungeon in &6" + countdown + " &7second(s)."));
-
+                            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
                         }
                         countdown = countdown - 1;
@@ -263,18 +266,23 @@ public class Arena {
             public void run() {
                 if (arenaState == ArenaState.INGAME) {
                     setPassedTime(passedTime + 1);
-                    if (passedTime / 60 >= maxTime) {
+
+                    double timeRemaining = maxTime - (passedTime /60);
+
+                    if (timeRemaining <= 0) {
                         finishArena();
 
                     } else {
-                        if (passedTime / 60 == 30) {
+                        if(timeRemaining == 59) {
+                            announceToAllPlayers("&7Remaining time: &e" + 59 + " minutes");
+                        } else if (timeRemaining == 30) {
 
-                            announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime / 60)) + " minutes");
+                            announceToAllPlayers("&7Remaining time: &e" + 30 + " minutes");
 
-                        } else if (passedTime / 60 == 15) {
-                            announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime / 60)) + " minutes");
-                        } else if (passedTime / 60 == 1) {
-                            announceToAllPlayers("&7Remaining time: &e" + (maxTime - (passedTime / 60)) + " minutes");
+                        } else if (timeRemaining == 15) {
+                            announceToAllPlayers("&7Remaining time: &e" + 15 + " minutes");
+                        } else if (timeRemaining == 1) {
+                            announceToAllPlayers("&7Remaining time: &e" + 1 + " minutes");
                         }
                     }
                 }
@@ -353,7 +361,7 @@ public class Arena {
                     }
                     if (!inDungeon) {
                         if (absentPlayers.contains(player.getUniqueId()) || !player.isOnline()) {
-                            shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
+                            //shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName())).players.remove(player);
                             //Arena playerArena = shortTermStorages.arenaHashMap.get(shortTermStorages.playersInMatch.get(player.getName()));
                             it.remove();
                             shortTermStorages.playersInMatch.remove(player);
@@ -460,5 +468,8 @@ public class Arena {
         this.arenaDisplayTime = arenaDisplayTime;
     }
 
+    public void setWinCash(int cash) {
+        winCash = cash;
+    }
 
 }

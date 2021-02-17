@@ -90,7 +90,7 @@ public class OnTriggerSpecialAbilities implements Listener {
             handleLostvayneSpecials(event, data);
         }
 
-        if(combo.isComplete()) {
+        if (combo.isComplete()) {
             combo.resetCombo();
         }
     }
@@ -137,48 +137,66 @@ public class OnTriggerSpecialAbilities implements Listener {
 
         //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound minecraft:excalibur.ability.blast master @a " + startLoc.getX() + " " + startLoc.getY() + " " + startLoc.getZ() + " 1 1");
 
-        int maxBeamLength = 30;
 
-        for (int i = 0; i < maxBeamLength; i++) {
-            if (!(particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
-                break;
-            }
-            int get = 0;
-            List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
-            while (get < entities.size()) {
-                if (get >= entities.size()) {
-                    break;
-                }
-                Entity entity = entities.get(get);
-                if (entity instanceof LivingEntity && entity != player) {
-                    Vector particleMinVector = new Vector(
-                            particleLoc.getX() - 0.25,
-                            particleLoc.getY() - 0.25,
-                            particleLoc.getZ() - 0.25);
-                    Vector particleMaxVector = new Vector(
-                            particleLoc.getX() + 0.25,
-                            particleLoc.getY() + 0.25,
-                            particleLoc.getZ() + 0.25);
+        new BukkitRunnable() {
+            int i = 0;
+            int maxBeamLength = 30;
+            boolean done = false;
 
-                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
-                        //world.spawnParticle(Particle.FLASH, particleLoc, 0);
-                        //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                        ((Damageable) entity).damage(2, player);
-                        maxBeamLength = 0;
+            public void run() {
+
+                for (int j = 0; j < 3; j++) {
+                    if (done) {
+                        this.cancel();
                         break;
                     }
+                    if (i >= maxBeamLength) {
+                        this.cancel();
+                        break;
+                    }
+                    if (!(particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
+                        this.cancel();
+                        break;
+                    }
+                    int get = 0;
+                    List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
+                    while (get < entities.size()) {
+                        if (get >= entities.size()) {
+                            break;
+                        }
+                        Entity entity = entities.get(get);
+                        if (entity instanceof LivingEntity && entity != player) {
+                            Vector particleMinVector = new Vector(
+                                    particleLoc.getX() - 0.25,
+                                    particleLoc.getY() - 0.25,
+                                    particleLoc.getZ() - 0.25);
+                            Vector particleMaxVector = new Vector(
+                                    particleLoc.getX() + 0.25,
+                                    particleLoc.getY() + 0.25,
+                                    particleLoc.getZ() + 0.25);
+
+                            if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
+                                //world.spawnParticle(Particle.FLASH, particleLoc, 0);
+                                //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+                                ((Damageable) entity).damage(2, player);
+                                this.cancel();
+                                done = true;
+                                break;
+                            }
+                        }
+                        get++;
+                    }
+
+                    particleLoc.add(vecOffset);
+
+                    Particle.DustOptions blackDust = new Particle.DustOptions(Color.fromRGB(0, 0, 0), 3);
+                    Particle.DustOptions purpleDust = new Particle.DustOptions(Color.fromRGB(69, 0, 196), 3);
+                    world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, blackDust);
+                    world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, purpleDust);
+                    i++;
                 }
-                get++;
             }
-
-            particleLoc.add(vecOffset);
-
-            Particle.DustOptions blackDust = new Particle.DustOptions(Color.fromRGB(0, 0, 0), 3);
-            Particle.DustOptions purpleDust = new Particle.DustOptions(Color.fromRGB(69, 0, 196), 3);
-            world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, blackDust);
-            world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, purpleDust);
-
-        }
+        }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
     }
 
     private void handleKeyBladeSpecials(PlayerInteractEvent event, RPGPlayerData data) {
@@ -223,45 +241,63 @@ public class OnTriggerSpecialAbilities implements Listener {
 
         //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound minecraft:excalibur.ability.blast master @a " + startLoc.getX() + " " + startLoc.getY() + " " + startLoc.getZ() + " 1 1");
 
-        int maxBeamLength = 30;
+        new BukkitRunnable() {
+            int i = 0;
+            int maxBeamLength = 30;
+            boolean done = false;
 
-        for (int i = 0; i < maxBeamLength; i++) {
-            if (!(particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
-                break;
-            }
-            int get = 0;
-            List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
-            while (get < entities.size()) {
-                if (get >= entities.size()) {
-                    break;
-                }
-                Entity entity = entities.get(get);
-                if (entity instanceof LivingEntity && entity != player) {
-                    Vector particleMinVector = new Vector(
-                            particleLoc.getX() - 0.25,
-                            particleLoc.getY() - 0.25,
-                            particleLoc.getZ() - 0.25);
-                    Vector particleMaxVector = new Vector(
-                            particleLoc.getX() + 0.25,
-                            particleLoc.getY() + 0.25,
-                            particleLoc.getZ() + 0.25);
+            public void run() {
 
-                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
-                        //world.spawnParticle(Particle.FLASH, particleLoc, 0);
-                        //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                        ((Damageable) entity).damage(6, player);
-                        maxBeamLength = 0;
+                for (int j = 0; j < 3; j++) {
+                    if (done) {
+                        this.cancel();
                         break;
                     }
+                    if (i >= maxBeamLength) {
+                        this.cancel();
+                        break;
+                    }
+                    if (!(particleLoc.getBlock().getType() == Material.AIR || particleLoc.getBlock().getType() == Material.WATER)) {
+                        this.cancel();
+                        break;
+                    }
+                    int get = 0;
+                    List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
+                    while (get < entities.size()) {
+                        if (get >= entities.size()) {
+                            break;
+                        }
+                        Entity entity = entities.get(get);
+                        if (entity instanceof LivingEntity && entity != player) {
+                            Vector particleMinVector = new Vector(
+                                    particleLoc.getX() - 0.25,
+                                    particleLoc.getY() - 0.25,
+                                    particleLoc.getZ() - 0.25);
+                            Vector particleMaxVector = new Vector(
+                                    particleLoc.getX() + 0.25,
+                                    particleLoc.getY() + 0.25,
+                                    particleLoc.getZ() + 0.25);
+
+                            if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
+                                //world.spawnParticle(Particle.FLASH, particleLoc, 0);
+                                //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+                                ((Damageable) entity).damage(6, player);
+                                done = true;
+                                this.cancel();
+                                break;
+                            }
+                        }
+                        get++;
+                    }
+
+                    particleLoc.add(vecOffset);
+
+                    Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(79, 217, 255), 5);
+                    world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, dust);
+                    i++;
                 }
-                get++;
             }
-
-            particleLoc.add(vecOffset);
-
-            Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(79, 217, 255), 5);
-            world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, dust);
-        }
+        }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
     }
 
     private void handleGalaxySwordSpecials(PlayerInteractEvent event, RPGPlayerData data) {
@@ -487,54 +523,72 @@ public class OnTriggerSpecialAbilities implements Listener {
 
         //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound minecraft:excalibur.ability.blast master @a " + startLoc.getX() + " " + startLoc.getY() + " " + startLoc.getZ() + " 1 1");
 
-        int maxBeamLength = 30;
+        new BukkitRunnable() {
+            int i = 0;
+            int maxBeamLength = 30;
+            boolean done = false;
 
-        for (int i = 0; i < maxBeamLength; i++) {
+            public void run() {
 
-            if (particleLoc.getBlock().getType() != Material.AIR) {
-                break;
-            }
-
-            int get = 0;
-            List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
-            while (get < entities.size()) {
-                if (get >= entities.size()) {
-                    break;
-                }
-                Entity entity = entities.get(get);
-                if (entity instanceof LivingEntity && entity != player) {
-                    Vector particleMinVector = new Vector(
-                            particleLoc.getX() - 0.25,
-                            particleLoc.getY() - 0.25,
-                            particleLoc.getZ() - 0.25);
-                    Vector particleMaxVector = new Vector(
-                            particleLoc.getX() + 0.25,
-                            particleLoc.getY() + 0.25,
-                            particleLoc.getZ() + 0.25);
-
-                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
-                        //world.spawnParticle(Particle.FLASH, particleLoc, 0);
-                        //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-
-                        if (entity instanceof Player) {
-                            if (!Utils.pvpCheck(player, (Player) entity)) {
-                                continue;
-                            }
-                        }
-
-                        ((Damageable) entity).damage(4, player);
-                        player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), player.getHealth() + 2));
-                        maxBeamLength = 0;
+                for (int j = 0; j < 3; j++) {
+                    if (done) {
+                        this.cancel();
                         break;
                     }
-                }
-                get++;
-            }
+                    if (i >= maxBeamLength) {
+                        this.cancel();
+                        break;
+                    }
 
-            particleLoc.add(vecOffset);
-            world.spawnParticle(Particle.VILLAGER_HAPPY, particleLoc, 0, 0, 0, 0, 0);
-            //maxBeamLength--;
-        }
+                    if (particleLoc.getBlock().getType() != Material.AIR && particleLoc.getBlock().getType() != Material.WATER) {
+                        this.cancel();
+                        break;
+                    }
+
+                    int get = 0;
+                    List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
+                    while (get < entities.size()) {
+                        if (get >= entities.size()) {
+                            break;
+                        }
+                        Entity entity = entities.get(get);
+                        if (entity instanceof LivingEntity && entity != player) {
+                            Vector particleMinVector = new Vector(
+                                    particleLoc.getX() - 0.25,
+                                    particleLoc.getY() - 0.25,
+                                    particleLoc.getZ() - 0.25);
+                            Vector particleMaxVector = new Vector(
+                                    particleLoc.getX() + 0.25,
+                                    particleLoc.getY() + 0.25,
+                                    particleLoc.getZ() + 0.25);
+
+                            if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
+                                //world.spawnParticle(Particle.FLASH, particleLoc, 0);
+                                //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+
+                                if (entity instanceof Player) {
+                                    if (!Utils.pvpCheck(player, (Player) entity)) {
+                                        continue;
+                                    }
+                                }
+
+                                ((Damageable) entity).damage(4, player);
+                                player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), player.getHealth() + 2));
+                                this.cancel();
+                                done = true;
+                                break;
+                            }
+                        }
+                        get++;
+                    }
+
+                    particleLoc.add(vecOffset);
+                    world.spawnParticle(Particle.VILLAGER_HAPPY, particleLoc, 0, 0, 0, 0, 0);
+                    //maxBeamLength--;
+                    i++;
+                }
+            }
+        }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
     }
 
 
@@ -602,41 +656,58 @@ public class OnTriggerSpecialAbilities implements Listener {
 
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "playsound minecraft:excalibur.ability.blast master @a " + startLoc.getX() + " " + startLoc.getY() + " " + startLoc.getZ() + " 1 1");
 
-        int maxBeamLength = 30;
+        new BukkitRunnable() {
+            int i = 0;
+            int maxBeamLength = 30;
+            boolean done = false;
 
+            public void run() {
 
-        for (int i = 0; i < maxBeamLength; i++) {
-            if (particleLoc.getBlock().getType() != Material.AIR) {
-                break;
-            }
-
-            int get = 0;
-            List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
-            while (get < entities.size()) {
-                if (get >= entities.size()) {
-                    break;
-                }
-                Entity entity = entities.get(get);
-                if (entity instanceof LivingEntity && entity != player) {
-                    Vector particleMinVector = new Vector(particleLoc.getX() - 0.25, particleLoc.getY() - 0.25, particleLoc.getZ() - 0.25);
-                    Vector particleMaxVector = new Vector(particleLoc.getX() + 0.25, particleLoc.getY() + 0.25, particleLoc.getZ() + 0.25);
-
-                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
-                        world.spawnParticle(Particle.FLASH, particleLoc, 0);
-                        world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                        ((Damageable) entity).damage(8, player);
-                        FireworkEffect fe = FireworkEffect.builder().flicker(false).trail(false).with(FireworkEffect.Type.BALL).withColor(Color.AQUA).build();
-                        new InstantFirework(fe, entity.getLocation());
-                        maxBeamLength = 0;
+                for (int j = 0; j < 3; j++) {
+                    if (done) {
+                        this.cancel();
                         break;
                     }
-                }
-                get++;
-            }
+                    if (i >= maxBeamLength) {
+                        this.cancel();
+                        break;
+                    }
+                    if (particleLoc.getBlock().getType() != Material.AIR) {
+                        this.cancel();
+                        break;
+                    }
 
-            particleLoc.add(vecOffset);
-            world.spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc, 0);
-        }
+                    int get = 0;
+                    List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
+                    while (get < entities.size()) {
+                        if (get >= entities.size()) {
+                            break;
+                        }
+                        Entity entity = entities.get(get);
+                        if (entity instanceof LivingEntity && entity != player) {
+                            Vector particleMinVector = new Vector(particleLoc.getX() - 0.25, particleLoc.getY() - 0.25, particleLoc.getZ() - 0.25);
+                            Vector particleMaxVector = new Vector(particleLoc.getX() + 0.25, particleLoc.getY() + 0.25, particleLoc.getZ() + 0.25);
+
+                            if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
+                                world.spawnParticle(Particle.FLASH, particleLoc, 0);
+                                world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+                                ((Damageable) entity).damage(8, player);
+                                FireworkEffect fe = FireworkEffect.builder().flicker(false).trail(false).with(FireworkEffect.Type.BALL).withColor(Color.AQUA).build();
+                                new InstantFirework(fe, entity.getLocation());
+                                this.cancel();
+                                done = true;
+                                break;
+                            }
+                        }
+                        get++;
+                    }
+
+                    particleLoc.add(vecOffset);
+                    world.spawnParticle(Particle.SOUL_FIRE_FLAME, particleLoc, 0);
+                    i++;
+                }
+            }
+        }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
 
     }
 

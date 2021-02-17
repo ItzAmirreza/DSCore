@@ -11,6 +11,9 @@ public class OnPlayerTeleport implements Listener {
         if(Utils.checkIfInDungeon(event.getFrom()) && !Utils.checkIfInDungeon(event.getTo())) {
             event.getPlayer().resetPlayerTime();
         }
+        if(!Utils.checkIfInDungeon(event.getFrom()) && !Utils.checkIfInDungeon(event.getTo())) {
+            event.getPlayer().resetPlayerTime();
+        }
         if(Utils.isWithinRegion(event.getTo(), "spawn")) {
             event.getPlayer().setPlayerTime(6000, false);
         }

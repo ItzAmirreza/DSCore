@@ -26,9 +26,11 @@ public class PvpCommand implements CommandExecutor {
             if(args[0].equalsIgnoreCase("on")) {
                 data.setPvpState(true);
                 data.resetPvpToggleCooldown();
+                player.sendMessage(ChatColor.GREEN + "PVP toggled On.");
             } else if(args[0].equalsIgnoreCase("off")) {
                 data.setPvpState(false);
                 data.resetPvpToggleCooldown();
+                player.sendMessage(ChatColor.GREEN + "PVP toggled Off.");
             } else {
                 player.sendMessage(ChatColor.RED + "Usage: /pvp <ON | OFF>");
             }

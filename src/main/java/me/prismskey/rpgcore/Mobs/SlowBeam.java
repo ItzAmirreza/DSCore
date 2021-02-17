@@ -9,6 +9,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -35,49 +36,68 @@ public class SlowBeam {
         double yIncrease = (endLoc.getY() - startLoc.getY()) / beamLength;
         double slope = (endLoc.getZ() - startLoc.getZ()) / (endLoc.getX() - startLoc.getX());
 
-        for (int i = beamLength; i > 0; i--) {
-            if (particleLoc.getBlock().getType() != Material.AIR && particleLoc.getBlock().getType() != Material.WATER) {
-                break;
-            }
+        //for (int i = beamLength; i > 0; i--) {
+        new BukkitRunnable() {
+            int i = 0;
+            boolean done = false;
 
-            int get = 0;
-            List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
-            while (get < entities.size()) {
-                if (get >= entities.size()) {
-                    break;
-                }
-                Entity entity = entities.get(get);
-                if (entity instanceof Player && entity != ent) {
-                    org.bukkit.util.Vector particleMinVector = new org.bukkit.util.Vector(
-                            particleLoc.getX() - 0.25,
-                            particleLoc.getY() - 0.25,
-                            particleLoc.getZ() - 0.25);
-                    org.bukkit.util.Vector particleMaxVector = new Vector(
-                            particleLoc.getX() + 0.25,
-                            particleLoc.getY() + 0.25,
-                            particleLoc.getZ() + 0.25);
+            public void run() {
 
-                    if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
-                        //world.spawnParticle(Particle.FLASH, particleLoc, 0);
-                        //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                        ((Damageable) entity).damage(10, ent);
-                        ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 2, true, true, true));
+                for (int j = 0; j < 3; j++) {
+                    if(done) {
+                        this.cancel();
                         break;
                     }
+                    if (i >= beamLength) {
+                        this.cancel();
+                        break;
+                    }
+                    if (particleLoc.getBlock().getType() != Material.AIR && particleLoc.getBlock().getType() != Material.WATER) {
+                        this.cancel();
+                        break;
+                    }
+                    int get = 0;
+                    List<Entity> entities = new ArrayList<>(world.getNearbyEntities(particleLoc, 5, 5, 5));
+                    while (get < entities.size()) {
+                        if (get >= entities.size()) {
+                            break;
+                        }
+                        Entity entity = entities.get(get);
+                        if (entity instanceof Player && entity != ent) {
+                            org.bukkit.util.Vector particleMinVector = new org.bukkit.util.Vector(
+                                    particleLoc.getX() - 0.25,
+                                    particleLoc.getY() - 0.25,
+                                    particleLoc.getZ() - 0.25);
+                            org.bukkit.util.Vector particleMaxVector = new Vector(
+                                    particleLoc.getX() + 0.25,
+                                    particleLoc.getY() + 0.25,
+                                    particleLoc.getZ() + 0.25);
+
+                            if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
+                                //world.spawnParticle(Particle.FLASH, particleLoc, 0);
+                                //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
+                                ((Damageable) entity).damage(10, ent);
+                                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 10, 2, true, true, true));
+                                this.cancel();
+                                done = true;
+                                break;
+                            }
+                        }
+                        get++;
+                    }
+
+                    //Rpgcore.instance.getLogger().info("" + particleLoc.getX() + " " + particleLoc.getY() + " " + particleLoc.getZ());
+                    particleLoc.setX(particleLoc.getX() + xIncrease);
+                    particleLoc.setY(particleLoc.getY() + yIncrease);
+                    double z = slope * particleLoc.getX() - slope * startLoc.getX() + startLoc.getZ();
+                    particleLoc.setZ(z);
+
+                    //particleLoc.add(vecOffset);
+                    world.spawnParticle(Particle.WHITE_ASH, particleLoc, 0);
+                    i++;
                 }
-                get++;
             }
-
-            //Rpgcore.instance.getLogger().info("" + particleLoc.getX() + " " + particleLoc.getY() + " " + particleLoc.getZ());
-            particleLoc.setX(particleLoc.getX() + xIncrease);
-            particleLoc.setY(particleLoc.getY() + yIncrease);
-            double z = slope * particleLoc.getX() - slope * startLoc.getX() + startLoc.getZ();
-            particleLoc.setZ(z);
-
-            //particleLoc.add(vecOffset);
-            world.spawnParticle(Particle.WHITE_ASH, particleLoc, 0);
-
-        }
+        }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
     }
 }
 

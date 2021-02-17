@@ -1,8 +1,10 @@
 package me.prismskey.rpgcore.Events;
 
 import me.prismskey.rpgcore.ArenaManager.PrizeObject;
+import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,8 +36,13 @@ public class onArenaFinishListener implements Listener {
                 Bukkit.dispatchCommand(console, GIVE_KEY_COMMAND.replace("%player%", player.getName()) + event.getArena().prizeKeyName);
             }
 
+
+            double winCash = event.getArena().winCash;
+            result = winCash * (totalKilledMobs/totalMobs);
+            Rpgcore.getEconomy().depositPlayer(player, result);
+            player.sendMessage(ChatColor.GREEN + "You were awarded $" + result + " for clearing the dungeon.");
             //all other prizes such as money or other items
-            for (PrizeObject prize : prizeObjectList) {
+            /*for (PrizeObject prize : prizeObjectList) {
 
                 int  n = rand.nextInt(100) + 1;
                 if (n<=prize.percentage) {
@@ -44,7 +51,7 @@ public class onArenaFinishListener implements Listener {
 
                 }
 
-            }
+            }*/
 
         }
 

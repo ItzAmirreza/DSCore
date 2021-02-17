@@ -89,18 +89,21 @@ public class EnemySpecialsManager implements Listener {
 
     private boolean checkMasterCooldown(LivingEntity e) {
         Integer value = null;
+        //use 5 to avoid bugs with specials triggering as soon as mob spawns.
         if(APIUsages.hasMobNBT(e, "hollow")) {
-            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         } else if(APIUsages.hasMobNBT(e,"ghost")) {
-            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         } else if(APIUsages.hasMobNBT(e, "lich")) {
-            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         } else if(APIUsages.hasMobNBT(e, "fire")) {
-            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         } else if(APIUsages.hasMobNBT(e, "pharaoh")) {
-            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         } else if(APIUsages.hasMobNBT(e, "earth")) {
-            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 0);
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.dark_elf")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         }
 
         //Rpgcore.getInstance().getLogger().info("value: " + value);
@@ -155,6 +158,7 @@ public class EnemySpecialsManager implements Listener {
             attacks.add("affliction");
         }
         if (APIUsages.hasMobNBT(e, "poisonArrow")) {
+            Rpgcore.getInstance().getLogger().info("Poison Arrow Added");
             attacks.add("poisonArrow");
         }
         if(APIUsages.hasMobNBT(e, "earthBlast")) {
@@ -197,6 +201,9 @@ public class EnemySpecialsManager implements Listener {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.PHARAOH.cooldown);
         } else if(APIUsages.hasMobNBT(e, "earth")) {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.EARTH_ELEMENTAL.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.dark_elf")) {
+            Rpgcore.getInstance().getLogger().info("dark elf added");
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.DARK_ELF.cooldown);
         }
     }
 
@@ -293,6 +300,7 @@ public class EnemySpecialsManager implements Listener {
                 }
                 break;
             case "poisonArrow":
+                Rpgcore.getInstance().getLogger().info("Poison arrow case");
                 if (enemySpecialCooldowns.get(keyString) <= 0) {
                     new PoisonArrow().start(e);
                     enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.POISON_ARROW.cooldown);

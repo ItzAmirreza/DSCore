@@ -94,6 +94,7 @@ public class SpawningSystem {
                     if (spawnLocation.getWorld().getName().equalsIgnoreCase("world")) {
 
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());
+
                     } else {
 
                         Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "execute in " + spawnLocation.getWorld().getName() + " positioned " + spawnLocation.getX() + " " + spawnLocation.getY() + " " + spawnLocation.getZ() + " run function _spawn:" + thatmob.getName());

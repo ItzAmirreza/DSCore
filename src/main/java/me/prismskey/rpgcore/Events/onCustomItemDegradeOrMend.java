@@ -282,8 +282,7 @@ public class onCustomItemDegradeOrMend implements Listener {
     }
 
     private boolean isCustomDegradableItem(NBTItem nbti) {
-        return nbti.hasKey("dragonstone") || nbti.hasKey("orichalcum") || nbti.hasKey("adamant") || nbti.hasKey("mithril")
-                || nbti.hasKey("ghost");
+        return nbti.hasKey("dragonstone") || nbti.hasKey("orichalcum") || nbti.hasKey("adamant") || nbti.hasKey("mithril");
     }
 
 }

@@ -36,6 +36,10 @@ public class ArenaLoader {
                     newArena.setSpawnLocation(spawnLocation);
                 }
 
+                //setting win max win cash
+                int winCash = config.getInt(key + ".win_cash");
+                newArena.setWinCash(winCash);
+
                 //setting time
                 int displayTime = config.getInt(key + ".display_time");
                 newArena.setDisplayTime(displayTime);

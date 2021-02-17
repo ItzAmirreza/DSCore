@@ -11,7 +11,8 @@ public enum SpecialMobs {
     FIRE("elemental/fire"),
     GHOST("ghost"),
     PHARAOH("boss/pharaoh"),
-    MUMMY("mummy");
+    MUMMY("mummy"),
+    DARK_ELF("elf");
 
 
 
