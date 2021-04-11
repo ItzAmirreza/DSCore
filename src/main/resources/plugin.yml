@@ -31,3 +31,11 @@ commands:
   party:
     description: used to handle parties for dungeon raiding
     usage: /party create/join/invite/leave/disband (player_name)
+  savecustomitem:
+    description: save custom items for use in crafting recipes
+    usage: /savecustomitem
+    permission: dscore.admin.savecustomitem
+  getcustomitems:
+    description: gets custom items
+    usage: /getcustomitems
+    permission: dscore.admin.getcustomitems

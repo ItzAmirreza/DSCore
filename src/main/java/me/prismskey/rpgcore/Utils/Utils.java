@@ -14,7 +14,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -139,6 +148,27 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    public static boolean isCustomMob(Entity e) {
+        return APIUsages.hasMobNBT(e, "hollow") || APIUsages.hasMobNBT(e, "ghost") ||
+                APIUsages.hasMobNBT(e, "lich") || APIUsages.hasMobNBT(e, "fire") ||
+                APIUsages.hasMobNBT(e, "pharaoh") || APIUsages.hasMobNBT(e, "earth") ||
+                APIUsages.hasMobNBT(e, "fm.dark_elf") || APIUsages.hasMobNBT(e, "fm.werewolf") ||
+                APIUsages.hasMobNBT(e, "fm.phoenix") || APIUsages.hasMobNBT(e, "fm.lizardman") ||
+                APIUsages.hasMobNBT(e, "fm.harpy") || APIUsages.hasMobNBT(e, "fm.griffin") ||
+                APIUsages.hasMobNBT(e, "fm.basilisk") || APIUsages.hasMobNBT(e, "fm.banshee") ||
+                APIUsages.hasMobNBT(e, "fm.dryad") || APIUsages.hasMobNBT(e, "fm.naga") || APIUsages.hasMobNBT(e, "fm.hobgoblin") ||
+                APIUsages.hasMobNBT(e, "fm.golden_beetle") || APIUsages.hasMobNBT(e, "fm.cerberus");
+    }
+
+    public static ItemStack customItemConstructor(Material mat, String name, int customModelData) {
+        ItemStack result = new ItemStack(mat);
+        ItemMeta meta = result.getItemMeta();
+        meta.setDisplayName(name);
+        meta.setCustomModelData(customModelData);
+        result.setItemMeta(meta);
+        return result;
     }
 
 }

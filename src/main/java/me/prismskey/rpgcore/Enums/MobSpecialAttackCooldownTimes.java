@@ -8,7 +8,14 @@ public enum MobSpecialAttackCooldownTimes {
     FIRE_ELEMENTAL(20 * 5),
     PHARAOH(20 * 5),
     EARTH_ELEMENTAL(20 * 5),
-    DARK_ELF(20 * 5);
+    DARK_ELF(20 * 5),
+    WEREWOLF(20 * 5),
+    PHOENIX(20 * 5),
+    LIZARDMAN(20 * 5),
+    HARPY(20 * 5),
+    GRIFFIN(20 * 5),
+    BASILISK(20 * 5),
+    BANSHEE(20 * 5);
 
 
     public final int cooldown;

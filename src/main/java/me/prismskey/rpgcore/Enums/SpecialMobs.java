@@ -12,7 +12,27 @@ public enum SpecialMobs {
     GHOST("ghost"),
     PHARAOH("boss/pharaoh"),
     MUMMY("mummy"),
-    DARK_ELF("elf");
+    DARK_ELF("elf"),
+    DRYAD("dryad"),
+    BANSHEE("banshee"),
+    BASILISK("basilisk"),
+    GOBLIN_SWORD("goblin/swordsman"),
+    GOBLIN_CHOPPER("goblin/chopper"),
+    GRIFFIN("griffin"),
+    HARPY("harpy"),
+    ILLUSIONER("illusioner"),
+    LIZARD_GUY("lizard_guy"),
+    NAGA("naga"),
+    PHOENIX("phoenix"),
+    SCARAB("scarab"),
+    URUK_HAI("uruk-hai"),
+    WEREWOLF("werewolf");
+
+
+
+
+
+
 
 
 

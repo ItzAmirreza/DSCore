@@ -51,7 +51,7 @@ public class DryadTreePlantTask extends BukkitRunnable {
         livingEntities.addAll(Bukkit.getWorld("world_nether").getLivingEntities());
         livingEntities.addAll(Bukkit.getWorld("world_the_end").getLivingEntities());
         for (LivingEntity living : livingEntities) {
-            if (APIUsages.hasMobNBT(living, "dryad")) {
+            if (APIUsages.hasMobNBT(living, "fm.dryad")) {
                 //Rpgcore.getInstance().getLogger().info("check a");
                 tryPlantSapling(living.getLocation());
             }

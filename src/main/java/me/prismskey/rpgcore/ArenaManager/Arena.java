@@ -226,6 +226,7 @@ public class Arena {
                         player.setPlayerTime(arenaDisplayTime, false);
 
                         player.sendTitle(Utils.color("&6&l" + friendlyName), Utils.color("&7You have &a " + maxTime + " &7Minutes to finish this dungeon."), 3 * 20, 5 * 20, 20);
+                        clearOutMobs();
                     }
 
 
@@ -243,7 +244,7 @@ public class Arena {
                     } else {
                         for (Player player : players) {
 
-                            player.sendMessage(Utils.color("&7You will be teleported to dungeon in &6" + countdown + " &7second(s)."));
+                            player.sendMessage(Utils.color("&7You will be teleported to the dungeon in &6" + countdown + " &7second(s)."));
                             player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
 
                         }

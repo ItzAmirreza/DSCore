@@ -6,10 +6,7 @@ import me.prismskey.rpgcore.Enums.MobSpecialAttackCooldownTimes;
 import me.prismskey.rpgcore.Rpgcore;
 import me.prismskey.rpgcore.Utils.APIUsages;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -104,6 +101,20 @@ public class EnemySpecialsManager implements Listener {
             value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         } else if(APIUsages.hasMobNBT(e, "fm.dark_elf")) {
             value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.werewolf")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.phoenix")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.lizardman")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.harpy")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.griffin")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.basilisk")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
+        } else if(APIUsages.hasMobNBT(e, "fm.banshee")) {
+            value = enemyMasterAttackCooldowns.putIfAbsent(e.getUniqueId().toString(), 5);
         }
 
         //Rpgcore.getInstance().getLogger().info("value: " + value);
@@ -176,6 +187,12 @@ public class EnemySpecialsManager implements Listener {
         if(APIUsages.hasMobNBT(e, "griffinClawAttack")) {
             attacks.add("griffinClawAttack");
         }
+        if(APIUsages.hasMobNBT(e, "werewolfClawAttack")) {
+            attacks.add("werewolfClawAttack");
+        }
+        if(APIUsages.hasMobNBT(e, "lizardSpitAttack")) {
+            attacks.add("lizardSpitAttack");
+        }
 
         if(attacks.size() > 0) {
             String randomAttack = attacks.get(random.nextInt(attacks.size()));
@@ -202,8 +219,22 @@ public class EnemySpecialsManager implements Listener {
         } else if(APIUsages.hasMobNBT(e, "earth")) {
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.EARTH_ELEMENTAL.cooldown);
         } else if(APIUsages.hasMobNBT(e, "fm.dark_elf")) {
-            Rpgcore.getInstance().getLogger().info("dark elf added");
+            //Rpgcore.getInstance().getLogger().info("dark elf added");
             enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.DARK_ELF.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.werewolf")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.WEREWOLF.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.phoenix")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.PHOENIX.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.lizardman")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.LIZARDMAN.cooldown);
+        } else if (APIUsages.hasMobNBT(e, "fm.harpy")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.HARPY.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.griffin")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.GRIFFIN.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.basilisk")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.BASILISK.cooldown);
+        } else if(APIUsages.hasMobNBT(e, "fm.banshee")) {
+            enemyMasterAttackCooldowns.put(e.getUniqueId().toString(), MobSpecialAttackCooldownTimes.BANSHEE.cooldown);
         }
     }
 
@@ -331,9 +362,24 @@ public class EnemySpecialsManager implements Listener {
                 }
                 break;
             case "griffinClawAttack":
+                Creature creature = (Creature) e;
+                if(creature.getTarget() != null || creature.getTarget().getType() == EntityType.PLAYER) {
+                    if (enemySpecialCooldowns.get(keyString) <= 0) {
+                        new GryphonClawAttack().start(e);
+                        enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.GRYPHON_CLAW_ATTACK.cooldown);
+                    }
+                }
+                break;
+            case "werewolfClawAttack":
                 if (enemySpecialCooldowns.get(keyString) <= 0) {
-                    new GryphonClawAttack().start(e);
-                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.GRYPHON_CLAW_ATTACK.cooldown);
+                    new WereWolfClawsAttack().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.WEREWOLF_CLAW_ATTACK.cooldown);
+                }
+                break;
+            case "lizardSpitAttack":
+                if (enemySpecialCooldowns.get(keyString) <= 0) {
+                    new LizardSpitAttack().start(e);
+                    enemySpecialCooldowns.put(keyString, MobAbilityCoolDownTimes.LIZARD_SPIT_ATTACK.cooldown);
                 }
                 break;
             default:

@@ -25,7 +25,7 @@ public class StoneGaze {
         Location endLoc = target.getLocation();
 
         Location particleLoc = startLoc.clone();
-        particleLoc.setY(particleLoc.getY() + 1);
+        particleLoc.setY(particleLoc.getY());
         World world = startLoc.getWorld();
 
         int beamLength = (int) (startLoc.distance(endLoc) / .5) + 1;

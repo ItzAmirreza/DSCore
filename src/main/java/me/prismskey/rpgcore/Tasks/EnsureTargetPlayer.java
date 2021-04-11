@@ -23,6 +23,7 @@ public class EnsureTargetPlayer extends BukkitRunnable {
                     Creature creature = (Creature) e;
                     if(APIUsages.hasMobNBT(e, "findNewTarget") || Utils.entityIsHostile(e)) {
                         if(!(creature.getTarget() instanceof Player)) {
+                            creature.setTarget(null);
                             ArrayList<Player> possibleTargets = new ArrayList<>();
                             for(Entity ent: creature.getNearbyEntities(16, 16, 16)) {
                                 if(ent instanceof Player && ((Player) ent).getGameMode() == GameMode.SURVIVAL) {

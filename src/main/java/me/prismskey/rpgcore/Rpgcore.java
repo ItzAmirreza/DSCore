@@ -6,13 +6,14 @@ import com.gmail.nossr50.mcMMO;
 
 import me.prismskey.rpgcore.ArenaManager.*;
 import me.prismskey.rpgcore.DataManager.ConfigLoader;
+import me.prismskey.rpgcore.DataManager.ItemStackConfigLoader;
 import me.prismskey.rpgcore.DataManager.MobsLevelsConfigManager;
 import me.prismskey.rpgcore.GeneralCommands.*;
 import me.prismskey.rpgcore.Events.*;
 import me.prismskey.rpgcore.Events.OnTriggerSpecialAbilities;
 import me.prismskey.rpgcore.Maps.shortTermStorages;
 import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
-import me.prismskey.rpgcore.Recipes.*;
+import me.prismskey.rpgcore.Recipes.CustomRecipes;
 import me.prismskey.rpgcore.Tasks.*;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
@@ -49,6 +50,7 @@ public final class Rpgcore extends JavaPlugin {
         MobsLevelsConfigManager mlcm = new MobsLevelsConfigManager();
         try {
             mlcm.loadConfig();
+            ItemStackConfigLoader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,6 +128,8 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginCommand("fillblocks").setExecutor(new FillBlocksCommand());
         getServer().getPluginCommand("pvp").setExecutor(new PvpCommand());
         getServer().getPluginCommand("party").setExecutor(new PartyCommand());
+        getServer().getPluginCommand("savecustomitem").setExecutor(new SaveCustomItem());
+        getServer().getPluginCommand("getcustomitems").setExecutor(new getCustomItems());
     }
 
     public void registerEvents() {
@@ -133,9 +137,9 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnChunkPopulate(), this);
         getServer().getPluginManager().registerEvents(new RegionEnterEvent(), this);
         getServer().getPluginManager().registerEvents(new RegionQuitEvent(), this);
-        getServer().getPluginManager().registerEvents(new onCustomItemDegradeOrMend(), this);
-        getServer().getPluginManager().registerEvents(new ExtraAnvilRecipes(), this);
-        getServer().getPluginManager().registerEvents(new DisableCraftGridRepair(), this);
+        //getServer().getPluginManager().registerEvents(new onCustomItemDegradeOrMend(), this);
+        //getServer().getPluginManager().registerEvents(new ExtraAnvilRecipes(), this);
+        //getServer().getPluginManager().registerEvents(new DisableCraftGridRepair(), this);
         getServer().getPluginManager().registerEvents(new OnTriggerSpecialAbilities(), this);
         getServer().getPluginManager().registerEvents(new OnPvp(), this);
         getServer().getPluginManager().registerEvents(new DisableFireworkDamage(), this);
@@ -154,6 +158,7 @@ public final class Rpgcore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new OnCreatureSpawnTrySpawnCustomMob(), this);
         //getServer().getPluginManager().registerEvents(new OnUndeadMobSpawn(), this);
         getServer().getPluginManager().registerEvents(new OnPlayerTeleport(), this);
+        getServer().getPluginManager().registerEvents(new CustomRecipes(), this);
     }
 
     public void registerRecipes() {

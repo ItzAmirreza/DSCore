@@ -18,7 +18,9 @@ public enum MobAbilityCoolDownTimes {
     BANSHEE_SCREAM(20 * 5),
     STONE_GAZE(20 * 15),
     HARPY_CLAW_ATTACK(20 * 10),
-    GRYPHON_CLAW_ATTACK(20 * 10);
+    GRYPHON_CLAW_ATTACK(20 * 10),
+    WEREWOLF_CLAW_ATTACK(20 * 10),
+    LIZARD_SPIT_ATTACK(20 * 10);
 
     public final int cooldown;
 

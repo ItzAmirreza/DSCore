@@ -1,6 +1,5 @@
 package me.prismskey.rpgcore.Mobs;
 
-import me.prismskey.rpgcore.Mobs.EnemySpecialsManager;
 import me.prismskey.rpgcore.Rpgcore;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -16,8 +15,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoidTarget {
-
+public class LizardSpitAttack {
     public void start(LivingEntity ent) {
         Player target = EnemySpecialsManager.getRandomPlayerTarget(ent);
 
@@ -76,7 +74,8 @@ public class VoidTarget {
                             if (entity.getBoundingBox().overlaps(particleMinVector, particleMaxVector)) {
                                 //world.spawnParticle(Particle.FLASH, particleLoc, 0);
                                 //world.playSound(particleLoc, Sound.ENTITY_GENERIC_EXPLODE, 2, 1);
-                                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 20 * 3, 20, false, false, true));
+                                ((Damageable) entity).damage(5, ent);
+                                ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.POISON, 20 * 10, 2, true, true, true));
                                 this.cancel();
                                 done = true;
                                 break;
@@ -92,7 +91,7 @@ public class VoidTarget {
                     particleLoc.setZ(z);
 
                     //particleLoc.add(vecOffset);
-                    Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(128, 128, 128), 2);
+                    Particle.DustOptions dust = new Particle.DustOptions(Color.fromRGB(0, 255, 0), 2);
                     world.spawnParticle(Particle.REDSTONE, particleLoc.getX(), particleLoc.getY(), particleLoc.getZ(), 0, 0, 0, 0, dust);
                     i++;
                 }
@@ -100,4 +99,3 @@ public class VoidTarget {
         }.runTaskTimer(Rpgcore.getInstance(), 0, 1);
     }
 }
-
